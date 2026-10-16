@@ -1,0 +1,20 @@
+name: Skill request
+description: Suggest a new skill or a change to an existing one.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: task
+    attributes:
+      label: What should the agent be able to do?
+      description: The task, in the words a user would ask it.
+    validations:
+      required: true
+  - type: textarea
+    id: today
+    attributes:
+      label: What happens today?
+      description: What agents do now without the skill, or where the current skill falls short.
+  - type: input
+    id: agents
+    attributes:
+      label: Which agents do you use?

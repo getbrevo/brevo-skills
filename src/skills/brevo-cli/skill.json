@@ -1,0 +1,23 @@
+{
+  "name": "brevo-cli",
+  "title": "Brevo CLI",
+  "version": "1.1.0",
+  "status": "public",
+  "owner": "brevo-cli",
+  "summary": "Use the Brevo Developer CLI to manage OAuth apps, UI apps and Brevo Functions.",
+  "platforms": [
+    "claude",
+    "openai",
+    "gemini"
+  ],
+  "requires": [
+    "shell"
+  ],
+  "requires_tools": [],
+  "source": {
+    "repo": "getbrevo/brevo-cli",
+    "path": "agent-context",
+    "ref": "1d02e32172675f8fb331019c85e28c1be0ae34cb"
+  },
+  "min_cli_version": "2.5.0"
+}

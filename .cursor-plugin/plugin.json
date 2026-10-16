@@ -1,0 +1,25 @@
+{
+  "name": "brevo",
+  "displayName": "Brevo",
+  "description": "Brevo skills for AI agents, connected to the Brevo MCP server.",
+  "version": "0.0.1",
+  "author": {
+    "name": "Brevo",
+    "url": "https://www.brevo.com"
+  },
+  "homepage": "https://developers.brevo.com",
+  "repository": "https://github.com/getbrevo/brevo-skills",
+  "license": "MIT",
+  "keywords": [
+    "brevo",
+    "email",
+    "marketing",
+    "templates",
+    "mcp"
+  ],
+  "mcpServers": {
+    "brevo": {
+      "url": "https://mcp.brevo.com/v1/openai/mcp"
+    }
+  }
+}

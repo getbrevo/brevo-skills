@@ -1,0 +1,24 @@
+{
+  "name": "brevo-skills",
+  "description": "Brevo skills for AI agents, connected to the Brevo MCP server.",
+  "owner": {
+    "name": "Brevo",
+    "url": "https://www.brevo.com"
+  },
+  "plugins": [
+    {
+      "name": "brevo",
+      "source": "./",
+      "description": "Brevo skills for AI agents, connected to the Brevo MCP server.",
+      "version": "0.0.1",
+      "homepage": "https://developers.brevo.com",
+      "keywords": [
+        "brevo",
+        "email",
+        "marketing",
+        "templates",
+        "mcp"
+      ]
+    }
+  ]
+}

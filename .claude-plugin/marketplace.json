@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "brevo-skills",
+  "owner": {
+    "name": "Brevo",
+    "url": "https://www.brevo.com"
+  },
+  "metadata": {
+    "description": "Brevo skills for AI agents, connected to the Brevo MCP server."
+  },
+  "plugins": [
+    {
+      "name": "brevo",
+      "source": "./",
+      "description": "Brevo skills for AI agents, connected to the Brevo MCP server.",
+      "version": "0.0.1",
+      "homepage": "https://developers.brevo.com",
+      "keywords": [
+        "brevo",
+        "email",
+        "marketing",
+        "templates",
+        "mcp"
+      ]
+    }
+  ]
+}

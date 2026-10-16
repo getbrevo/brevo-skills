@@ -1,0 +1,10 @@
+interface:
+  display_name: "Brevo CLI"
+  short_description: "Use the Brevo Developer CLI to manage OAuth apps, UI apps and Brevo Functions."
+dependencies:
+  tools:
+    - type: mcp
+      value: brevo
+      description: "Brevo MCP server"
+      transport: streamable_http
+      url: https://mcp.brevo.com/v1/openai/mcp

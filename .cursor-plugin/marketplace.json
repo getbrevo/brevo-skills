@@ -1,0 +1,13 @@
+{
+  "name": "brevo-skills",
+  "owner": {
+    "name": "Brevo",
+    "url": "https://www.brevo.com"
+  },
+  "plugins": [
+    {
+      "name": "brevo",
+      "source": "./"
+    }
+  ]
+}

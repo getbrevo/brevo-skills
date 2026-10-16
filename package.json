@@ -1,0 +1,37 @@
+{
+  "name": "brevo-skills",
+  "private": true,
+  "type": "module",
+  "description": "Source, build and release pipeline for Brevo's public agent skills.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getbrevo/brevo-skills.git"
+  },
+  "homepage": "https://github.com/getbrevo/brevo-skills#readme",
+  "bugs": {
+    "url": "https://github.com/getbrevo/brevo-skills/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check",
+    "validate": "node scripts/validate.mjs",
+    "new-skill": "node scripts/new-skill.mjs",
+    "check-public": "node scripts/check-public.mjs",
+    "check-contract": "node scripts/check-contract.mjs",
+    "package": "bash scripts/package.sh",
+    "scan": "bash scripts/scan-skills.sh",
+    "test": "node --test tests/*.test.mjs",
+    "verify": "yarn validate && yarn run check && yarn check-schemas && yarn check-public && yarn test",
+    "check-schemas": "node scripts/check-schemas.mjs",
+    "update-schemas": "node scripts/update-schemas.mjs",
+    "sync-skill": "node scripts/sync-skill.mjs",
+    "check-versions": "node scripts/check-versions.mjs"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0"
+  }
+}

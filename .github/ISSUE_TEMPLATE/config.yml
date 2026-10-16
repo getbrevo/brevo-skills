@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Brevo support
+    url: https://help.brevo.com
+    about: Questions about your Brevo account, the Brevo API or the MCP server itself.
+  - name: Report a security vulnerability
+    url: https://github.com/getbrevo/brevo-skills/security/advisories/new
+    about: Report security problems privately, never in a public issue.

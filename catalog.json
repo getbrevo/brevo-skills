@@ -1,0 +1,37 @@
+{
+  "version": "0.0.1",
+  "plugin": "brevo",
+  "mcp": {
+    "serverName": "brevo",
+    "endpoints": {
+      "claude": "https://mcp.brevo.com/v1/anthropic/mcp",
+      "openai": "https://mcp.brevo.com/v1/openai/mcp",
+      "gemini": "https://mcp.brevo.com/v1/google/mcp"
+    }
+  },
+  "skills": [
+    {
+      "name": "brevo-cli",
+      "version": "1.1.0",
+      "status": "public",
+      "owner": "brevo-cli",
+      "summary": "Use the Brevo Developer CLI to manage OAuth apps, UI apps and Brevo Functions.",
+      "min_cli_version": "2.5.0",
+      "platforms": [
+        "claude",
+        "openai",
+        "gemini"
+      ],
+      "requires": [
+        "shell"
+      ],
+      "requires_tools": [],
+      "path": "skills/brevo-cli",
+      "files": [
+        "SKILL.md"
+      ],
+      "sha256": "5cbe5b952ed5148b95f5dd532da096940931d127bece3a25e265d5cad54ad581",
+      "source_sha256": "5cbe5b952ed5148b95f5dd532da096940931d127bece3a25e265d5cad54ad581"
+    }
+  ]
+}

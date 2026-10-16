@@ -1,0 +1,125 @@
+name: Skill security scan
+
+# Static scan of the skill text with NVIDIA SkillSpector (https://github.com/NVIDIA/SkillSpector),
+# through scripts/scan-skills.sh, which pins the scanner commit.
+#   pull_request      scans the skills changed in the PR and posts one summary comment.
+#                     Warn-only: the static rules flag patterns in documentation too, so a
+#                     finding is reviewed, not blocked on. Fork PRs get the step summary only
+#                     (their token can't comment).
+#   workflow_dispatch scans every skill and fails on findings: a manual gate before a release.
+# Threshold: the dispatch input, else the SKILL_SCAN_THRESHOLD repository variable, else 50.
+#
+# On a pull request the scan script comes from the base branch, not the PR: the scanner pin
+# lives in that script, so a PR can't repoint it or weaken the scan. A manual run has no base
+# and uses the checked-out copy. The workflow file itself is the PR's, as GitHub runs it,
+# so changes to .github/workflows/ and scripts/ need a careful review.
+
+on:
+  pull_request:
+    paths:
+      - 'src/skills/**'
+      - 'shared/**'
+  workflow_dispatch:
+    inputs:
+      threshold:
+        description: 'Fail a skill whose risk score is above this (0-100)'
+        required: false
+        default: '50'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skill-scan-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  THRESHOLD: ${{ github.event.inputs.threshold || vars.SKILL_SCAN_THRESHOLD || '50' }}
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # the changed-skill diff needs the base branch
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
+      - name: Take the scan script from the base branch
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/base"
+          git archive "origin/$BASE_REF" scripts | tar -x -C "$RUNNER_TEMP/base"
+          # Bootstrap only: until the scan script is on the base branch there is no base
+          # copy to run, so the pull request's copy is used once and the log says so.
+          if [ ! -f "$RUNNER_TEMP/base/scripts/scan-skills.sh" ]; then
+            echo "::notice::The base branch has no scan script yet; using this pull request's copy."
+            cp -R scripts "$RUNNER_TEMP/base/"
+          fi
+      - name: Scan
+        id: scan
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set +e
+          if [ "$EVENT" = pull_request ]; then
+            BASE="$(git merge-base "origin/$BASE_REF" HEAD)"
+            bash "$RUNNER_TEMP/base/scripts/scan-skills.sh" --root "$GITHUB_WORKSPACE" \
+              --changed "$BASE" --threshold "$THRESHOLD" --summary-file scan-summary.md
+          else
+            bash scripts/scan-skills.sh --all --threshold "$THRESHOLD" --summary-file scan-summary.md
+          fi
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+      - name: Publish the summary
+        if: always() && hashFiles('scan-summary.md') != ''
+        run: cat scan-summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep the reports
+        if: always() && hashFiles('scripts/.skillspector-reports/**') != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: skillspector-reports
+          path: scripts/.skillspector-reports/
+          retention-days: 14
+      - name: Post or update the PR comment
+        # Same-repo PRs only: a fork PR's token is read-only.
+        if: >-
+          always() &&
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          hashFiles('scan-summary.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          MARKER='<!-- skill-security-scan -->'
+          {
+            echo "$MARKER"
+            echo '> Warn-only check: these findings never block a merge. Review them and fix the true positives.'
+            echo
+            cat scan-summary.md
+          } > comment.md
+          ID="$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
+            --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -n1)"
+          if [ -n "$ID" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$ID" -F body=@comment.md > /dev/null
+          else
+            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file comment.md
+          fi
+      - name: Fail on findings (manual audit only)
+        if: always() && github.event_name == 'workflow_dispatch'
+        env:
+          EXIT_CODE: ${{ steps.scan.outputs.exit_code }}
+        run: exit "${EXIT_CODE:-1}"

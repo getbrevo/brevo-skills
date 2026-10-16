@@ -1,0 +1,42 @@
+name: Skill or package bug
+description: A skill did the wrong thing, or a package doesn't install or load.
+labels: [bug]
+body:
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Skill
+      options:
+        - brevo-cli
+        - Not specific to a skill (install, manifest, pipeline)
+    validations:
+      required: true
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agent
+      options:
+        - Claude Code
+        - claude.ai or Claude Desktop
+        - ChatGPT
+        - Codex
+        - Cursor
+        - Grok
+        - Gemini CLI
+        - Gemini app
+        - Antigravity
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The release (for example v0.1.0) or the skill version in its SKILL.md metadata.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you asked the agent, what it did, and what you expected. Remove personal data, API keys and customer content.
+    validations:
+      required: true
