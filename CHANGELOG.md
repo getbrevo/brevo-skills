@@ -27,6 +27,14 @@ All notable changes to this project are listed here. Versions follow
   checked for authentication; HTML templates carry preview text in the hidden preheader;
   saved templates are changed and activated in place after a yes; the footer uses the
   user's brand name.
+- Email skills: a defined template flow, and conversation-level caching. After saving a
+  template and rendering it with sample data, the agent shares the template's page in Brevo
+  as a preview link and waits for the user's yes before any test send (the shared template
+  link is an import link that opens a sign-in page, so it isn't used as a preview). A shared
+  rules block (`shared/email-cache.md`) keeps the account, senders, sender domains and
+  contact attributes for about 10 minutes, the brand kit and the templates the conversation
+  touched for the whole conversation, per account and sub-account, with the refresh rules
+  (unknown attribute, account switch, changes made in Brevo, 404, "refresh"). Evals added.
 - Grok: `.grok-plugin/marketplace.json`, and the MCP server declared in its manifest (Grok
   reads `.mcp.json` or the manifest, not `mcp.json`). Cursor declares the server inline too.
 - `yarn new-skill`: scaffolds a skill (`skill.json` as a draft, a `SKILL.md` skeleton

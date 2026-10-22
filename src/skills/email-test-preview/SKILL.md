@@ -14,7 +14,6 @@ confirmation of the addresses. It never sends a campaign to its recipients.
 | Find the draft campaign | `email_campaign_management_get_email_campaign` |
 | Find the template, one at a time | `templates_get_smtp_template` |
 | Test-send a transactional template | `templates_send_test_template` |
-| Preview link for a campaign | `email_campaign_management_get_shared_template_url` (see Requirements) |
 | Test-send a campaign | `email_campaign_management_send_test_email` (see Requirements) |
 | Render a template with sample data | `templates_post_preview_smtp_email_templates` (see Requirements) |
 | Check what happened to a template test send | `campaign_analytics_get_email_event_report` (see Requirements) |
@@ -25,21 +24,23 @@ connection doesn't offer this feature yet. For the others, follow the fallback i
 
 <!-- include: shared/connection.md -->
 
+<!-- include: shared/email-cache.md -->
+
 ## 1. Collect the inputs
 
 - **What to test:** a draft campaign or a transactional template, by ID or name. Read it with
   `email_campaign_management_get_email_campaign` (pass `excludeHtmlContent: true`) or
-  `templates_get_smtp_template`. Fetch templates one at a time by ID: a template list returns
-  the full HTML of every template, so never list many at once.
+  `templates_get_smtp_template`, or use the cached copy (see the cache table). Fetch
+  templates one at a time by ID: a template list returns the full HTML of every template, so
+  never list many at once.
 - **Test addresses**, for a test send: the addresses the user names. If they say "send me a
   test", ask for their address; don't assume it. Never add addresses of your own choosing.
 
 ## 2. Preview
 
-**Campaign:** if `email_campaign_management_get_shared_template_url` is in your tool list,
-call it with the campaign ID and give the link to the user only: anyone with the link can see
-the email. Without the tool, tell the user to open the draft in Brevo (Campaigns, Email) and
-use Preview there.
+**Campaign:** nothing to render through the connection; step 3 gives the link. Don't give
+the "shared template" link as a preview: it is a link to import the email into another Brevo
+account, and opens a sign-in page, not the email.
 
 **Transactional template:** if `templates_post_preview_smtp_email_templates` is in your tool
 list, render it on Brevo's servers:
@@ -49,14 +50,28 @@ list, render it on Brevo's servers:
   fails with "Contact not found" whenever the template uses contact attributes.
 - Use invented sample data, never a real customer's.
 - Render three times: with the full sample; with empty lists and missing optional keys; and
-  with `params: {}`, which is what a test send uses (see step 3).
+  with `params: {}`, which is what a test send uses (see step 4).
 - Don't paste the rendered HTML into the chat: report the subject, whether it rendered, and
   anything that looks wrong (an empty greeting, a missing item line, literal `{{ }}`).
 
-Without the tool, say the server preview isn't available on this connection, and offer a test
-send instead.
+Without the tool, say the server preview isn't available on this connection, and go on to
+the preview link.
 
-## 3. Send a test (confirm every time)
+## 3. Share the preview link, then stop
+
+Before any test send, give the user a link to look at the email themselves, and wait:
+
+- **Template** (drag-and-drop or HTML): `https://app.brevo.com/templates/email/edit/<id>`.
+  The user signs in to Brevo and uses Preview there.
+- **Campaign:** `https://app.brevo.com/marketing-campaign/edit/<id>`.
+
+Say that the link shows the saved email without the sample data (no `params`, no sample
+contact). Ask: "Open it and tell me if it looks right. Shall I send a test, and to which
+address?" Send nothing until the user answers yes in this conversation. If they ask for
+changes, go back to `email-template-write`; after the update, the cached template carries
+the change.
+
+## 4. Send a test (confirm every time)
 
 **A template test send carries no `params`.** Every `{{ params.* }}`, in the body and in the
 subject, renders blank, and a filter that needs a value (for example `time_parse` on an empty
@@ -66,12 +81,12 @@ step 2 shows what the test will look like. A test works on an inactive template.
 
 **Check the sender's domain first.** Read the sender (template or campaign) and, if
 `domains_get_domains` is in your tool list, look for the sender's email domain in the
-account's domains. When the domain isn't there or isn't authenticated, or it is a free or
-shared mailbox domain (gmail.com, yahoo.com and the like), warn: Gmail and Yahoo reject or
-bounce mail from unauthenticated domains (DMARC), so the test may never arrive. Suggest
-authenticating the domain in Brevo (Senders, Domains) or using a sender on an authenticated
-domain. Without the tool, say you couldn't check the domain and give the same warning as a
-possibility. Let the user decide; don't block the test.
+account's domains (cached with the senders). When the domain isn't there or isn't
+authenticated, or it is a free or shared mailbox domain (gmail.com, yahoo.com and the
+like), warn: Gmail and Yahoo reject or bounce mail from unauthenticated domains (DMARC),
+so the test may never arrive. Suggest authenticating the domain in Brevo (Senders,
+Domains) or using a sender on an authenticated domain. Without the tool, say you couldn't
+check the domain and give the same warning as a possibility. Let the user decide; don't block the test.
 
 Show, and ask "Send it?":
 
@@ -119,7 +134,7 @@ Then say to whom it went and that test sends are limited to 50 a day.
 |---|---|---|
 | 400 listing addresses not found, blocked, or in no list | The test address must exist as a contact, not be blocked, and belong to a list | Which address and why; they can add it as a contact in Brevo |
 | 400 "Contact not found" on a preview | The `email` passed isn't a contact, or `params` were sent alone for a template with contact attributes | Pass an existing contact's email plus the params |
-| Preview link refused (405) | The campaign has no content yet, or isn't a classic campaign | Add content, then try again |
+| A cached template returns 404 | It was deleted in Brevo | Drop it from the cache; tell the user it no longer exists |
 | Daily limit reached | 50 test sends a day | Try again tomorrow, or preview instead |
 | Event `error` with a template error (for example `time_parse`) | The template failed to render without params | Guard the line with `{% if params.x %}` (`email-template-check`), save, test again |
 | Event `error` "From field is missing" | The template has a sender ID but no sender email | Set the sender on the template (`email-template-to-dnd` step 4), or in Brevo |
@@ -133,8 +148,6 @@ Not offered to every connection yet:
 
 - `email_campaign_management_send_test_email` (campaign test send): without it, the user sends
   the test from Brevo.
-- `email_campaign_management_get_shared_template_url` (campaign preview link): without it, the
-  user previews in Brevo.
 - `templates_post_preview_smtp_email_templates` (render a template with a contact and sample
   params): without it, the test send is the check.
 - `campaign_analytics_get_email_event_report` (events of a transactional send, with the error
@@ -146,5 +159,7 @@ Not offered to every connection yet:
 No tool reads the outcome of a campaign test send yet: the user checks their inbox.
 
 No browser or screenshot step: the preview is a link the user opens, or a server render.
+The shared template link (`email_campaign_management_get_shared_template_url`) isn't used:
+it is an import link for another account, not a preview.
 
 <!-- include: shared/output-rules.md -->

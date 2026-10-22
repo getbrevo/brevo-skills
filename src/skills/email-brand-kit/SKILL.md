@@ -25,11 +25,15 @@ instead.
 
 <!-- include: shared/connection.md -->
 
+<!-- include: shared/email-cache.md -->
+
 ## Safety rules (every brand-kit step)
 
 1. **Read once, then work from that read.** Call `branding_get_brand` once per conversation,
    before the first change, and show each part as it is now next to what it will become.
-   Read again only if the user asks to refresh or says they changed the kit in Brevo since.
+   Read again only if the user asks to refresh, says they changed the kit in Brevo since, or
+   switches account or sub-account. After your own save, update the cached kit with the
+   approved values (no read-back), so the next email uses them without a new read.
 2. **A clear yes before every save,** in this conversation, for exactly what you showed. "Set
    up my brand kit" is a yes to look it up, not a yes to save the result.
 3. **Never overwrite a part the user didn't approve.** A save names one part with
@@ -72,7 +76,7 @@ instead.
   No read-back after a save: the save answers only "Data stored successfully", so say what
   was sent. On 429, stop and don't retry: tell the user the hourly limit for brand-kit calls
   is reached, that Brevo doesn't say how long to wait, and to try again within the hour.
-  Nothing more is called.
+  Nothing more is called; a kit already cached stays usable for styling, and you say so.
 
 ## 1. Check the tools
 
@@ -191,7 +195,7 @@ to save them to the kit too (step 4).
    entries the user keeps.
 6. **Website:** if the looked-up website differs from the kit's and the user agrees, save it
    with `branding_update_website` (`{"website": "<address>"}`).
-7. **Say in one line what was saved** (no read-back: see Limits). Then offer to style an email
+7. **Say in one line what was saved** (no read-back: see Limits) and update the cached kit. Then offer to style an email
    with it (step 2), using the read plus the saved values.
 
 If the lookup finds nothing useful, say so and offer to enter the values by hand. Never fill
@@ -200,7 +204,7 @@ gaps with guesses.
 ## 4. Change one part
 
 Same order every time: read (unless the kit was read in this conversation), show now and
-after, a yes, save that part with `partialUpdateField`. No read-back.
+after, a yes, save that part with `partialUpdateField`. No read-back: update the cached kit.
 
 - **Logo, colours, fonts:** values the user gives, checked against
   [field-rules.md](references/field-rules.md) (for example `#FFF` is rewritten as `#FFFFFF`,

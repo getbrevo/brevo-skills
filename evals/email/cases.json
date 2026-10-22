@@ -71,6 +71,24 @@
         "confirms the account",
         "routes to email-template-write and email-template-check to update the template in place"
       ]
+    },
+    {
+      "id": "subaccount-switch",
+      "prompt": "Now do the same for my sub-account 'Shop DE'.",
+      "fixture": "Account, senders and attributes cached for the main account; the connection can act on a sub-account",
+      "expect": [
+        "names the sub-account and asks the user to confirm it",
+        "fetches account, senders and attributes for the sub-account; never reuses or shows the main account's cached values"
+      ]
+    },
+    {
+      "id": "refresh-clears-cache",
+      "prompt": "What do you have cached? ... OK, refresh.",
+      "fixture": "Account, senders, attributes and template 77 cached",
+      "expect": [
+        "lists what is cached, for which account and when it was fetched, with no secrets",
+        "after 'refresh', fetches again before the next step that needs the data"
+      ]
     }
   ]
 }

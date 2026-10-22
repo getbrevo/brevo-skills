@@ -21,15 +21,18 @@ connection doesn't offer this feature yet.
 
 <!-- include: shared/connection.md -->
 
+<!-- include: shared/email-cache.md -->
+
 ## 1. Collect the inputs
 
 - **The HTML.** From the conversation, or a saved template: fetch it by ID with
-  `templates_get_smtp_template`. Never list all templates to find one: a template list
+  `templates_get_smtp_template` (or the cached copy). Never list all templates to find one: a template list
   returns the full HTML of every template. Ask the user for the ID or the name; if you must
   list, ask for one result at a time.
 - **The type:** campaign, automation email or transactional. It decides which variables work
   and whether a missing unsubscribe link is an error.
-- **Attribute names:** call `attributes_get_attributes` once. Without a connection, use
+- **Attribute names:** from the cache, else call `attributes_get_attributes` once. If the
+  fetch fails, skip item 6 with a warning and go on. Without a connection, use
   `FIRSTNAME`, `LASTNAME`, `EMAIL` plus the names the user gave, and say the attribute check
   used assumed names.
 - **A sample payload** (automation and transactional only): from the user, or the one written
@@ -61,9 +64,10 @@ media query, `img{border:0}`) are not stray `}}` or borders without a colour.
 
 6. Every `contact.X` is an attribute returned by `attributes_get_attributes`, written exactly
    (upper case). List every `contact.X` in the HTML and the subject, and compare each one
-   against that list, letter by letter. A misspelt name (`FIRST_NAME` for `FIRSTNAME`) saves
-   and sends without any error and silently shows its default, so this check is the only one
-   that catches it. Suggest the closest name; never keep it silently.
+   against that list, letter by letter. A name missing from a cache older than about a
+   minute: fetch the attributes once more before reporting it. A misspelt name (`FIRST_NAME`
+   for `FIRSTNAME`) saves and sends without any error and silently shows its default, so this
+   check is the only one that catches it. Suggest the closest name; never keep it silently.
 7. Every `contact.X` shown in text has `| default:"…"` or sits inside `{% if contact.X %}`.
 8. `params.*` only in automation and transactional emails; **in a campaign it is always
    empty**. Every `params` path exists in the sample payload. Read the email once with the
@@ -126,8 +130,8 @@ media query, `img{border:0}`) are not stray `}}` or borders without a colour.
 If your tool list has `templates_post_preview_smtp_email_templates`, a saved template can be
 rendered on Brevo's servers, which catches template errors the checklist can miss:
 
-- Pass `templateId` and `email` of an **existing contact**: the account's own email from
-  `accounts_get_account` works. For automation and transactional templates, also pass the
+- Pass `templateId` and `email` of an **existing contact**: the account's own email (cached
+  from `accounts_get_account`) works. For automation and transactional templates, also pass the
   sample `params`. With `params` alone, the preview fails with "Contact not found" whenever
   the template uses contact attributes.
 - Render three times: with the full sample; with empty lists and missing optional keys; and

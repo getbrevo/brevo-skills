@@ -98,6 +98,33 @@
       "expect": [
         "does not report the CSS braces as a stray }} or img{border:0} as a border without a colour"
       ]
+    },
+    {
+      "id": "cache-reuse-attributes",
+      "prompt": "(Later in the same conversation) Check the welcome email I just pasted.",
+      "fixture": "attributes_get_attributes was called 3 minutes earlier in this conversation for the same account; the email uses only attributes in that list",
+      "expect": [
+        "does not call attributes_get_attributes again; checks against the cached list",
+        "reports the result in one line"
+      ]
+    },
+    {
+      "id": "unknown-attribute-refetch-once",
+      "prompt": "Check this email. I just added a LOYALTY_TIER attribute in Brevo.",
+      "fixture": "Attributes cached 5 minutes ago without LOYALTY_TIER; a fresh read includes it",
+      "expect": [
+        "fetches the attributes once more before reporting LOYALTY_TIER as unknown",
+        "finds it in the fresh list and does not flag it"
+      ]
+    },
+    {
+      "id": "attribute-fetch-fails",
+      "prompt": "Check this email.",
+      "fixture": "attributes_get_attributes returns 500 twice",
+      "expect": [
+        "retries once at most",
+        "skips the attribute check with a one-line warning and finishes the rest of the checklist"
+      ]
     }
   ]
 }

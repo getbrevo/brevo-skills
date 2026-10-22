@@ -18,6 +18,8 @@ offer this feature yet.
 
 <!-- include: shared/connection.md -->
 
+<!-- include: shared/email-cache.md -->
+
 ## Safety rules (every email step)
 
 1. **Drafts only.** Campaigns are created as drafts, templates inactive. No skill sends a
@@ -56,6 +58,27 @@ Skills can't call each other: name the next skill and load it.
 | Change a saved template (content, subject, sender, or activate it) | `email-template-write` (fetch it by ID, edit only what changes), `email-template-check`, then update it in place (`email-template-write` step 10); activating needs the user's yes |
 | See how it looks, or receive a test | `email-test-preview` |
 | Send or schedule for real | `email-campaign-create`, "Ready to send": the user sends it from Brevo |
+
+### Template flow (transactional and automation templates)
+
+Campaigns keep their own draft-only flow (`email-campaign-create`). Templates follow this
+order, one step at a time:
+
+1. Account, senders and contact attributes, from the cache (fetch once if missing).
+2. Brand kit, from the cache (`email-brand-kit` reads it once, when its tool exists).
+3. Write the email (`email-template-write`).
+4. Check it (`email-template-check`, at most 3 fix rounds).
+5. The user approves the HTML or the summary.
+6. Save the template, inactive, once.
+7. Render it with sample data: an existing contact's email plus `params`, and once with
+   `params: {}` (what a test send shows).
+8. **Share a preview link and stop.** Give the template's page in Brevo
+   (`https://app.brevo.com/templates/email/edit/<id>`, the user signs in and uses Preview).
+   Say it shows the saved template without sample data. Ask the user to open it and confirm
+   before any test send.
+9. Test-send only after an explicit yes, only to addresses the user names, after the
+   sender-domain check (`email-test-preview`).
+10. Check the send's outcome before saying it worked.
 
 For a request with several steps, say the plan in one line first ("I'll write the email,
 check it, create a draft campaign for VIP, then send you a test"), then do one step at a time.

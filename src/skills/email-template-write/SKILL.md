@@ -27,6 +27,8 @@ brand-kit tool, carry on (step 5); for the other two, follow the fallback in Req
 
 <!-- include: shared/connection.md -->
 
+<!-- include: shared/email-cache.md -->
+
 ## Quick rules (enough for short and medium emails)
 
 - **Layout:** the document skeleton in [email-design-rules.md](references/email-design-rules.md)
@@ -103,8 +105,9 @@ brand-kit tool, carry on (step 5); for the other two, follow the fallback in Req
 4. **Pick the length and section order.** Short and medium emails follow the opening order
    above. Full-length emails follow a story arc from [story-arcs.md](references/story-arcs.md).
 5. **Collect real data, never invent it:**
-   - Contact attributes: call `attributes_get_attributes` and use only attributes that exist,
-     written exactly as returned.
+   - Contact attributes: from the cache, else call `attributes_get_attributes` once; use only
+     attributes that exist, written exactly as returned. Account and senders come from the
+     cache the same way.
    - Event data (automation, transactional): ask for a sample payload, or use the one the user
      gives. The template language can't do arithmetic, so every amount shown must be a field
      in the payload.
@@ -114,9 +117,9 @@ brand-kit tool, carry on (step 5); for the other two, follow the fallback in Req
      `accounts_get_account`. Plain text; never `{{ company.* }}`: it renders blank in HTML
      sent through the API.
    - URLs: only those the user gave, or the brand's site.
-   - **Brand styles:** if `branding_get_brand` is in your tool list, read the brand kit and
-     turn it into a "Brand styles" block as `email-brand-kit` step 2 describes (logo, font
-     stacks, colour roles, social links, website). Brand values the user gives in the brief
+   - **Brand styles:** if `branding_get_brand` is in your tool list, use the cached kit (or
+     read it once) and turn it into a "Brand styles" block as `email-brand-kit` step 2
+     describes (logo, font stacks, colour roles, social links, website). Brand values the user gives in the brief
      win for this email. Kit empty, or no tool: use the values the user gave, else neutral
      styles, and say which. Never invent a brand colour, a logo URL or a social link.
    - **No connection:** don't stop. Use clearly marked placeholders: `[Company name]` (or the
@@ -143,14 +146,16 @@ brand-kit tool, carry on (step 5); for the other two, follow the fallback in Req
     - Transactional, as HTML: confirm name, subject and sender (from `senders_get_senders`,
       an active one) with the user. Warn when the sender's domain isn't authenticated or is a
       free mailbox domain: Gmail and Yahoo bounce that mail (check as `email-test-preview`
-      step 3 describes). Then call `templates_create_smtp_template` with `templateName`,
-      `subject`, `sender` (`{"id": <sender id>}`), `htmlContent` and `isActive: false`. There
-      is no `previewText` field: the hidden preheader carries it. Read it back with
-      `templates_get_smtp_template` if the user asks.
+      step 4 describes). Then call `templates_create_smtp_template` with `templateName`,
+      `subject`, `sender` (`{"id": <sender id>}`), `htmlContent` and `isActive: false`, once.
+      There is no `previewText` field: the hidden preheader carries it. Cache what you saved
+      with its new ID; read it back with `templates_get_smtp_template` only if the user asks.
+      Then go to `email-test-preview`: render with sample data, share the preview link and
+      wait for the user's yes before any test send.
     - Changing a saved template (later edits, a new subject or sender): fetch it by ID, edit
       only the affected lines, check again, show what changes, and on a yes call
-      `templates_update_smtp_template` with only the changed fields. Never create a second
-      template instead.
+      `templates_update_smtp_template` with only the changed fields, and apply the change to
+      the cached copy. Never create a second template instead.
     - Transactional or automation, as an editable design: `email-template-to-dnd`.
     - Automation email as HTML: no tool accepts it today. Give the HTML; the user pastes it
       into a new automation email in Brevo.

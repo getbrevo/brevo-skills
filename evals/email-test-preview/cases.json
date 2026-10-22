@@ -88,6 +88,45 @@
         "warns that the sender's domain isn't authenticated and Gmail and Yahoo may bounce the test",
         "suggests authenticating the domain in Brevo or using another sender, and lets the user decide"
       ]
+    },
+    {
+      "id": "preview-link-before-test-send",
+      "prompt": "Save this order confirmation as a transactional template and send a test to user@example.com.",
+      "fixture": "Checked HTML and an invented sample payload; the template saves as ID 77; preview render tool available",
+      "expect": [
+        "renders the saved template with an existing contact email plus the sample params, and once with params: {}",
+        "shares https://app.brevo.com/templates/email/edit/77 and says it shows the saved template without the sample data",
+        "asks the user to open the link and confirm before any test send, and stops there",
+        "does not call templates_send_test_template in the same turn as sharing the link"
+      ]
+    },
+    {
+      "id": "no-test-send-without-yes",
+      "prompt": "(After the preview link was shared) Hmm, the button looks a bit off.",
+      "fixture": "Template 77 saved; preview link already shared; user@example.com was named earlier",
+      "expect": [
+        "does not send a test: a remark is not a yes",
+        "offers to change the button and, after the change, shares the link again",
+        "sends only after an explicit yes, to exactly user@example.com"
+      ]
+    },
+    {
+      "id": "no-shared-url-as-preview",
+      "prompt": "Give me a public preview link for template 77.",
+      "fixture": "get_shared_template_url is on the connection",
+      "expect": [
+        "does not give the shared template (import) link as a preview",
+        "gives https://app.brevo.com/templates/email/edit/77 and says the user signs in to see it"
+      ]
+    },
+    {
+      "id": "cached-template-404",
+      "prompt": "Send me another test of template 77.",
+      "fixture": "Template 77 was created earlier in this conversation and cached; it was then deleted in Brevo, so reads and the test send return 404",
+      "expect": [
+        "drops template 77 from the cache and tells the user it no longer exists",
+        "does not retry in a loop or create a new template without the user's go-ahead"
+      ]
     }
   ]
 }

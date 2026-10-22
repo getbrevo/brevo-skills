@@ -99,6 +99,23 @@
         "points to Brevo's brand kit settings and stops",
         "never asks for an API key and calls no other tool to work around it"
       ]
+    },
+    {
+      "id": "invalidate-after-brevo-change",
+      "prompt": "I changed my brand colours in Brevo. Write another email in my brand.",
+      "fixture": "Kit read earlier in this conversation and cached; brand-kit tools available",
+      "expect": [
+        "reads the kit again (branding_get_brand) instead of using the cached colours",
+        "uses the new first colour for buttons and links"
+      ]
+    },
+    {
+      "id": "no-read-after-own-save",
+      "prompt": "(After approving a colours change that was just saved) Now write the newsletter in my brand.",
+      "fixture": "Kit read once and saved once in this conversation",
+      "expect": [
+        "does not call branding_get_brand again: uses the cached kit updated with the saved colours"
+      ]
     }
   ]
 }

@@ -26,6 +26,8 @@ instead; for the last two, follow the fallback in Requirements.
 
 <!-- include: shared/connection.md -->
 
+<!-- include: shared/email-cache.md -->
+
 ## 1. Collect the inputs
 
 - **The HTML**, written for drag-and-drop output with `email-template-write` and checked with
@@ -39,10 +41,10 @@ instead; for the last two, follow the fallback in Requirements.
   Campaigns aren't saved as designs through the connection: create them as HTML with
   `email-campaign-create`.
 - **Name, subject, preview text** (the hidden preheader is dropped on conversion, so
-  `previewText` is what reaches the inbox), **sender** (an active one from
-  `senders_get_senders`; never invent one; warn when its domain isn't authenticated or is a
-  free mailbox domain, as `email-test-preview` step 3 describes) and **editor language** (`en`, `fr`, `de`, `it` or
-  `pt`).
+  `previewText` is what reaches the inbox), **sender** (an active one from the cached
+  senders, else `senders_get_senders`; never invent one; warn when its domain isn't
+  authenticated or is a free mailbox domain, as `email-test-preview` step 4 describes) and
+  **editor language** (`en`, `fr`, `de`, `it` or `pt`).
 - If the conversion tool isn't in your tool list, stop here: say that converting HTML into
   an editable design isn't offered by their connection yet. Offer what still works: save it
   as an HTML template (`email-template-write`, transactional), or create an HTML campaign
@@ -89,7 +91,7 @@ Save as a drag-and-drop template:
 - Sender: <sender name> <sender email>
 ```
 
-On a yes, call `email_editor_create_template` with `name`, `type`, `subject`, `previewText`,
+On a yes, call `email_editor_create_template` once with `name`, `type`, `subject`, `previewText`,
 `senderId`, `senderName`, `locale` and `newsletterContent` = the design exactly as the
 conversion returned it. No HTML tags in name, subject, preview text or sender name (merge tags
 are fine). A refusal usually means a broken template tag, for example `{% else %}` inside a
@@ -106,7 +108,8 @@ default name). A template with no sender email fails every send, test sends incl
 - Sender name not the one confirmed: say so; it can be set the same way (`sender` with
   `name` and `email`) or in Brevo.
 
-The new template opens at `https://app.brevo.com/templates/email/edit/<id>`. A transactional
+Cache the template as read back (with any sender fix applied). The new template opens at
+`https://app.brevo.com/templates/email/edit/<id>`. A transactional
 template is created **inactive**: test sends work, live sends need it active. Activate it only
 after the user says yes (`templates_update_smtp_template` with `isActive: true`), or tell them
 to activate it in Brevo.
@@ -118,7 +121,8 @@ display conditions on sections shown to some contacts, a Dynamic content block f
 per item, Video or Product blocks to swap in, checking the Social block after the first open,
 and picking the brand's uploaded font in the Style tab when the brand kit has one (HTML
 carries only its fallback).
-Then offer `email-test-preview` for a test send.
+Then go to `email-test-preview`: render with sample data, share the preview link above and
+wait for the user's yes before any test send.
 
 ## Refusals and errors
 

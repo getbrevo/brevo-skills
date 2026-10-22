@@ -22,6 +22,8 @@ connection doesn't offer this feature yet.
 
 <!-- include: shared/connection.md -->
 
+<!-- include: shared/email-cache.md -->
+
 ## 1. Collect the inputs
 
 - **The HTML:** the email from `email-template-write`, after `email-template-check`. If the
@@ -30,17 +32,17 @@ connection doesn't offer this feature yet.
 - **Subject and preview text:** from the email (the `<title>` and the hidden preheader), or
   ask.
 - **Recipients:** the list or segment the user names.
-- **Account:** call `accounts_get_account`, name it, and ask the user to confirm (skip if
-  already confirmed in this conversation).
+- **Account:** from the cache, else call `accounts_get_account`; name it and ask the user to
+  confirm (skip if already confirmed in this conversation).
 
 ## 2. Pick the list and the sender
 
 1. **List.** Call `lists_get_lists` and match the user's words ("VIP") to a list name. If more
-   than one matches, ask which. If none matches, show the closest names and ask; for a
+   than one matches, ask which. Lists and segments aren't cached: read them fresh. If none matches, show the closest names and ask; for a
    segment, use `segments_get_segments` the same way. Note the ID; get the contact count with
    `lists_get_list` for the summary. Never pull contacts into the chat.
-2. **Sender.** Call `senders_get_senders` and use an **active** (verified) sender. Prefer the
-   one the user named; with several and no preference, ask. With no active sender, stop: tell
+2. **Sender.** Use the cached senders, else call `senders_get_senders`; use an **active**
+   (verified) sender. Prefer the one the user named; with several and no preference, ask. With no active sender, stop: tell
    the user to add and verify a sender in Brevo. Never invent a sender address. If the
    sender's domain isn't authenticated in the account, or is a free mailbox domain
    (gmail.com, yahoo.com), warn that Gmail and Yahoo reject or bounce that mail (DMARC); if
