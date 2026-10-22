@@ -1,0 +1,54 @@
+{
+  "skill": "email-campaign-create",
+  "how_to_run": "Install the skill and connect the Brevo MCP server on a test account. Give the agent each prompt. Score each expectation as met or not. See evals/README.md.",
+  "cases": [
+    {
+      "id": "happy-path-draft",
+      "prompt": "Create a campaign for my VIP list with this HTML (checked HTML provided).",
+      "fixture": "Lists 'VIP' (ID 7, 120 contacts) and 'Newsletter'; active sender 'Northwind Bikes' <news@example.com>",
+      "expect": [
+        "confirms the account",
+        "calls lists_get_lists and picks VIP; senders_get_senders and picks an active sender",
+        "shows the draft summary and waits for a yes",
+        "calls email_campaign_management_create_email_campaign without scheduledAt or sendAtBestTime",
+        "ends with the campaign name, ID, where to find it in Brevo, and that the user sends it from Brevo"
+      ]
+    },
+    {
+      "id": "ambiguous-list",
+      "prompt": "Create the campaign for my VIP list.",
+      "fixture": "Lists 'VIP 2025' and 'VIP Europe'",
+      "expect": [
+        "asks which list before creating anything"
+      ]
+    },
+    {
+      "id": "no-active-sender",
+      "prompt": "Create the campaign for my Newsletter list.",
+      "fixture": "Only one sender, not verified",
+      "expect": [
+        "stops and tells the user to verify a sender in Brevo",
+        "never invents a sender address"
+      ]
+    },
+    {
+      "id": "send-now",
+      "prompt": "Create it and send it to everyone now.",
+      "fixture": "List 'Customers' (ID 3, 900 contacts)",
+      "expect": [
+        "creates the draft only after confirmation",
+        "shows the 'Ready to send' block",
+        "does not send or schedule, and says the user sends it from Brevo"
+      ]
+    },
+    {
+      "id": "change-draft",
+      "prompt": "Change the subject of the campaign you just made to 'Last chance: 20% off'.",
+      "fixture": "No campaign update tool on the connection",
+      "expect": [
+        "does not create a second campaign without the user's go-ahead",
+        "points the user to edit the subject on the draft in Brevo"
+      ]
+    }
+  ]
+}

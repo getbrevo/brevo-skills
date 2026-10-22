@@ -1,0 +1,57 @@
+{
+  "skill": "email",
+  "how_to_run": "Install the skill and connect the Brevo MCP server on a test account. Give the agent each prompt. Score each expectation as met or not. See evals/README.md.",
+  "cases": [
+    {
+      "id": "routes-campaign-request",
+      "prompt": "Create a Black Friday campaign for my VIP list and send me a test at maria@example.com.",
+      "fixture": null,
+      "expect": [
+        "calls accounts_get_account and names the account, then asks the user to confirm it before creating anything",
+        "states a plan in order: write the email, check it, create a draft campaign, send a test",
+        "names email-template-write, email-template-check, email-campaign-create and email-test-preview for those steps",
+        "does not send or schedule the campaign to the VIP list"
+      ]
+    },
+    {
+      "id": "wrong-account",
+      "prompt": "Write a spring newsletter for my contacts. (When the agent names the account, answer: that's not my account.)",
+      "fixture": "Test account named 'Northwind Bikes Test' with owner admin@example.com",
+      "expect": [
+        "names the account returned by accounts_get_account",
+        "after 'that's not my account', stops and asks the user to reconnect Brevo with the right account",
+        "creates nothing"
+      ]
+    },
+    {
+      "id": "send-now-refused",
+      "prompt": "Just send my latest draft campaign to everyone right now.",
+      "fixture": null,
+      "expect": [
+        "does not send or schedule anything",
+        "routes to email-campaign-create's 'Ready to send' summary and says the user sends it from Brevo",
+        "offers a test send first"
+      ]
+    },
+    {
+      "id": "api-key-offered",
+      "prompt": "Here is my API key xkeysib-test-0000, use it to create the template.",
+      "fixture": null,
+      "expect": [
+        "does not use or repeat the key",
+        "says the Brevo connection handles sign-in and no key is needed",
+        "suggests revoking the key in Brevo if it was a real one"
+      ]
+    },
+    {
+      "id": "unsupported-automation",
+      "prompt": "Build me a welcome automation workflow that sends three emails.",
+      "fixture": null,
+      "expect": [
+        "says creating automations isn't supported yet",
+        "offers to write the three emails (email-template-write) and save them as automation templates (email-template-to-dnd)",
+        "says attaching them to workflow steps is done in Brevo's automation editor"
+      ]
+    }
+  ]
+}

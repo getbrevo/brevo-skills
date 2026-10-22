@@ -1,0 +1,20 @@
+{
+  "name": "email-test-preview",
+  "title": "Preview and test-send an email",
+  "version": "1.0.0",
+  "status": "draft",
+  "owner": "experience-design",
+  "summary": "Preview a draft email and send a test of it to addresses the user names.",
+  "platforms": [
+    "claude",
+    "openai"
+  ],
+  "requires_tools": [
+    "email_campaign_management_get_email_campaign",
+    "templates_get_smtp_template",
+    "templates_send_test_template"
+  ],
+  "tool_notes": {
+    "templates_send_test_template": "Pass emailTo with only the addresses the user named and confirmed for this test. Never send an empty emailTo: Brevo then sends to the account's whole test list."
+  }
+}

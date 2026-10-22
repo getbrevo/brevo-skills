@@ -2,3 +2,17 @@
 /.github/   @getbrevo/tech-team
 /scripts/   @getbrevo/tech-team
 /adapters/  @getbrevo/tech-team
+
+# Email skills and their evals.
+/src/skills/email/ @getbrevo/experience-design
+/evals/email/ @getbrevo/experience-design
+/src/skills/email-template-write/ @getbrevo/experience-design
+/evals/email-template-write/ @getbrevo/experience-design
+/src/skills/email-template-check/ @getbrevo/experience-design
+/evals/email-template-check/ @getbrevo/experience-design
+/src/skills/email-template-to-dnd/ @getbrevo/experience-design
+/evals/email-template-to-dnd/ @getbrevo/experience-design
+/src/skills/email-campaign-create/ @getbrevo/experience-design
+/evals/email-campaign-create/ @getbrevo/experience-design
+/src/skills/email-test-preview/ @getbrevo/experience-design
+/evals/email-test-preview/ @getbrevo/experience-design

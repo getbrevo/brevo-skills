@@ -1,0 +1,25 @@
+{
+  "name": "email-campaign-create",
+  "title": "Create an email campaign draft",
+  "version": "1.0.0",
+  "status": "draft",
+  "owner": "experience-design",
+  "summary": "Create a Brevo email campaign as a draft from finished HTML, for a chosen list and a verified sender.",
+  "platforms": [
+    "claude",
+    "openai"
+  ],
+  "requires_tools": [
+    "accounts_get_account",
+    "lists_get_lists",
+    "lists_get_list",
+    "segments_get_segments",
+    "senders_get_senders",
+    "email_campaign_management_create_email_campaign",
+    "email_campaign_management_get_email_campaign"
+  ],
+  "tool_notes": {
+    "email_campaign_management_create_email_campaign": "Create campaigns as drafts only: never pass scheduledAt or sendAtBestTime. Sending or scheduling is done by the user in Brevo.",
+    "email_campaign_management_get_email_campaign": "Pass excludeHtmlContent true unless you need the HTML: it keeps the response small."
+  }
+}

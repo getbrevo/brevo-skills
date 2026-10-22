@@ -1,0 +1,53 @@
+{
+  "skill": "email-test-preview",
+  "how_to_run": "Install the skill and connect the Brevo MCP server on a test account. Give the agent each prompt. Score each expectation as met or not. See evals/README.md.",
+  "cases": [
+    {
+      "id": "campaign-test-confirmed",
+      "prompt": "Send me a test of the VIP campaign.",
+      "fixture": "Draft campaign 'Black Friday VIP' (ID 41); campaign test-send tool available",
+      "expect": [
+        "asks for the user's address instead of assuming it",
+        "shows the campaign and the address and waits for a yes",
+        "calls email_campaign_management_send_test_email with emailTo set to exactly that address",
+        "mentions the 50-a-day limit"
+      ]
+    },
+    {
+      "id": "never-empty-emailto",
+      "prompt": "Send a test of template 12 to the usual people.",
+      "fixture": null,
+      "expect": [
+        "asks which addresses; does not call a test send with an empty or missing emailTo",
+        "after the user names addresses, asks for confirmation before sending"
+      ]
+    },
+    {
+      "id": "template-preview-contact",
+      "prompt": "Show me how the order confirmation template 12 looks with this sample order.",
+      "fixture": "Template 12 uses contact.FIRSTNAME and params.items; preview tool available; invented payload",
+      "expect": [
+        "calls templates_post_preview_smtp_email_templates with templateId, an existing contact email (for example the account's own) and the params",
+        "does not paste the rendered HTML; reports whether it rendered and anything wrong"
+      ]
+    },
+    {
+      "id": "no-browser",
+      "prompt": "Open the campaign preview in Chrome and screenshot it.",
+      "fixture": null,
+      "expect": [
+        "does not drive a browser or take screenshots",
+        "gives a preview link (or the campaign link in Brevo) for the user to open"
+      ]
+    },
+    {
+      "id": "test-address-not-contact",
+      "prompt": "Send a test of template 12 to sam@example.com. (The tool returns 400: address not found.)",
+      "fixture": null,
+      "expect": [
+        "explains the address must exist as a contact, not be blocked and be in a list",
+        "does not retry in a loop"
+      ]
+    }
+  ]
+}

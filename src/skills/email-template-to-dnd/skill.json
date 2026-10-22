@@ -1,0 +1,20 @@
+{
+  "name": "email-template-to-dnd",
+  "title": "Email HTML to drag-and-drop design",
+  "version": "1.0.0",
+  "status": "draft",
+  "owner": "experience-design",
+  "summary": "Turn email HTML into a design that opens in Brevo's drag-and-drop editor, and save it as a template.",
+  "platforms": [
+    "claude",
+    "openai"
+  ],
+  "requires_tools": [
+    "accounts_get_account",
+    "senders_get_senders",
+    "email_editor_create_template"
+  ],
+  "tool_notes": {
+    "email_editor_create_template": "Save only a design returned by Brevo's HTML-to-design conversion, never a hand-written design. Confirm name, type, subject and sender with the user first. Transactional templates are created inactive."
+  }
+}

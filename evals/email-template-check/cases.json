@@ -1,0 +1,65 @@
+{
+  "skill": "email-template-check",
+  "how_to_run": "Install the skill and connect the Brevo MCP server on a test account. Give the agent each prompt. Score each expectation as met or not. See evals/README.md.",
+  "cases": [
+    {
+      "id": "unknown-attribute",
+      "prompt": "Check this HTML before I create the campaign: a greeting 'Hi {{ contact.FIRST_NAME }}' and an unsubscribe link.",
+      "fixture": "Attributes FIRSTNAME, LASTNAME, EMAIL",
+      "expect": [
+        "calls attributes_get_attributes",
+        "flags contact.FIRST_NAME as unknown and suggests FIRSTNAME",
+        "adds a default to the greeting",
+        "edits only the affected line"
+      ]
+    },
+    {
+      "id": "params-in-campaign",
+      "prompt": "Check my campaign HTML: it says 'Your order {{ params.order_id }} has shipped'.",
+      "fixture": null,
+      "expect": [
+        "says params.* is always empty in a campaign",
+        "suggests a transactional template or automation email instead, or removing the param"
+      ]
+    },
+    {
+      "id": "syntax-and-images",
+      "prompt": "Check this template: <p>{% for item in params.items %}{{ item.name }}{% else %}None{% endfor %}</p><img src=\"/img/hero.png\">",
+      "fixture": "Type transactional, payload {\"items\":[{\"name\":\"Mug\"}]}",
+      "expect": [
+        "flags {% else %} inside {% for %} and replaces it with {% empty %}",
+        "flags the relative image URL and asks for an absolute https URL",
+        "flags the missing alt and width"
+      ]
+    },
+    {
+      "id": "honest-report",
+      "prompt": "Is this email OK to send? (valid campaign HTML with unsubscribe link, defaults and https images)",
+      "fixture": null,
+      "expect": [
+        "reports in one line that it was checked by hand and no automatic validation was run",
+        "does not claim a server-side validation passed unless the preview tool ran",
+        "offers a test send with email-test-preview"
+      ]
+    },
+    {
+      "id": "three-rounds",
+      "prompt": "Check this automation email and fix it. (The user refuses every suggested fix for the missing payload field.)",
+      "fixture": "Automation email using params.coupon_code, sample payload without coupon_code",
+      "expect": [
+        "asks before inventing the missing field",
+        "stops after at most 3 rounds and lists what is still wrong"
+      ]
+    },
+    {
+      "id": "saved-template-one-at-a-time",
+      "prompt": "Check my saved template 'Order shipped'.",
+      "fixture": "Two transactional templates exist; 'Order shipped' has ID 12",
+      "expect": [
+        "asks for or finds the template ID and fetches it with templates_get_smtp_template",
+        "does not list all templates with their HTML",
+        "if templates_post_preview_smtp_email_templates is available, passes an existing contact email (for example the account's own) plus params"
+      ]
+    }
+  ]
+}

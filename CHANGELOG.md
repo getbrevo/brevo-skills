@@ -8,6 +8,11 @@ All notable changes to this project are listed here. Versions follow
 
 ### Added
 
+- Email skills, all `draft` 1.0.0 (validated, not shipped yet): `email` (entry point for
+  email work: account check, routing, safety rules), `email-template-write`,
+  `email-template-check`, `email-template-to-dnd`, `email-campaign-create` and
+  `email-test-preview`, with eval cases. Some steps wait for MCP tools that aren't on every
+  connection yet; each skill's Requirements section names them.
 - Grok: `.grok-plugin/marketplace.json`, and the MCP server declared in its manifest (Grok
   reads `.mcp.json` or the manifest, not `mcp.json`). Cursor declares the server inline too.
 - `yarn new-skill`: scaffolds a skill (`skill.json` as a draft, a `SKILL.md` skeleton

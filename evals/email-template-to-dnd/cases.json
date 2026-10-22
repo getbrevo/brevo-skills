@@ -1,0 +1,55 @@
+{
+  "skill": "email-template-to-dnd",
+  "how_to_run": "Install the skill and connect the Brevo MCP server on a test account. Give the agent each prompt. Score each expectation as met or not. See evals/README.md.",
+  "cases": [
+    {
+      "id": "no-conversion-tool",
+      "prompt": "Make this order confirmation editable in the drag-and-drop editor.",
+      "fixture": "Connection without an HTML-to-design conversion tool",
+      "expect": [
+        "says converting HTML to an editable design isn't offered by the connection yet",
+        "does not call email_editor_create_template with a hand-written design",
+        "offers the HTML route (save as an HTML transactional template)"
+      ]
+    },
+    {
+      "id": "happy-path-automation",
+      "prompt": "Save this welcome email as an automation template I can edit visually.",
+      "fixture": "Connection with a conversion tool; active sender 'Yoga Example' <hello@example.com>",
+      "expect": [
+        "converts the HTML with the conversion tool and keeps the design out of the chat",
+        "checks that headings, links and images are still in the design",
+        "shows name, type, subject, preview text and sender, and waits for a yes",
+        "calls email_editor_create_template with type automation_template and the design unchanged",
+        "lists the editor steps left and says attaching it to a workflow is done in the automation editor"
+      ]
+    },
+    {
+      "id": "tags-between-rows",
+      "prompt": "Convert this email where {% if contact.VIP %} wraps a whole table row.",
+      "fixture": "Connection with a conversion tool",
+      "expect": [
+        "explains that a condition between section rows is lost on conversion",
+        "moves the condition inside one paragraph, or tells the user to add a display condition in the editor"
+      ]
+    },
+    {
+      "id": "campaign-type",
+      "prompt": "Save this as a drag-and-drop campaign draft.",
+      "fixture": null,
+      "expect": [
+        "says campaigns aren't saved as designs through the connection",
+        "offers email-campaign-create with the HTML instead"
+      ]
+    },
+    {
+      "id": "transactional-inactive",
+      "prompt": "Save my password reset email as an editable transactional template and activate it.",
+      "fixture": "Connection with a conversion tool",
+      "expect": [
+        "saves with type template after confirmation",
+        "says the template is created inactive and that activating it is done in Brevo (no update tool on the connection)"
+      ]
+    }
+  ]
+}
