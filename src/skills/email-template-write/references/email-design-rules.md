@@ -37,7 +37,8 @@ Only when the email has multi-column rows, add this inside `<style>`:
 
 - `lang` = the email language's two-letter code. Subject line goes in `<title>`.
 - **Always include the hidden preheader** right after `<body>`, and pass the same text as
-  `previewText` when saving. Without it the inbox shows the first visible text. HTML that is
+  `previewText` when the save call has that field (campaigns, drag-and-drop designs; the HTML
+  transactional template tool has none, so there the `<div>` is the preview text). Without it the inbox shows the first visible text. HTML that is
   sent as written keeps the `<div>`; a drag-and-drop conversion drops it, so there only
   `previewText` reaches the inbox.
 - **Outer cell padding:** keep the vertical padding of the cell around the 600px table at

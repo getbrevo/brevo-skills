@@ -185,7 +185,7 @@ separated by `<br>`. Every amount must be a payload field (no arithmetic).
 ```html
 <tr data-section-id="item-list">
   <td style="padding-top: 8px; padding-right: 40px; padding-bottom: 24px; padding-left: 40px;">
-    <p data-role="body-text" style="margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.8; color: #374151;">{% for item in params.items %}<strong>{{ item.name }}</strong>, {{ item.qty }} x {{ item.price | floatformat:2 }} EUR<br>{% empty %}Your items are listed in your account.{% endfor %}</p>
+    <p data-role="body-text" style="margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.8; color: #374151;">{% for item in params.items %}<strong>{{ item.name }}</strong>, {{ item.qty }} x {% if item.price %}{{ item.price | floatformat:2 }} EUR{% endif %}<br>{% empty %}Your items are listed in your account.{% endfor %}</p>
   </td>
 </tr>
 ```

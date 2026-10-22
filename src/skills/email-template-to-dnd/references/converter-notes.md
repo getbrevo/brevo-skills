@@ -49,6 +49,7 @@ above and below the email: write `0px`.
 | `<p>` / `<h*>` margins | Kept inside each text block; neighbouring margins add up |
 | Button `<td>` top and bottom padding | The button's inner padding (12px when missing) |
 | A button alone in its section | Can get the section padding twice: keep it in the cell of its text |
+| A centred button in a cell with left-aligned text | The whole section is centred, text included: centre the cell, or give the button its own row with `padding-top:0px` |
 | Divider | A fixed gap above and below, whatever the HTML says |
 
 ## Template tags

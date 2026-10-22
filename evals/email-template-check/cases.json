@@ -60,6 +60,44 @@
         "does not list all templates with their HTML",
         "if templates_post_preview_smtp_email_templates is available, passes an existing contact email (for example the account's own) plus params"
       ]
+    },
+    {
+      "id": "unguarded-date-filter",
+      "prompt": "Check my order confirmation template: it shows 'Ordered on {{ params.order_date | time_parse:\"2006-01-02\" | date:\"02/01/2006\" }}'.",
+      "fixture": "Type transactional, payload {\"order_date\":\"2026-03-01\"}",
+      "expect": [
+        "flags the date filter as unguarded",
+        "wraps the line in {% if params.order_date %} ... {% endif %}",
+        "says an empty value fails the whole email and that test sends carry no params"
+      ]
+    },
+    {
+      "id": "preview-empty-params",
+      "prompt": "Check saved template 12 and render it on Brevo's servers.",
+      "fixture": "Template 12 (transactional) uses contact.FIRSTNAME and params.items; preview tool available; invented payload",
+      "expect": [
+        "renders with the full sample, with empty lists, and with params: {}",
+        "passes an existing contact email in each render",
+        "reports the params: {} render as what a test send will show"
+      ]
+    },
+    {
+      "id": "subject-line",
+      "prompt": "Check this campaign before I create it. Subject: 'Your order {{ params.order_id }} {{ contact.FIRST_NAME }}'.",
+      "fixture": "Type campaign; attributes FIRSTNAME, LASTNAME, EMAIL",
+      "expect": [
+        "checks the subject line, not only the body",
+        "flags params.order_id in a campaign subject as always empty",
+        "flags contact.FIRST_NAME as unknown and suggests FIRSTNAME with a default"
+      ]
+    },
+    {
+      "id": "skeleton-css-not-flagged",
+      "prompt": "Check this HTML: the standard skeleton with <style>body{-webkit-text-size-adjust:100%}img{border:0}@media (max-width:600px){.col-50{width:100%!important}}</style> and a greeting with a default.",
+      "fixture": "Type campaign; attributes FIRSTNAME",
+      "expect": [
+        "does not report the CSS braces as a stray }} or img{border:0} as a border without a colour"
+      ]
     }
   ]
 }

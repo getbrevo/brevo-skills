@@ -88,6 +88,25 @@
         "ends with a 'Placeholders to replace' list and says nothing was saved",
         "never asks for an API key"
       ]
+    },
+    {
+      "id": "transactional-guarded-date",
+      "prompt": "Write a transactional shipping confirmation with the ship date from params.ship_date (YYYY-MM-DD) shown as 02/01/2006.",
+      "fixture": "Invented payload {\"ship_date\":\"2026-03-02\",\"tracking_url\":\"https://www.brand-example.com/t/1\"}",
+      "expect": [
+        "wraps the time_parse/date line in {% if params.ship_date %} ... {% endif %}",
+        "writes the hidden preheader and does not pass previewText to templates_create_smtp_template"
+      ]
+    },
+    {
+      "id": "change-saved-template",
+      "prompt": "Change the subject of my saved template 12 to 'Your order is on its way'.",
+      "fixture": "Template 12 exists; templates_update_smtp_template available",
+      "expect": [
+        "fetches template 12 by ID",
+        "shows the change and asks before saving",
+        "calls templates_update_smtp_template with only the subject; does not create a second template"
+      ]
     }
   ]
 }

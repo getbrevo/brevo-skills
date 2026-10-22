@@ -12,16 +12,18 @@ through `email-campaign-create`, drag-and-drop designs through `email-template-t
 
 | Step | Tool |
 |---|---|
-| Name the account; company name and address for the footer | `accounts_get_account` |
+| Name the account; footer address (and the company name when the user gave no brand name) | `accounts_get_account` |
 | Brand kit: logo, colours, fonts, social links (optional) | `branding_get_brand` (not on the MCP server yet: see Requirements) |
 | Contact attribute names for personalization | `attributes_get_attributes` |
 | Sender for a transactional template | `senders_get_senders` |
 | Save a transactional template as HTML (inactive) | `templates_create_smtp_template` |
 | Read back what was saved | `templates_get_smtp_template` |
+| Change a saved template (content, subject, sender, activation) | `templates_update_smtp_template` (see Requirements) |
+| Check the sender's domain is authenticated | `domains_get_domains` (see Requirements) |
 
 If one of these tools isn't in your tool list, stop and tell the user their Brevo
-connection doesn't offer this feature yet. The brand-kit tool is the exception: without it,
-carry on (step 5).
+connection doesn't offer this feature yet. The last three are the exceptions: without the
+brand-kit tool, carry on (step 5); for the other two, follow the fallback in Requirements.
 
 <!-- include: shared/connection.md -->
 
@@ -45,9 +47,15 @@ carry on (step 5).
   paragraph starting with the greeting (the `h1` is never the greeting).
 - **Copy:** subject 40-50 characters, preview text about 100, paragraphs of 2-3 sentences, no
   em-dashes, claims that match the data.
-- **Footer:** company name and address as plain text, `<a href="{{ unsubscribe }}">Unsubscribe</a>`.
-- **Preview text:** hidden preheader `<div>` right after `<body>`, and the same text as
-  `previewText` when saving.
+- **Footer:** the brand name the user gave (else the account's company name) and the address
+  as plain text, `<a href="{{ unsubscribe }}">Unsubscribe</a>`.
+- **Preview text:** hidden preheader `<div>` right after `<body>`. Pass the same text as
+  `previewText` only where the save call has that field (campaigns, drag-and-drop designs);
+  `templates_create_smtp_template` has none, so for an HTML template the `<div>` is the
+  preview text.
+- **Values that may be empty:** every filter that needs a value (`time_parse`, `date`,
+  `floatformat`...) sits inside `{% if params.x %}...{% endif %}`; test sends carry no
+  params, and an unguarded one fails the whole email.
 - **Compact:** no comments or decorative indentation in the final HTML. A medium email is
   about 6 KB or less; the whole email must stay under 100 KB.
 
@@ -100,8 +108,11 @@ carry on (step 5).
    - Event data (automation, transactional): ask for a sample payload, or use the one the user
      gives. The template language can't do arithmetic, so every amount shown must be a field
      in the payload.
-   - Company name and address for the footer: from `accounts_get_account`, written as plain
-     text. Never `{{ company.* }}`: it renders blank in HTML sent through the API.
+   - Brand name for the footer and the sender name: the brand the user named in the brief,
+     not the account's company name, unless the user says otherwise. With no brand name, use
+     the company name from `accounts_get_account` and say so. Address from
+     `accounts_get_account`. Plain text; never `{{ company.* }}`: it renders blank in HTML
+     sent through the API.
    - URLs: only those the user gave, or the brand's site.
    - **Brand styles:** if `branding_get_brand` is in your tool list, read the brand kit and
      turn it into a "Brand styles" block as `email-brand-kit` step 2 describes (logo, font
@@ -130,16 +141,26 @@ carry on (step 5).
 10. **Save, by type** (details in [template-types.md](references/template-types.md)):
     - Campaign: `email-campaign-create` (draft).
     - Transactional, as HTML: confirm name, subject and sender (from `senders_get_senders`,
-      an active one) with the user, then call `templates_create_smtp_template` with
-      `templateName`, `subject`, `sender` (`{"id": <sender id>}`), `htmlContent` and
-      `isActive: false`. Read it back with `templates_get_smtp_template` if the user asks.
+      an active one) with the user. Warn when the sender's domain isn't authenticated or is a
+      free mailbox domain: Gmail and Yahoo bounce that mail (check as `email-test-preview`
+      step 3 describes). Then call `templates_create_smtp_template` with `templateName`,
+      `subject`, `sender` (`{"id": <sender id>}`), `htmlContent` and `isActive: false`. There
+      is no `previewText` field: the hidden preheader carries it. Read it back with
+      `templates_get_smtp_template` if the user asks.
+    - Changing a saved template (later edits, a new subject or sender): fetch it by ID, edit
+      only the affected lines, check again, show what changes, and on a yes call
+      `templates_update_smtp_template` with only the changed fields. Never create a second
+      template instead.
     - Transactional or automation, as an editable design: `email-template-to-dnd`.
     - Automation email as HTML: no tool accepts it today. Give the HTML; the user pastes it
       into a new automation email in Brevo.
 11. **Summarise** in a few lines: type and output, subject, preview text, story arc,
     variables, conditions and loops used, the brand styles used (kit, typed or neutral), the
-    check result. For drag-and-drop output, add the editor steps left to do. Without a
-    connection, add the placeholder list.
+    check result. For a saved transactional template, say it is **inactive**: test sends work
+    as is, live API sends need it active. Offer to activate it (`templates_update_smtp_template`
+    with `isActive: true`, only after the user says yes), or tell them to activate it in
+    Brevo. For drag-and-drop output, add the editor steps left to do. Without a connection,
+    add the placeholder list.
 
 ## Refusals and errors
 
@@ -152,9 +173,12 @@ carry on (step 5).
 
 ## Requirements
 
-Its required tools are all on the Brevo MCP server today. Editing a saved template in place needs
-`templates_update_smtp_template`, which isn't offered to every connection yet: until it is,
-tell the user to make the change in Brevo, or, only if they ask, create a new template.
+Its required tools are all on the Brevo MCP server today. Editing or activating a saved
+template uses `templates_update_smtp_template`. If a connection lacks it, tell the user to
+make the change in Brevo, or, only if they ask, create a new template. The sender-domain check
+uses `domains_get_domains` (the account's domains and whether each is authenticated); without
+it, warn that an unauthenticated or free mailbox domain gets bounced and let the user check
+in Brevo (Senders, Domains).
 Product details and data feeds can't be read through the connection yet: ask the user for
 product names, prices, links and images, or use marked placeholders. The brand kit
 (`branding_get_brand`) isn't on the MCP server yet either: until it is, ask for brand colours

@@ -14,12 +14,20 @@ variables work, whether you must add a footer, and how the email is saved and te
 | `params.*` | **No: always empty** | Yes: the trigger's event data | Yes: the `params` sent with the API call |
 | `feed.*` | Yes (paid plans) | Yes, plus the triggering object's data | Yes |
 | Footer | Without `{{ unsubscribe }}`, Brevo appends its default footer | **No footer is added: include `{{ unsubscribe }}` yourself** | No footer is added. Purely transactional mail (receipt, reset) needs no unsubscribe link; mail that mixes in marketing does |
-| Preview text | `previewText` field | `previewText` field | The hidden preheader `<div>`; for a drag-and-drop design, `previewText` |
-| Special | A/B tests, multi-language variants | Attached to a workflow's send-email step in the automation editor | Must be **active** before it can be sent |
+| Preview text | `previewText` field | `previewText` field | HTML: the hidden preheader `<div>` only (the HTML create tool has no `previewText`); drag-and-drop design: `previewText` |
+| Special | A/B tests, multi-language variants | Attached to a workflow's send-email step in the automation editor | Must be **active** before live sends; test sends work on an inactive template |
 
-**Preview text, one rule for all types:** always write the hidden preheader `<div>` and also
-pass the text as `previewText` when saving. The HTML path sends the `<div>`; a drag-and-drop
-conversion drops it, and `previewText` then becomes the preheader.
+**Preview text:** always write the hidden preheader `<div>` right after `<body>`.
+
+- Campaign, and drag-and-drop design: also pass the same text as `previewText` when saving.
+  The conversion to a design loses the hidden preheader, so there `previewText` becomes the
+  preheader.
+- Transactional template saved as HTML: `templates_create_smtp_template` has no `previewText`
+  field. The hidden preheader is the preview text.
+
+**Activating a transactional template** lets live API sends use it. Save it inactive; activate
+only after the user says yes (`templates_update_smtp_template` with `isActive: true`), or let
+them do it in Brevo. Test sends don't need it.
 
 ## How each type is saved
 
@@ -97,10 +105,19 @@ Write it like this:
 - **No arithmetic:** every total comes from the payload. **No currency filter:** write the
   symbol in the template or send a preformatted string; `floatformat:2` needs a number, not a
   string.
-- **Dates:** `{{ params.order_date | time_parse:"2006-01-02" | date:"02/01/2006" }}`, or
-  `date_i18n:"fr,2 January 2006"` (en, fr, it, es, de, pt).
+- **Dates:** `{% if params.order_date %}{{ params.order_date | time_parse:"2006-01-02" | date:"02/01/2006" }}{% endif %}`,
+  or `date_i18n:"fr,2 January 2006"` (en, fr, it, es, de, pt). Always inside the `{% if %}`:
+  on an empty value `time_parse` fails the whole email, and a test send has no params.
+- **Filters that need a value** (`time_parse`, `time_parse_rfc3339`, `date`, `date_i18n`,
+  `floatformat`, `time_add_date` on a param) always sit inside `{% if params.x %}...{% endif %}`
+  that tests the same param.
 - **Sender, reply-to, subject, tags and attachments** are template settings, not HTML. The
-  subject goes in `<title>` and in the save call.
+  subject goes in `<title>` and in the save call. A `params` value in the subject is blank in
+  a test send: word the subject so it still reads well without it.
+- **Sender domain:** a sender on a domain that isn't authenticated in the account, or on a
+  free mailbox domain (gmail.com, yahoo.com), is rejected or bounced by Gmail and Yahoo
+  (DMARC). Warn the user when choosing such a sender (`email-test-preview` step 3 says how to
+  check).
 - **Legacy syntax** (`%VAR%`, `[DEFAULT_UNSUBSCRIBE]`): never.
 
 Safe layouts:

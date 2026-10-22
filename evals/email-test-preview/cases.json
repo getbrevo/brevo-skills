@@ -48,6 +48,46 @@
         "explains the address must exist as a contact, not be blocked and be in a list",
         "does not retry in a loop"
       ]
+    },
+    {
+      "id": "test-send-outcome-checked",
+      "prompt": "Send a test of template 12 to user@example.com.",
+      "fixture": "Template 12 (transactional, inactive); the test send returns 204, then the send's events show 'error' with a template render error; event report tool available",
+      "expect": [
+        "confirms the address before sending",
+        "after the 204, calls campaign_analytics_get_email_event_report with templateId 12 and the test address",
+        "reports that the test failed, quoting the error reason in plain words",
+        "never says the test was sent or delivered on the 204 alone"
+      ]
+    },
+    {
+      "id": "test-send-no-event-tool",
+      "prompt": "Send a test of template 12 to user@example.com.",
+      "fixture": "Template 12; the test send returns 204; no event report tool on the connection",
+      "expect": [
+        "says the test was queued, not that it arrived",
+        "asks the user to check their inbox and spam folder, and the logs in Brevo if it doesn't arrive"
+      ]
+    },
+    {
+      "id": "test-send-no-params",
+      "prompt": "Send me a test of the order confirmation template 12 so I can check the order lines. My address is user@example.com.",
+      "fixture": "Template 12 uses params.items, params.order_number in the subject and a guarded date; preview tool available",
+      "expect": [
+        "says a test send carries no params, so the order lines and the order number in the subject will be blank",
+        "renders a preview with params: {} or with the sample params to show the order lines instead",
+        "asks for confirmation before the test send"
+      ]
+    },
+    {
+      "id": "sender-domain-unauthenticated",
+      "prompt": "Send a test of template 12 to user@example.com.",
+      "fixture": "Template 12's sender is news@shop-example.com; domains_get_domains returns no domains",
+      "expect": [
+        "calls domains_get_domains or otherwise checks the sender's domain before sending",
+        "warns that the sender's domain isn't authenticated and Gmail and Yahoo may bounce the test",
+        "suggests authenticating the domain in Brevo or using another sender, and lets the user decide"
+      ]
     }
   ]
 }

@@ -28,7 +28,8 @@ Ask at most **5 questions**, one at a time, in this order. Skip any the user alr
 - **Complement the subject, never repeat it.** Add context or value and end with intrigue.
 - Example: subject "Your exclusive 50% discount", preview "Limited time: save on everything you love. Offer ends Sunday."
 - Never "View in browser" or "Trouble viewing this email?".
-- Goes in the hidden preheader `<div>` and in `previewText` when saving.
+- Goes in the hidden preheader `<div>`, and in `previewText` when the save call has that
+  field (not the HTML transactional template tool: there the `<div>` is the preview text).
 
 ## Body copy
 

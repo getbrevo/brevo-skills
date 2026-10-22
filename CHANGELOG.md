@@ -19,6 +19,14 @@ All notable changes to this project are listed here. Versions follow
   `email-template-to-dnd` route to it and apply brand styles to the editor's Style tab. The
   brand-kit tools aren't on the Brevo MCP server yet; until then the skill says so and uses
   values the user gives or neutral styles.
+- Email skills, after an end-to-end test on a test account: a test send's 204 is reported as
+  queued and its outcome read from the send events (or the user checks the logs); test sends
+  carry no params, so the check renders with `params: {}` and every value-needing filter is
+  guarded with `{% if %}`; the check covers the subject line and skips the skeleton's CSS; a
+  saved drag-and-drop template is read back and its sender email fixed; sender domains are
+  checked for authentication; HTML templates carry preview text in the hidden preheader;
+  saved templates are changed and activated in place after a yes; the footer uses the
+  user's brand name.
 - Grok: `.grok-plugin/marketplace.json`, and the MCP server declared in its manifest (Grok
   reads `.mcp.json` or the manifest, not `mcp.json`). Cursor declares the server inline too.
 - `yarn new-skill`: scaffolds a skill (`skill.json` as a draft, a `SKILL.md` skeleton

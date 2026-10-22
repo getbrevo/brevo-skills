@@ -53,6 +53,7 @@ Skills can't call each other: name the next skill and load it.
 | Save a transactional template | `email-template-write` (type transactional), `email-template-check`, then save as HTML (in `email-template-write`) or as a design (`email-template-to-dnd`) |
 | Write an automation email | `email-template-write` (type automation), `email-template-check`, then `email-template-to-dnd` to save it as an automation template; attaching it to a workflow step is done in Brevo's automation editor |
 | Edit it visually in the drag-and-drop editor | `email-template-write` (drag-and-drop output), `email-template-check`, then `email-template-to-dnd` |
+| Change a saved template (content, subject, sender, or activate it) | `email-template-write` (fetch it by ID, edit only what changes), `email-template-check`, then update it in place (`email-template-write` step 10); activating needs the user's yes |
 | See how it looks, or receive a test | `email-test-preview` |
 | Send or schedule for real | `email-campaign-create`, "Ready to send": the user sends it from Brevo |
 

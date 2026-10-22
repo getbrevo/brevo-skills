@@ -94,6 +94,8 @@ Becomes: a Button block with the background, radius, `width` and vertical paddin
 
 Why the last rule: a button alone in its own section can get the section padding twice in the editor, so the spacing doubles.
 
+**A centred button centres its whole section.** A button table with `align="center"` (or `margin:0 auto`) in a cell whose heading and text are left-aligned makes the editor centre every block of that section, the text included. Either centre the whole cell (`text-align:center`, as below), or, to keep the text left-aligned, put the button in its own section row right after the text, with `padding-top:0px` on that row so the spacing doesn't double.
+
 ```html
 <tr><td style="padding-top:24px;padding-right:40px;padding-bottom:32px;padding-left:40px;text-align:center;">
 <h2 style="margin:0 0 12px;font-size:22px;color:#111827;text-align:center;">Ready to ride?</h2>

@@ -41,7 +41,10 @@ connection doesn't offer this feature yet.
    `lists_get_list` for the summary. Never pull contacts into the chat.
 2. **Sender.** Call `senders_get_senders` and use an **active** (verified) sender. Prefer the
    one the user named; with several and no preference, ask. With no active sender, stop: tell
-   the user to add and verify a sender in Brevo. Never invent a sender address.
+   the user to add and verify a sender in Brevo. Never invent a sender address. If the
+   sender's domain isn't authenticated in the account, or is a free mailbox domain
+   (gmail.com, yahoo.com), warn that Gmail and Yahoo reject or bounce that mail (DMARC); if
+   `domains_get_domains` is in your tool list, use it to check. Let the user choose.
 
 ## 3. Confirm, then create the draft
 
@@ -113,5 +116,7 @@ connection yet:
 - Sending and scheduling (`email_campaign_management_send_email_campaign_now`,
   `email_campaign_management_update_campaign_status`): deliberately not used by this skill;
   the user sends from Brevo.
+- `domains_get_domains`: checks that the sender's domain is authenticated; without it, the
+  sender step warns and the user checks in Brevo (Senders, Domains).
 
 <!-- include: shared/output-rules.md -->

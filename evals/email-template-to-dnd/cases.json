@@ -50,6 +50,17 @@
         "saves with type template after confirmation",
         "says the template is created inactive and that activating it is done in Brevo (no update tool on the connection)"
       ]
+    },
+    {
+      "id": "sender-read-back",
+      "prompt": "Yes, save it.",
+      "fixture": "After the confirm block for a transactional design with sender ID 3; email_editor_create_template returns ID 60; templates_get_smtp_template shows sender.email empty",
+      "expect": [
+        "reads the saved template back with templates_get_smtp_template",
+        "notices the missing sender email",
+        "sets it with templates_update_smtp_template (sender id 3) and reads it back, or, without that tool, tells the user to set the sender in Brevo before testing",
+        "says the save tool doesn't keep the sender name if it differs"
+      ]
     }
   ]
 }

@@ -101,7 +101,7 @@ filters including `date_i18n`, `time_parse`, `time_add_date`, `json_encode`, `co
 | Need | Filter |
 | --- | --- |
 | Numbers | `floatformat:2` (the value must be a number), `integer`, `float`, `lang_format:"fr,%.2f"`. No currency filter |
-| Dates | `time_parse:"2006-01-02"` then `date:"02/01/2006"` or `date_i18n:"fr,2 January 2006"` (en, fr, it, es, de, pt); also `time_parse_rfc3339`, `time_in_location:"Europe/Paris"`, `time_add_date:"0,0,3"`, `time_add_duration:"30m"`. Reference date: `Mon Jan 2 15:04:05 2006` |
+| Dates | `time_parse:"2006-01-02"` then `date:"02/01/2006"` or `date_i18n:"fr,2 January 2006"` (en, fr, it, es, de, pt); also `time_parse_rfc3339`, `time_in_location:"Europe/Paris"`, `time_add_date:"0,0,3"`, `time_add_duration:"30m"`. Reference date: `Mon Jan 2 15:04:05 2006`. Guard every one with `{% if %}` (rule below) |
 | HTML from a param | `safe` (otherwise escaped) |
 | Chains | left to right: `{{ params.name \| lower \| capfirst }}` |
 
@@ -109,9 +109,16 @@ Write the fallback as `| default:"x"` (colon form). The parenthesis form `defaul
 parse, and neither do `raw` or `number_format`.
 
 ```
-{{ params.price | floatformat:2 }}
+{% if params.price %}{{ params.price | floatformat:2 }}{% endif %}
+{% if params.order_date %}{{ params.order_date | time_parse:"2006-01-02" | date:"02/01/2006" }}{% endif %}
 {{ contact.FIRSTNAME | default:"there" | capfirst }}
 ```
+
+**Guard every filter that needs a value.** `time_parse`, `time_parse_rfc3339`, `date`,
+`date_i18n`, `time_add_date`, `time_add_duration` and `floatformat` on a `params` or
+`contact` value go inside `{% if <same value> %}...{% endif %}`. On an empty value they can
+fail the **whole** email, not just the line: nothing is sent. Test sends carry no `params`,
+so an unguarded date filter makes every test fail. (`time_now` always has a value.)
 
 ### No arithmetic
 
@@ -120,7 +127,7 @@ data:
 
 - Line totals: use `item.line_total` (or similar) from the payload. If the payload only has a
   unit price and a quantity, ask for a line total, or show the unit price labelled clearly,
-  e.g. `{{ item.qty }} x {{ item.price | floatformat:2 }}`. Never label a unit price as the
+  e.g. `{{ item.qty }} x {% if item.price %}{{ item.price | floatformat:2 }}{% endif %}`. Never label a unit price as the
   line price.
 - Subtotal, shipping, discount and total come from the payload too.
 

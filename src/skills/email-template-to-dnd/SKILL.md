@@ -16,10 +16,13 @@ saves transactional templates inactive.
 | Convert the HTML into a design | Brevo's HTML-to-design conversion tool (not on the MCP server yet: see Requirements) |
 | Pick an active sender | `senders_get_senders` |
 | Save the design as a template | `email_editor_create_template` |
+| Read the saved template back | `templates_get_smtp_template` |
+| Fix the sender, or activate after a yes | `templates_update_smtp_template` (see Requirements) |
+| Check the sender's domain is authenticated | `domains_get_domains` (see Requirements) |
 
-If one of these tools isn't in your tool list, stop and tell the user their Brevo
+If one of the first five tools isn't in your tool list, stop and tell the user their Brevo
 connection doesn't offer this feature yet. For the conversion tool, step 1 says what to offer
-instead.
+instead; for the last two, follow the fallback in Requirements.
 
 <!-- include: shared/connection.md -->
 
@@ -37,7 +40,8 @@ instead.
   `email-campaign-create`.
 - **Name, subject, preview text** (the hidden preheader is dropped on conversion, so
   `previewText` is what reaches the inbox), **sender** (an active one from
-  `senders_get_senders`; never invent one) and **editor language** (`en`, `fr`, `de`, `it` or
+  `senders_get_senders`; never invent one; warn when its domain isn't authenticated or is a
+  free mailbox domain, as `email-test-preview` step 3 describes) and **editor language** (`en`, `fr`, `de`, `it` or
   `pt`).
 - If the conversion tool isn't in your tool list, stop here: say that converting HTML into
   an editable design isn't offered by their connection yet. Offer what still works: save it
@@ -91,9 +95,21 @@ conversion returned it. No HTML tags in name, subject, preview text or sender na
 are fine). A refusal usually means a broken template tag, for example `{% else %}` inside a
 `{% for %}`: fix the HTML, convert again, retry once.
 
+**Read it back and check the sender.** The save can store the sender ID without the sender
+email, and it doesn't keep the sender name you pass (the template shows the account's
+default name). A template with no sender email fails every send, test sends included, with
+"From field is missing". Call `templates_get_smtp_template` with the new ID:
+
+- `sender.email` empty: if `templates_update_smtp_template` is in your tool list, call it with
+  `sender` = `{"id": <the confirmed sender id>}` and read it back again. Without the tool,
+  tell the user to set the sender on the template in Brevo before any test.
+- Sender name not the one confirmed: say so; it can be set the same way (`sender` with
+  `name` and `email`) or in Brevo.
+
 The new template opens at `https://app.brevo.com/templates/email/edit/<id>`. A transactional
-template is created **inactive**. Activating it lets live sends use it: tell
-the user to activate it in Brevo when they're ready (see Requirements).
+template is created **inactive**: test sends work, live sends need it active. Activate it only
+after the user says yes (`templates_update_smtp_template` with `isActive: true`), or tell them
+to activate it in Brevo.
 
 ## 5. Tell the user what is left in the editor
 
@@ -117,8 +133,11 @@ Then offer `email-test-preview` for a test send.
 - **HTML-to-design conversion tool:** not on the Brevo MCP server yet. Until it is, this skill
   stops at step 1 and offers the HTML route. Its proposed name and parameters will be set
   here when it ships.
-- **Activating a transactional template** needs `templates_update_smtp_template`, which isn't
-  offered to every connection yet: the user activates it in Brevo.
+- `templates_update_smtp_template` fixes a missing sender email and activates a template. If
+  a connection lacks it, the user sets the sender and activates the template in Brevo.
+- `domains_get_domains` (whether the sender's domain is authenticated): without it, warn that
+  an unauthenticated or free mailbox domain is bounced by Gmail and Yahoo, and let the user
+  check in Brevo (Senders, Domains).
 - `email_editor_create_template` creates the template directly from the design (no campaign is
   created first). It accepts the types `template` and `automation_template` only. To send the
   design as a campaign, the user picks the saved template when creating the campaign in Brevo.

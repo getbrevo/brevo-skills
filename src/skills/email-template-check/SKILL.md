@@ -40,6 +40,11 @@ connection doesn't offer this feature yet.
 Check every item against the HTML. Note each failure with what the user sees ("the greeting
 in the first paragraph"), not by line number alone.
 
+Items 1, 2, 4, 5 and 15 are about template tags and visible markup: skip the CSS inside
+`<style>` for them (item 3 still applies there).
+The skeleton's own rules (`-webkit-text-size-adjust:100%}`, `width:100%!important}}` in a
+media query, `img{border:0}`) are not stray `}}` or borders without a colour.
+
 **Template syntax**
 
 1. Every `{{` has its `}}` and every `{%` its `%}`; no single-brace closings, no stray `}}`.
@@ -55,12 +60,18 @@ in the first paragraph"), not by line number alone.
 **Variables**
 
 6. Every `contact.X` is an attribute returned by `attributes_get_attributes`, written exactly
-   (upper case). Suggest the closest name for one that doesn't exist; never keep it silently.
+   (upper case). List every `contact.X` in the HTML and the subject, and compare each one
+   against that list, letter by letter. A misspelt name (`FIRST_NAME` for `FIRSTNAME`) saves
+   and sends without any error and silently shows its default, so this check is the only one
+   that catches it. Suggest the closest name; never keep it silently.
 7. Every `contact.X` shown in text has `| default:"…"` or sits inside `{% if contact.X %}`.
 8. `params.*` only in automation and transactional emails; **in a campaign it is always
    empty**. Every `params` path exists in the sample payload. Read the email once with the
    sample, and once with empty lists and missing optional keys: an optional key is used only
-   inside an `{% if %}` that tests it.
+   inside an `{% if %}` that tests it. A filter that needs a value (`time_parse`,
+   `time_parse_rfc3339`, `date`, `date_i18n` or `floatformat` on a param) always sits inside
+   `{% if params.x %}`: on an empty value it can fail the whole email, and test sends have no
+   params.
 9. No `{{ company.* }}` or `{{ label.* }}`: they render blank in sent email. The company name
    and address are plain text.
 10. No other tools' merge tags (`*|FNAME|*`, `%%FirstName%%`, `{{ first_name }}`). List any
@@ -93,6 +104,15 @@ in the first paragraph"), not by line number alone.
 20. Every section cell sets all four padding sides; the hidden preheader text is also passed
     as `previewText` (the `<div>` is dropped on conversion).
 
+**Subject line** (the template's subject, or the `<title>` of the HTML)
+
+21. Same syntax rules as the body: closed tags, colon-form filters, straight quotes.
+    `contact.X` only with attributes that exist, with a default.
+22. `params.*` only in a transactional or automation subject, never in a campaign's (it is
+    always empty there). Word the subject so it still reads well with the value blank
+    ("Your order is confirmed", not "Order  confirmed"): a test send has no params, so the
+    test's subject shows it empty.
+
 ## 3. Fix and check again
 
 - Fix every failure by editing only the affected lines, never by rewriting the whole email.
@@ -110,6 +130,11 @@ rendered on Brevo's servers, which catches template errors the checklist can mis
   `accounts_get_account` works. For automation and transactional templates, also pass the
   sample `params`. With `params` alone, the preview fails with "Contact not found" whenever
   the template uses contact attributes.
+- Render three times: with the full sample; with empty lists and missing optional keys; and
+  with `params: {}`. The last one is what a test send renders: **test sends carry no params**,
+  so every `params` line and `params` in the subject come out blank, and a filter that needs
+  a value (`time_parse` on an empty date) fails the whole email. Wrap such lines in
+  `{% if params.x %}...{% endif %}` until the `params: {}` render passes.
 - An error in the response is a real failure: fix it and check again (it counts as a round).
 - Don't paste the rendered HTML into the chat; say whether it rendered, and quote any error.
 

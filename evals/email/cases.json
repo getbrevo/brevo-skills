@@ -62,6 +62,15 @@
         "names email-brand-kit for the brand kit set-up, then email-template-write and email-template-check for the newsletter",
         "says the brand kit is changed only after the user approves what will be saved"
       ]
+    },
+    {
+      "id": "route-change-saved-template",
+      "prompt": "Update the footer address in my transactional template 12.",
+      "fixture": null,
+      "expect": [
+        "confirms the account",
+        "routes to email-template-write and email-template-check to update the template in place"
+      ]
     }
   ]
 }

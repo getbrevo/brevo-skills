@@ -12,9 +12,10 @@
   "requires_tools": [
     "accounts_get_account",
     "senders_get_senders",
-    "email_editor_create_template"
+    "email_editor_create_template",
+    "templates_get_smtp_template"
   ],
   "tool_notes": {
-    "email_editor_create_template": "Save only a design returned by Brevo's HTML-to-design conversion, never a hand-written design. Confirm name, type, subject and sender with the user first. Transactional templates are created inactive."
+    "email_editor_create_template": "Save only a design returned by Brevo's HTML-to-design conversion, never a hand-written design. Confirm name, type, subject and sender with the user first. Transactional templates are created inactive. Then read the template back and check its sender email is set."
   }
 }
