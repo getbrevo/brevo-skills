@@ -46,6 +46,14 @@ All notable changes to this project are listed here. Versions follow
   trigger held in a secret (`scripts/release-notice.mjs`, `notify` job). Dispatching the
   release workflow with a `tag` re-sends it.
 
+### Security
+
+- `sync-skill`: a source ref must start with a letter or digit and is passed to `git fetch`
+  after `--`, so a ref can't be read as a git option (the workflow input check matches).
+- The scan script installs SkillSpector's dependencies from a hash-pinned list
+  (`scripts/skillspector-requirements.txt`) and the scanner itself with `--no-deps`, so no
+  unpinned package is fetched when the scanner is bootstrapped.
+
 ### Changed
 
 - The skills that drive the Brevo MCP server (`brevo`, `email-test-send` and `email-template-from-html`) are

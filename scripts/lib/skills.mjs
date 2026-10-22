@@ -224,7 +224,8 @@ export function validateSkill(skill, root) {
 // overwritten by `yarn sync-skill`; only skill.json is maintained here.
 export const SOURCE_REPO_RE = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 const SOURCE_PATH_RE = /^(\.|[A-Za-z0-9_.-]+(\/[A-Za-z0-9_.-]+)*)$/;
-const SOURCE_REF_RE = /^[A-Za-z0-9_./-]+$/;
+// Starts with a letter or digit so a ref can never be read as a git option.
+const SOURCE_REF_RE = /^[A-Za-z0-9][A-Za-z0-9_./-]*$/;
 
 export function validateSource(source, where) {
   const errors = [];

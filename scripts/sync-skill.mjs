@@ -24,7 +24,7 @@ function cloneAt(repo, ref) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'brevo-skill-sync-'));
   git(dir, 'init', '-q');
   git(dir, 'remote', 'add', 'origin', `https://github.com/${repo}.git`);
-  git(dir, 'fetch', '-q', '--depth', '1', 'origin', ref);
+  git(dir, 'fetch', '-q', '--depth', '1', 'origin', '--', ref);
   git(dir, 'checkout', '-q', 'FETCH_HEAD');
   return dir;
 }
