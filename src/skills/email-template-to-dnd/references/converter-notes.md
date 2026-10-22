@@ -67,8 +67,12 @@ Tags are kept only as **text inside the block that holds them**:
 - Inside a tag, a double quote may be stored as `&#34;`; the editor and the send-time
   renderer turn it back into `"`.
 
-Whole-section conditions and repeating sections are added in the editor afterwards: display
-conditions and Dynamic content.
+Loops and conditions inside one text block work in the saved design and render at send time
+with `params` and contact data. What the conversion doesn't do is turn a whole section wrapped
+in `{% if %}` or `{% for %}` into the editor's native display condition or Dynamic content
+block (those row-level tags are lost), and a repeating section with a picture per item has no
+HTML-only form here. If the user wants those native blocks, they add them in the editor after
+the save. **How to say it:** "Loops and conditions work in this template; they just won't become the editor's visual condition or Dynamic content blocks. If you want those native blocks, add them in the editor." Never say loops or conditions can't be built from HTML.
 
 ## `data-role` hints
 

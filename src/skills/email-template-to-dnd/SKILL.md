@@ -103,8 +103,11 @@ default name). A template with no sender email fails every send, test sends incl
 "From field is missing". Call `templates_get_smtp_template` with the new ID:
 
 - `sender.email` empty: if `templates_update_smtp_template` is in your tool list, call it with
-  `sender` = `{"id": <the confirmed sender id>}` and read it back again. Without the tool,
-  tell the user to set the sender on the template in Brevo before any test.
+  `sender` = `{"id": <the confirmed sender id>}`. Don't read it back again: its success
+  response, plus the sender email (`fromEmail`) in the `params: {}` render that
+  `email-test-preview` makes next, confirm it; if that render still shows no sender email,
+  say so. Without the tool, tell the user to set the sender on the template in Brevo before
+  any test.
 - Sender name not the one confirmed: say so; it can be set the same way (`sender` with
   `name` and `email`) or in Brevo.
 
@@ -116,9 +119,10 @@ to activate it in Brevo.
 
 ## 5. Tell the user what is left in the editor
 
-Read [native-blocks.md](references/native-blocks.md) and list only the steps this email needs:
-display conditions on sections shown to some contacts, a Dynamic content block for a picture
-per item, Video or Product blocks to swap in, checking the Social block after the first open,
+Read [native-blocks.md](references/native-blocks.md) and list only the steps this email needs.
+Loops and conditions inside text blocks already work; the editor steps are only for native
+blocks: display conditions if the user wants a whole section shown to some contacts, a
+Dynamic content block for a picture per item, Video or Product blocks to swap in, checking the Social block after the first open,
 and picking the brand's uploaded font in the Style tab when the brand kit has one (HTML
 carries only its fallback).
 Then go to `email-test-preview`: render with sample data, share the preview link above and

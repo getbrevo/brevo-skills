@@ -3,6 +3,11 @@
 These are steps for the user in Brevo's drag-and-drop editor, after the design is saved. List
 only the ones the email needs, in plain words.
 
+Loops and conditions written in the HTML still work in the saved design when each sits inside
+one text block; they render at send time. The display condition and Dynamic content steps
+below are only for users who want the editor's native visual blocks for a whole section.
+**How to say it:** "Loops and conditions work in this template; they just won't become the editor's visual condition or Dynamic content blocks. If you want those native blocks, add them in the editor."
+
 ## What to tell the user
 
 | The email needs | What the HTML holds | Editor step for the user |

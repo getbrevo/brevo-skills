@@ -21,9 +21,12 @@ through `email-campaign-create`, drag-and-drop designs through `email-template-t
 | Change a saved template (content, subject, sender, activation) | `templates_update_smtp_template` (see Requirements) |
 | Check the sender's domain is authenticated | `domains_get_domains` (see Requirements) |
 
-If one of these tools isn't in your tool list, stop and tell the user their Brevo
-connection doesn't offer this feature yet. The last three are the exceptions: without the
-brand-kit tool, carry on (step 5); for the other two, follow the fallback in Requirements.
+Writing the HTML never needs a connection: without one, or without the account, attribute,
+sender or brand-kit tool, write it in offline mode (step 5, "No connection") and say which
+checks couldn't run. Saving and previewing need their tools: if one is missing when you reach
+that step, stop that step, tell the user their Brevo connection doesn't offer it yet, and give
+the HTML. For `templates_update_smtp_template` and `domains_get_domains`, follow the fallback
+in Requirements.
 
 <!-- include: shared/connection.md -->
 
@@ -49,7 +52,8 @@ brand-kit tool, carry on (step 5); for the other two, follow the fallback in Req
   paragraph starting with the greeting (the `h1` is never the greeting).
 - **Copy:** subject 40-50 characters, preview text about 100, paragraphs of 2-3 sentences, no
   em-dashes, claims that match the data.
-- **Footer:** the brand name the user gave (else the account's company name) and the address
+- **Footer:** the brand name (the brief's, else the brand kit's `name`, else the account's
+  company name) and the address
   as plain text, `<a href="{{ unsubscribe }}">Unsubscribe</a>`.
 - **Preview text:** hidden preheader `<div>` right after `<body>`. Pass the same text as
   `previewText` only where the save call has that field (campaigns, drag-and-drop designs);
@@ -64,7 +68,8 @@ brand-kit tool, carry on (step 5); for the other two, follow the fallback in Req
 **Drag-and-drop output** (the user wants to edit the email visually later) adds these:
 
 - Every `{% if %}` and `{% for %}`, with its `{% else %}` or `{% empty %}`, stays inside ONE
-  `<p>` or heading. Around section rows they are lost when the HTML is converted.
+  `<p>` or heading: there it works and renders at send time. Tags around section rows are lost
+  when the HTML is converted (they don't become display conditions or Dynamic content).
 - All four padding sides on every section cell (`0px` too: a missing side becomes 15px);
   `1px` instead of `0px` top and bottom on the section cell of a multi-column section; the
   hero image alone in its own `padding: 0px` section; heading, text and button of one block in
@@ -97,8 +102,13 @@ brand-kit tool, carry on (step 5); for the other two, follow the fallback in Req
    VIP list" is a campaign, "order confirmation" is transactional, "welcome email in my
    workflow" is automation) and state your choice.
 2. **Pick the output:** HTML (default) or drag-and-drop (the user wants to edit it visually).
-   For drag-and-drop, a section shown only to some contacts or a repeating section with a
-   picture per item needs a step in the editor afterwards: tell the user which, or choose HTML.
+   `{% if %}` and `{% for %}` written in the HTML work in both, and render at send time with
+   `params` and contact data: anywhere in an HTML template; in drag-and-drop when each sits
+   inside one paragraph or heading. What the conversion doesn't do: turn a whole section
+   wrapped in `{% if %}` or `{% for %}` into the editor's display condition or Dynamic content
+   block (those row-level tags are lost), and a repeating section with a picture per item has
+   no HTML-only form in drag-and-drop. For those, tell the user which editor step to add, or
+   choose HTML. **How to say it:** "Loops and conditions work in this template; they just won't become the editor's visual condition or Dynamic content blocks. If you want those native blocks, add them in the editor." Never tell the user that loops or conditions can't be built from HTML.
 3. **Gather the brief** following [copywriting.md](references/copywriting.md): a few
    questions at most, defaults for the rest, and say what you assumed. Always get a
    call-to-action URL, or use the brand's site.
@@ -111,9 +121,10 @@ brand-kit tool, carry on (step 5); for the other two, follow the fallback in Req
    - Event data (automation, transactional): ask for a sample payload, or use the one the user
      gives. The template language can't do arithmetic, so every amount shown must be a field
      in the payload.
-   - Brand name for the footer and the sender name: the brand the user named in the brief,
-     not the account's company name, unless the user says otherwise. With no brand name, use
-     the company name from `accounts_get_account` and say so. Address from
+   - Brand name for the footer and the sender name, in this order: the brand the user named
+     in the brief; else the `Brand name` line of the Brand styles block (the kit's `name`);
+     else the company name from `accounts_get_account`, and say so. Use the account's company
+     name over these only when the user says so. Address from
      `accounts_get_account`. Plain text; never `{{ company.* }}`: it renders blank in HTML
      sent through the API.
    - URLs: only those the user gave, or the brand's site.
@@ -122,12 +133,14 @@ brand-kit tool, carry on (step 5); for the other two, follow the fallback in Req
      describes (logo, font stacks, colour roles, social links, website). Brand values the user gives in the brief
      win for this email. Kit empty, or no tool: use the values the user gave, else neutral
      styles, and say which. Never invent a brand colour, a logo URL or a social link.
-   - **No connection:** don't stop. Use clearly marked placeholders: `[Company name]` (or the
+   - **No connection** (offline mode; also when a read tool above is missing): don't stop.
+     Use clearly marked placeholders: `[Company name]` (or the
      brand name the user gave), `[Street]`, `[Postcode] [City]`; `https://www.brand-example.com/...`
      for links; the platform's own host with a placeholder handle for social links
      (`https://www.instagram.com/brand-example`); images by the image-source rule; only the
      attributes `FIRSTNAME`, `LASTNAME`, `EMAIL` plus any the user named. Say once that
-     nothing was saved, and end with a "Placeholders to replace" list.
+     nothing was saved, name what couldn't be checked (attributes, brand kit, sender), and end
+     with a "Placeholders to replace" list.
 6. **Write the HTML** from [sections.md](references/sections.md) and [footer.md](references/footer.md), following
    [email-design-rules.md](references/email-design-rules.md). At least one call-to-action
    button. Copy by [copywriting.md](references/copywriting.md); don't call feed items "top" or
@@ -155,7 +168,9 @@ brand-kit tool, carry on (step 5); for the other two, follow the fallback in Req
     - Changing a saved template (later edits, a new subject or sender): fetch it by ID, edit
       only the affected lines, check again, show what changes, and on a yes call
       `templates_update_smtp_template` with only the changed fields, and apply the change to
-      the cached copy. Never create a second template instead.
+      the cached copy. Then render it once with `params: {}`, share the preview link again
+      (`email-test-preview` step 3), and wait for a new yes before any test send: a yes given
+      before the change doesn't cover it. Never create a second template instead.
     - Transactional or automation, as an editable design: `email-template-to-dnd`.
     - Automation email as HTML: no tool accepts it today. Give the HTML; the user pastes it
       into a new automation email in Brevo.

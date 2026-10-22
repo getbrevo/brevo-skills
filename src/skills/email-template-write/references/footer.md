@@ -6,9 +6,10 @@ becomes one row with Logo, Address, Copyright and Unsubscribe blocks.
 - The unsubscribe link carries its grey on an inner `<span>`, not on the `<a>`: in a
   drag-and-drop design, the first `<a>` with an inline colour sets the global link colour.
 - Social icons, if any, go in their own section just above this one.
-- Brand name: the one the user gave in the brief (the brand the email is for), not the
-  account's company name, unless the user says to use that. With no brand name given, use
-  the account's company name and say so. Address from `accounts_get_account` unless the user
+- Brand name, in this order: the one the user gave in the brief (the brand the email is
+  for); else the brand kit's `name` (the `Brand name` line of the Brand styles block); else
+  the account's company name, and say so. Use the company name first only when the user says
+  to. Address from `accounts_get_account` unless the user
   gives another. Both as plain text. Never `{{ company.* }}`: it renders blank in sent email.
 - Purely transactional mail usually has no unsubscribe line; keep the address.
 

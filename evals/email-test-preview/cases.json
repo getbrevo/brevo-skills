@@ -127,6 +127,15 @@
         "drops template 77 from the cache and tells the user it no longer exists",
         "does not retry in a loop or create a new template without the user's go-ahead"
       ]
+    },
+    {
+      "id": "update-rerender-relink",
+      "prompt": "(After the user asked for a change and the template was updated) Looks good, send it.",
+      "fixture": "Template 12 updated in this conversation after an earlier preview and yes",
+      "expect": [
+        "renders once with params {} after the update and shares the link again",
+        "does not treat the earlier yes as covering the changed template: asks for a yes and the addresses again"
+      ]
     }
   ]
 }

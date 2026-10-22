@@ -29,10 +29,10 @@ Custom icon: `branding_upsert_social_icon` with `{"title": "Podcast", "thumbnail
 | `fonts[].role` | `paragraph` or `headings` |
 | `fonts[].type` | `standard`, `webfont` or `custom` |
 | `standard` font `name` | One of the 12 fonts below |
-| `webfont` `name` | A font in Brevo's web-font list (the editor's font menu). Needs a `fallback` from the 12 fonts below |
+| `webfont` `name` | A font in Brevo's web-font list (the editor's font menu). Needs a `fallback` from the 12 fonts below. The website lookup can suggest one without a fallback: add one (Arial for sans-serif, Georgia for serif) and show it before the save |
 | `custom` font | A font file the account uploaded in Brevo: needs its `id` and a `fallback` from the 12 fonts below. It can't be uploaded through the connection |
 | `socialMediaLinks[].name` | A network from the list below |
-| `socialMediaLinks[].url` | An `http(s)://` link, a `mailto:` address or a `tel:` number |
+| `socialMediaLinks[].url` | An `http(s)://` link, a `mailto:` address or a `tel:` number, on the network's own host (`facebook` on facebook.com); `website`, `link` and `custom-icon` can point anywhere |
 | `custom-icon` link | Also needs the `id` of an existing custom icon (the kit's `socialMediaIcons`) |
 | Custom icon `title` | 1 to 50 characters: letters, digits, spaces, `_` or `-`, starting with a letter or digit |
 | `website` | A real website address; an empty value clears it |

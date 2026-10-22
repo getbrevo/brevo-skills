@@ -187,8 +187,11 @@ Logo only in header and footer, on a background it shows up on.
   (`<a href="{{ unsubscribe }}" style="text-decoration:none;"><span style="color:#555555;text-decoration:underline;">Unsubscribe</span></a>`).
   In a drag-and-drop design, a grey `<a style="color:...">` can become the template's global
   link colour.
-- Social icons: known platforms only, linking to the brand's real profile; don't tint icons
-  to the footer grey.
+- Social icons: known platforms only, linking to the brand's real profile (a link whose
+  host doesn't match its network is flagged to the user, not used); don't tint icons to the
+  footer grey. In HTML output the icon images are placeholders the user replaces with their
+  own (list them under "Placeholders to replace"); in drag-and-drop output the editor's
+  Social block supplies the icons.
 
 ## 9. Structure that converts to the drag-and-drop editor
 

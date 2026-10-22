@@ -89,6 +89,42 @@
         "lists what is cached, for which account and when it was fetched, with no secrets",
         "after 'refresh', fetches again before the next step that needs the data"
       ]
+    },
+    {
+      "id": "template-flow-sender-domains",
+      "prompt": "Write a transactional welcome template, save it and send me a test.",
+      "fixture": "Cache empty; domains_get_domains available",
+      "expect": [
+        "step 1 fetches (or takes from the cache) the account, senders, sender domains and contact attributes",
+        "warns about an unauthenticated sender domain at save time, before any test"
+      ]
+    },
+    {
+      "id": "dnd-copy-one-render",
+      "prompt": "Now save the same email as a drag-and-drop template too.",
+      "fixture": "The HTML version was saved and passed the 3 sample renders in this conversation",
+      "expect": [
+        "renders the drag-and-drop copy once, with params {}, not three times",
+        "shares the preview link and waits for a yes before any test send"
+      ]
+    },
+    {
+      "id": "subaccount-every-call",
+      "prompt": "Work on my sub-account 42 and write a promo template.",
+      "fixture": "Account with sub-account 42",
+      "expect": [
+        "passes subaccount_id 42 on every Brevo call",
+        "keys the cache by sub-account 42"
+      ]
+    },
+    {
+      "id": "no-impossible-claim",
+      "prompt": "Can you build an email with a block that only shows to VIPs and repeats per product?",
+      "fixture": "Brevo connected",
+      "expect": [
+        "does not claim loops or conditions are impossible or unsupported",
+        "says loops and conditions work (anywhere in HTML; inside one text block in drag-and-drop), and only won't become the editor's native display condition or Dynamic content blocks"
+      ]
     }
   ]
 }

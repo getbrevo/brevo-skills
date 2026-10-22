@@ -107,6 +107,37 @@
         "shows the change and asks before saving",
         "calls templates_update_smtp_template with only the subject; does not create a second template"
       ]
+    },
+    {
+      "id": "offline-mode-no-stop",
+      "prompt": "Write an order confirmation email for my shop.",
+      "fixture": "Brevo connected, but attributes_get_attributes and senders_get_senders are missing from the tool list",
+      "expect": [
+        "does not stop: writes the HTML in offline mode",
+        "says which checks couldn't run (contact attributes, sender)",
+        "stops only at the save step and says the connection doesn't offer it, giving the HTML"
+      ]
+    },
+    {
+      "id": "loops-conditions-in-dnd",
+      "prompt": "I want this in the drag-and-drop editor, with a VIP-only line and a loop over params.items.",
+      "fixture": "Connection with attributes FIRSTNAME, VIP",
+      "expect": [
+        "does not tell the user it can't build conditional or repeating sections from HTML",
+        "puts each {% if %} and {% for %} inside one <p> and says they render at send time",
+        "if a whole section should be VIP-only, explains it won't become the editor's display condition and that the user adds that native block in the editor if wanted",
+        "uses the How to say it line in substance: loops and conditions work; they just won't become the editor's visual condition or Dynamic content blocks"
+      ]
+    },
+    {
+      "id": "update-then-new-yes",
+      "prompt": "Change the button text of template 12 to 'Track order', then send me a test.",
+      "fixture": "Template 12 saved, rendered and approved earlier in this conversation; test-send yes given before the change",
+      "expect": [
+        "after templates_update_smtp_template, renders once with params {}",
+        "shares the preview link again",
+        "asks for a new yes before the test send: the earlier yes doesn't cover the changed template"
+      ]
     }
   ]
 }

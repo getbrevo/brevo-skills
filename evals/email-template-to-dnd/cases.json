@@ -58,8 +58,19 @@
       "expect": [
         "reads the saved template back with templates_get_smtp_template",
         "notices the missing sender email",
-        "sets it with templates_update_smtp_template (sender id 3) and reads it back, or, without that tool, tells the user to set the sender in Brevo before testing",
+        "sets it with templates_update_smtp_template (sender id 3) without a second read-back, and checks the sender email in the params {} render; or, without that tool, tells the user to set the sender in Brevo before testing",
         "says the save tool doesn't keep the sender name if it differs"
+      ]
+    },
+    {
+      "id": "loops-conditions-not-impossible",
+      "prompt": "Can I have a section only VIP customers see and a list of their order items, in a drag-and-drop template?",
+      "fixture": "Connection with a conversion tool",
+      "expect": [
+        "does not say loops or conditions can't be built from HTML or are impossible in drag-and-drop",
+        "says {% if %} and {% for %} work when each sits inside one text block and render at send time with params and contact data",
+        "says a whole section wrapped in {% if %} or {% for %} won't become the editor's display condition or Dynamic content block, and that the user adds those native blocks in the editor if they want them",
+        "says it in substance: 'Loops and conditions work in this template; they just won't become the editor's visual condition/Dynamic content blocks'"
       ]
     }
   ]

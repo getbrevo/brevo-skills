@@ -1,6 +1,6 @@
 ---
 name: email-brand-kit
-description: Use when the user wants an email in their brand (logo, colours, fonts, social links), asks what their Brevo brand kit holds, wants to set up or refresh their brand kit from their website, or wants to change one part of it (logo, colours, fonts, social links, custom social icons, brand website). Reads the account's brand kit and turns it into concrete email styles for email-template-write. Suggests a kit from the user's website (a limited lookup that saves nothing), shows the current kit next to the suggestion, and saves only the parts the user approves, in as few calls as the hourly limit needs. Never invents brand values. Needs Brevo's brand-kit tools on the connection; without them, says so and uses values the user gives or neutral styles.
+description: Use when the user wants an email in their brand (logo, colours, fonts, social links), asks what their Brevo brand kit holds, wants to set up or refresh their brand kit from their website, or wants to change one part of it (logo, colours, fonts, social links, custom social icons, brand website). Reads the account's brand kit and turns it into concrete email styles for email-template-write. Suggests a kit from the user's website (a limited lookup that changes no brand values), shows the current kit next to the suggestion, and saves only the parts the user approves, in as few calls as the hourly limit needs. Never invents brand values. Needs Brevo's brand-kit tools on the connection; without them, says so and uses values the user gives or neutral styles.
 ---
 
 # Email brand kit
@@ -14,7 +14,7 @@ values, and never sends anything.
 |---|---|
 | Name the account | `accounts_get_account` |
 | Read the brand kit | `branding_get_brand` (not on the MCP server yet: see Requirements) |
-| Suggest a kit from a website (limited lookup, saves nothing) | `branding_fetch_brand_from_website` (not yet) |
+| Suggest a kit from a website (limited lookup; changes no brand values) | `branding_fetch_brand_from_website` (not yet) |
 | Save the approved parts of the kit | `branding_update_brand` (not yet) |
 | Save the brand website | `branding_update_website` (not yet) |
 | Add or change a custom social icon | `branding_upsert_social_icon` (not yet) |
@@ -69,7 +69,7 @@ instead.
   | Task | Calls |
   |---|---|
   | Style an email from the kit | 1 (the read) |
-  | Set up from a website | 3: read, lookup, one save; 4 if the website is saved too |
+  | Set up from a website | 3: read, lookup, one save (2 if the kit was already read in this conversation); one more if the website is saved too |
   | Change one part | 2: read, save (1 if the kit was already read in this conversation) |
   | Add a custom social icon and its link | 3: read, icon, save |
 
@@ -112,8 +112,20 @@ networks). Then turn it into styles:
 | `fonts`, role `paragraph` | Paragraph and button font. Font stack on `<body style="font-family:...">`: the name (quoted if it has spaces), the kit's `fallback`, then `serif` (Georgia, Times New Roman, Palatino), `monospace` (Courier New) or `sans-serif` |
 | `fonts`, role `headings` | Headings font. The same kind of stack, inline on every heading, only when it differs from the paragraph font |
 | `colors` | The first colour only, as below |
-| `socialMediaLinks` | The footer's social icons row: one link per entry, in kit order, `url` exactly as stored. A `website` entry is the website link; a `custom-icon` entry uses its `thumbnailUrl` as the image and `title` as `alt` |
-| `website` / `domain` | The logo link, and the call-to-action fallback when the brief gives no URL |
+| `socialMediaLinks` | The footer's social icons row: one link per entry, in kit order, `url` as stored once checked (below). A `website` entry is the website link; a `custom-icon` entry uses its `thumbnailUrl` as the image and `title` as `alt` |
+| `website` / `domain` | The logo link, and the call-to-action fallback when the brief gives no URL. Use the `https://` form; when the kit stores `http://`, say so and suggest saving the `https://` address |
+| `name` | The brand name in the footer and as the sender name, unless the brief names another brand |
+
+**Check the social links before using them.** Each link's host must belong to its network
+(`instagram` on instagram.com, `facebook` on facebook.com, `apple-music` on
+music.apple.com, `twitter` on x.com or twitter.com, and so on; `website`, `link` and
+`custom-icon` can point anywhere). When a host doesn't match (for example `apple-music` ->
+`https://google.com`), don't use that link silently: tell the user which link looks wrong and
+ask whether to keep it, fix it, or leave it out of this email; offer to correct it in the kit
+(a social links save). **Icon images:** the kit stores links, not icon pictures. In HTML
+output, each icon is `src=""` with the network as `alt`, listed under "Placeholders to
+replace" for the user to fill with their own icon images; or offer drag-and-drop output,
+where the editor's Social block supplies the icons.
 
 **Font types.** `standard` fonts show everywhere. A `webfont` shows in some email clients
 only; the rest show the fallback. A `custom` font is a file the account uploaded: HTML can't
@@ -134,8 +146,11 @@ When Brevo's editor applies the brand, it uses the **first colour** of the list,
    rules, and say which you used.
 
 Say which colour does what. **Safeguard (this skill's, not the editor's):** if the first
-colour doesn't reach 4.5:1 contrast on white, links use `#2B2B2B`; if it doesn't reach 3:1,
-buttons use `#2B2B2B` with `#FFFFFF` text too. Tell the user, and offer to move a darker kit
+colour doesn't reach 4.5:1 contrast on white, links use `#2B2B2B`. A button label needs 4.5:1
+against the button colour, like any text (3:1 is enough only for a label at least 18.66px and
+bold); when neither the `#FFFFFF` nor the `#000000` label reaches it, buttons use `#2B2B2B`
+with `#FFFFFF` text (for example `#0092FF` with white is 3.2:1: not enough for a 16px label).
+Tell the user, and offer to move a darker kit
 colour to the front of the list (a colours save), since the editor uses the first colour for
 their branded templates as it is. Never lighten, darken or blend a kit colour into a new one.
 
@@ -147,6 +162,7 @@ placeholder); social links only if the user gave them.
 
 ```
 Brand styles (from the brand kit | neutral, kit empty | typed by the user):
+- Brand name: <kit name> | none
 - Logo: <url> | none
 - Fonts: body <stack>; headings <stack>
 - Colours: text #333333, headings #2B2B2B, links <hex>, buttons <hex> with <#FFFFFF | #000000> text, band <hex> | none
@@ -161,13 +177,16 @@ to save them to the kit too (step 4).
 
 ## 3. Set up or refresh the kit from a website
 
-1. **Read the kit** (`branding_get_brand`) and check the lookup count (see Limits).
+1. **Read the kit** (`branding_get_brand`), unless this conversation already has it (safety
+   rule 1), and check the lookup count (see Limits).
 2. **Get the website:** one the user named. If they didn't name one, offer the kit's
    `website` and ask them to confirm it. Before the call, say: "This uses one of about 5
-   website lookups your account gets per week, and saves nothing yet."
+   website lookups your account gets per week. It changes none of your logo, colours, fonts or
+   links (Brevo only updates its lookup counter)."
 3. **Look it up once:** `branding_fetch_brand_from_website` with `{"website": "<address>"}`.
    It returns `domain` and `branding` (`name`, `logo`, `colors`, `fonts`, `socialMediaLinks`).
-   It changes nothing in the account.
+   It saves nothing to the logo, colours, fonts or links; it does update the kit's lookup
+   counter and date (`fetchedAt`, `fetchRetryCount`), which no save can set back.
 4. **Show current next to suggested**, one line per part, and ask which to save. Say that
    the first colour becomes the button and link colour in the editor; if the suggested first
    colour is white or very light, suggest putting the main brand colour first:
@@ -181,8 +200,16 @@ to save them to the kit too (step 4).
    Save which parts? all / logo / colours / fonts / social links / none
    ```
 
-   The user may edit a part first ("drop the white", "keep my fonts"). Check edited values
-   against [field-rules.md](references/field-rules.md).
+   The user may edit a part first ("drop the white", "keep my fonts"). Check every value you
+   propose to save, suggested or edited, against
+   [field-rules.md](references/field-rules.md) before asking. A suggested `webfont` with no
+   `fallback` can't be saved as it is: propose a fallback from the 12 standard fonts (for
+   example Arial for a sans-serif web font, Georgia for a serif one) and show it in the
+   suggested line. Check the suggested social links' hosts the same way as in step 2.
+   **Fonts replace the whole list.** If the suggestion lacks a role the kit has (for example
+   it has only a body font and the kit has a headings font), show which current font would
+   be dropped ("Comic Sans MS (headings) would be removed") and offer to keep it in the saved
+   list.
 5. **Save once** with `branding_update_brand` (bodies in
    [field-rules.md](references/field-rules.md)):
    - **One part approved:** send `partialUpdateField` with that part's name, and that part.
@@ -239,6 +266,10 @@ after, a yes, save that part with `partialUpdateField`. No read-back: update the
 
 ## Requirements
 
+- **Sub-accounts:** the proposed brand-kit tools take no sub-account ID, so a sub-account's
+  own kit can't be read or saved until they do. On a sub-account, say so and use values the
+  user gives or neutral styles (step 1); never read or save the main account's kit in its
+  place.
 - **Brand-kit tools:** not on the Brevo MCP server yet. Until they are, this skill reads and
   saves nothing: step 1 applies (values typed by the user, or neutral styles, said plainly).
   The proposed tool names are `branding_get_brand`, `branding_fetch_brand_from_website`,

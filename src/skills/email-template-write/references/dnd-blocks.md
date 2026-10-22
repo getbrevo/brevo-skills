@@ -43,7 +43,9 @@ Becomes: two text blocks named "Quote" and "Attribution", on a row with the tint
 
 Becomes: one Social block. Rules: link to the brand's real profile on a known platform
 (instagram.com, facebook.com, x.com or twitter.com, linkedin.com, youtube.com, tiktok.com,
-pinterest.com, whatsapp.com, vimeo.com); one linked image per platform, `width="32"`; don't
+pinterest.com, whatsapp.com, vimeo.com). A brand-kit link whose host doesn't match its
+network (an `apple-music` link to google.com) is shown to the user, not used silently. One
+linked image per platform, `width="32"`; don't
 tint icons to the footer grey. An icon for a platform the editor doesn't know may be removed
 when the design is opened: put it outside this table as a plain linked image. Use icon image
 URLs the user gives; otherwise leave `src=""` with the platform name as `alt`, and tell the

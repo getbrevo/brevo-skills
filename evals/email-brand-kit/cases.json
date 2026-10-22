@@ -116,6 +116,69 @@
       "expect": [
         "does not call branding_get_brand again: uses the cached kit updated with the saved colours"
       ]
+    },
+    {
+      "id": "setup-uses-cached-read",
+      "prompt": "Now set up my brand kit from https://www.olive-example.com.",
+      "fixture": "Kit read earlier in this conversation and cached; brand-kit tools available; lookup count 1",
+      "expect": [
+        "does not call branding_get_brand again: uses the cached kit for the before/after",
+        "says the setup takes 2 brand-kit calls (lookup, save) instead of 3, plus one if the website is saved",
+        "says the lookup changes no logo, colours, fonts or links, only Brevo's lookup counter"
+      ]
+    },
+    {
+      "id": "suggested-webfont-needs-fallback",
+      "prompt": "Set up my brand kit from https://www.olive-example.com and save the fonts.",
+      "fixture": "Brand-kit tools available. Kit fonts: Comic Sans MS (headings, standard), Georgia (paragraph, standard), fallback Arial. Lookup suggests fonts: Inter (paragraph, webfont, no fallback)",
+      "expect": [
+        "checks the suggested values against the field rules before asking, not only edited ones",
+        "proposes a fallback from the 12 standard fonts for Inter (for example Arial) and shows it in the suggested line before any save",
+        "shows that Comic Sans MS (headings) would be dropped by the fonts save and offers to keep it in the saved list",
+        "does not call branding_update_brand before the user approves the shown fonts list"
+      ]
+    },
+    {
+      "id": "button-label-contrast",
+      "prompt": "Write a short promo email in my brand.",
+      "fixture": "Brand-kit tools available. Kit colours #0092FF, #FFFFFF, #091E3F; button label 16px",
+      "expect": [
+        "says #0092FF with a white 16px label is about 3.2:1, below the 4.5:1 a label needs",
+        "uses #2B2B2B buttons with #FFFFFF text (or a label at least 18.66px bold only if it says so), not #0092FF with white text",
+        "links use #2B2B2B because #0092FF is below 4.5:1 on white",
+        "offers to move #091E3F to the front of the kit's colours, without saving it unasked"
+      ]
+    },
+    {
+      "id": "social-link-host-mismatch",
+      "prompt": "Write a newsletter in my brand with our social links in the footer.",
+      "fixture": "Brand-kit tools available. Kit socialMediaLinks: apple-music https://google.com, facebook https://testing.co, instagram https://www.instagram.com/olive-example. HTML output",
+      "expect": [
+        "flags apple-music -> google.com and facebook -> testing.co as links whose host doesn't match the network, and asks whether to keep, fix or leave them out",
+        "does not put the mismatched links in the email silently",
+        "icon images are src=\"\" placeholders listed under 'Placeholders to replace', or it offers drag-and-drop where the editor's Social block supplies icons",
+        "names no icon image host of its own"
+      ]
+    },
+    {
+      "id": "brand-name-from-kit",
+      "prompt": "Write an order confirmation in my brand.",
+      "fixture": "Brand-kit tools available. Kit name 'Olive & Co'; account company name 'Olive Holdings Test'; the brief names no brand",
+      "expect": [
+        "the Brand styles hand-off has a 'Brand name: Olive & Co' line",
+        "the footer and sender name use Olive & Co, not the account's company name"
+      ]
+    },
+    {
+      "id": "subaccount-no-kit",
+      "prompt": "Write an email in my brand for sub-account 42.",
+      "fixture": "Working on sub-account 42; brand-kit tools available but take no sub-account ID",
+      "expect": [
+        "says the sub-account's own brand kit can't be read until the brand-kit tools take a sub-account",
+        "does not read or save the main account's kit in its place",
+        "asks for brand values or uses neutral styles and says so",
+        "passes subaccount_id 42 on every other Brevo call"
+      ]
     }
   ]
 }

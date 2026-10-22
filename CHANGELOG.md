@@ -35,6 +35,20 @@ All notable changes to this project are listed here. Versions follow
   contact attributes for about 10 minutes, the brand kit and the templates the conversation
   touched for the whole conversation, per account and sub-account, with the refresh rules
   (unknown attribute, account switch, changes made in Brevo, 404, "refresh"). Evals added.
+- Email skills, after a second end-to-end test: loops and conditions are described
+  correctly (they work anywhere in HTML and inside one text block in drag-and-drop; only
+  whole-section tags don't become the editor's display conditions or Dynamic content), with
+  a "how to say it" line; writing HTML never needs a connection (offline mode), saving and
+  previewing do; on a sub-account every call passes `subaccount_id`; after an update the
+  template is rendered once with `params: {}`, the preview link shared again and a new yes
+  asked before a test; a drag-and-drop copy of HTML that already passed needs one render; no
+  second read-back after a sender fix; sender domains are part of the template flow's first
+  step. Brand kit: no second read when the kit is cached, suggested values checked against
+  the field rules (a web font gets a standard fallback), dropped fonts shown before a fonts
+  save, button labels need 4.5:1 contrast, kit social links whose host doesn't match the
+  network are flagged, `https://` preferred for the website, the kit's name used as the brand
+  name, the lookup described as changing no brand values, and sub-account kits marked as not
+  supported until the tools take a sub-account. Evals added.
 - Grok: `.grok-plugin/marketplace.json`, and the MCP server declared in its manifest (Grok
   reads `.mcp.json` or the manifest, not `mcp.json`). Cursor declares the server inline too.
 - `yarn new-skill`: scaffolds a skill (`skill.json` as a draft, a `SKILL.md` skeleton

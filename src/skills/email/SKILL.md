@@ -55,7 +55,7 @@ Skills can't call each other: name the next skill and load it.
 | Save a transactional template | `email-template-write` (type transactional), `email-template-check`, then save as HTML (in `email-template-write`) or as a design (`email-template-to-dnd`) |
 | Write an automation email | `email-template-write` (type automation), `email-template-check`, then `email-template-to-dnd` to save it as an automation template; attaching it to a workflow step is done in Brevo's automation editor |
 | Edit it visually in the drag-and-drop editor | `email-template-write` (drag-and-drop output), `email-template-check`, then `email-template-to-dnd` |
-| Change a saved template (content, subject, sender, or activate it) | `email-template-write` (fetch it by ID, edit only what changes), `email-template-check`, then update it in place (`email-template-write` step 10); activating needs the user's yes |
+| Change a saved template (content, subject, sender, or activate it) | `email-template-write` (fetch it by ID, edit only what changes), `email-template-check`, then update it in place (`email-template-write` step 10); then one `params: {}` render, the preview link again, and a new yes before any test send (step 9). Activating needs the user's yes |
 | See how it looks, or receive a test | `email-test-preview` |
 | Send or schedule for real | `email-campaign-create`, "Ready to send": the user sends it from Brevo |
 
@@ -64,14 +64,17 @@ Skills can't call each other: name the next skill and load it.
 Campaigns keep their own draft-only flow (`email-campaign-create`). Templates follow this
 order, one step at a time:
 
-1. Account, senders and contact attributes, from the cache (fetch once if missing).
+1. Account, senders, sender domains and contact attributes, from the cache (fetch once if
+   missing). The sender-domain check is needed at save time (step 6), before any test.
 2. Brand kit, from the cache (`email-brand-kit` reads it once, when its tool exists).
 3. Write the email (`email-template-write`).
 4. Check it (`email-template-check`, at most 3 fix rounds).
 5. The user approves the HTML or the summary.
 6. Save the template, inactive, once.
 7. Render it with sample data: an existing contact's email plus `params`, and once with
-   `params: {}` (what a test send shows).
+   `params: {}` (what a test send shows). A drag-and-drop copy of HTML that already passed
+   these renders needs only the `params: {}` render. After a later update: one `params: {}`
+   render, the preview link again (step 8), and a new yes before step 9.
 8. **Share a preview link and stop.** Give the template's page in Brevo
    (`https://app.brevo.com/templates/email/edit/<id>`, the user signs in and uses Preview).
    Say it shows the saved template without sample data. Ask the user to open it and confirm
@@ -87,8 +90,10 @@ check it, create a draft campaign for VIP, then send you a test"), then do one s
 
 - Creating automations or attaching an email to a workflow step.
 - Sending or scheduling a campaign from the chat.
-- Display conditions and repeating (Dynamic content) sections made from HTML: the user adds
-  them in the editor.
+- Turning a whole section wrapped in `{% if %}` or `{% for %}` into the editor's native
+  display condition or Dynamic content block. Loops and conditions themselves work (anywhere
+  in HTML; inside one text block in drag-and-drop), so never say they can't be built.
+  **How to say it:** "Loops and conditions work in this template; they just won't become the editor's visual condition or Dynamic content blocks. If you want those native blocks, add them in the editor."
 - Native Video, Product and Spacer blocks from HTML, dark mode, React Email input.
 - Rendering a campaign with real contacts' data.
 

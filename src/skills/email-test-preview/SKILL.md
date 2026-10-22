@@ -50,7 +50,9 @@ list, render it on Brevo's servers:
   fails with "Contact not found" whenever the template uses contact attributes.
 - Use invented sample data, never a real customer's.
 - Render three times: with the full sample; with empty lists and missing optional keys; and
-  with `params: {}`, which is what a test send uses (see step 4).
+  with `params: {}`, which is what a test send uses (see step 4). A drag-and-drop copy of HTML
+  that already passed these three renders needs one render, with `params: {}`: each render
+  returns the whole HTML, so don't repeat what the HTML version proved.
 - Don't paste the rendered HTML into the chat: report the subject, whether it rendered, and
   anything that looks wrong (an empty greeting, a missing item line, literal `{{ }}`).
 
@@ -69,7 +71,8 @@ Say that the link shows the saved email without the sample data (no `params`, no
 contact). Ask: "Open it and tell me if it looks right. Shall I send a test, and to which
 address?" Send nothing until the user answers yes in this conversation. If they ask for
 changes, go back to `email-template-write`; after the update, the cached template carries
-the change.
+the change. Then render once with `params: {}`, give the link again, and wait for a new yes:
+an earlier yes doesn't cover the changed template.
 
 ## 4. Send a test (confirm every time)
 
