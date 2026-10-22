@@ -29,6 +29,9 @@ instead.
   `email-template-check`, or HTML the user brings from elsewhere (another tool, an old
   template). Read [converter-notes.md](references/converter-notes.md) for what converts
   cleanly.
+  The editor's Style tab is taken from the first paragraph, heading, button and coloured
+  link, so brand fonts and colours become the template's styles only when they sit there
+  (`email-template-write` writes them that way).
 - **The type:** `template` (transactional) or `automation_template` (automation email).
   Campaigns aren't saved as designs through the connection: create them as HTML with
   `email-campaign-create`.
@@ -96,7 +99,9 @@ the user to activate it in Brevo when they're ready (see Requirements).
 
 Read [native-blocks.md](references/native-blocks.md) and list only the steps this email needs:
 display conditions on sections shown to some contacts, a Dynamic content block for a picture
-per item, Video or Product blocks to swap in, checking the Social block after the first open.
+per item, Video or Product blocks to swap in, checking the Social block after the first open,
+and picking the brand's uploaded font in the Style tab when the brand kit has one (HTML
+carries only its fallback).
 Then offer `email-test-preview` for a test send.
 
 ## Refusals and errors

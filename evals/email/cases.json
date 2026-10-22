@@ -52,6 +52,16 @@
         "offers to write the three emails (email-template-write) and save them as automation templates (email-template-to-dnd)",
         "says attaching them to workflow steps is done in Brevo's automation editor"
       ]
+    },
+    {
+      "id": "routes-brand-kit",
+      "prompt": "Get my branding from https://www.northwind-example.com and use it in a newsletter.",
+      "fixture": null,
+      "expect": [
+        "confirms the account with accounts_get_account first",
+        "names email-brand-kit for the brand kit set-up, then email-template-write and email-template-check for the newsletter",
+        "says the brand kit is changed only after the user approves what will be saved"
+      ]
     }
   ]
 }

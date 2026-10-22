@@ -40,6 +40,15 @@ purpose.
 7. Dark hero: the first `<h1>` must carry the global heading colour, so if the hero heading is
    white on a dark band, put the white on a `<span>` inside a globally coloured `<h1>`, or make
    an `<h1>` on a white section come first.
+8. Brand styles (from the brand kit, or typed by the user) go on these first elements, the
+   way Brevo's editor applies a brand kit: the paragraph font on `<body>`; the kit's **first
+   colour** as the button background on the first button (text `#FFFFFF` on a dark colour,
+   `#000000` on a light one, as `email-brand-kit` step 2 says) and as the link colour on the
+   first coloured `<a>`. Text and heading colours don't come from the kit: keep `#333333` on
+   the first `<p>` and `#2B2B2B` on the first `<h1>`-`<h3>`, unless the user typed others.
+   The Style tab uses the body font for headings too, so a different headings font stays
+   inline on every heading, and a font the account uploaded is picked in the Style tab after
+   conversion (the HTML carries its fallback).
 
 ## Inline styles and the editor's rich-text toolbar
 

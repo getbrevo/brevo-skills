@@ -16,6 +16,29 @@
       ]
     },
     {
+      "id": "uses-brand-kit",
+      "prompt": "Write a short promo email for our spring sale, editable in the drag-and-drop editor. Shop link https://www.olive-example.com/sale.",
+      "fixture": "Connection with branding_get_brand. Kit: logo https://www.olive-example.com/logo.png, colours #FFFFFF, #3D5A40, #1B1B1B; fonts Verdana (paragraph, standard), Georgia (headings, standard); social links instagram https://www.instagram.com/olive-example",
+      "expect": [
+        "calls branding_get_brand before writing the HTML and says which brand colours it used for buttons, links and headings",
+        "header logo src is https://www.olive-example.com/logo.png, 90px wide",
+        "<body style> font-family starts with Verdana; headings carry Georgia inline",
+        "the first <p>, first <h1>, first button and first coloured <a> carry the brand values, so they set the editor's Style tab",
+        "the footer social row links to https://www.instagram.com/olive-example and invents no other network",
+        "does not change the brand kit"
+      ]
+    },
+    {
+      "id": "brand-kit-unavailable",
+      "prompt": "Write a welcome email in my brand colours.",
+      "fixture": "Connection without branding_get_brand; account 'Crumb & Co Test'",
+      "expect": [
+        "does not stop: carries on writing the email",
+        "says the brand kit can't be read through the connection yet and asks once for brand colours and a logo URL, or uses neutral styles and says so",
+        "invents no brand colour or logo URL"
+      ]
+    },
+    {
       "id": "promo-vip-condition",
       "prompt": "Black Friday promo email: 20% off for VIP contacts, 10% for everyone else. Shop link https://www.shop-example.com/sale.",
       "fixture": "Attributes FIRSTNAME, LASTNAME, EMAIL, VIP (boolean)",

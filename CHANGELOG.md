@@ -13,6 +13,12 @@ All notable changes to this project are listed here. Versions follow
   `email-template-check`, `email-template-to-dnd`, `email-campaign-create` and
   `email-test-preview`, with eval cases. Some steps wait for MCP tools that aren't on every
   connection yet; each skill's Requirements section names them.
+- `email-brand-kit` (draft 1.0.0): reads the account's brand kit (logo, colours, fonts,
+  social links) and turns it into email styles; sets it up from the user's website or changes
+  one part, only after the user approves a before/after. `email`, `email-template-write` and
+  `email-template-to-dnd` route to it and apply brand styles to the editor's Style tab. The
+  brand-kit tools aren't on the Brevo MCP server yet; until then the skill says so and uses
+  values the user gives or neutral styles.
 - Grok: `.grok-plugin/marketplace.json`, and the MCP server declared in its manifest (Grok
   reads `.mcp.json` or the manifest, not `mcp.json`). Cursor declares the server inline too.
 - `yarn new-skill`: scaffolds a skill (`skill.json` as a draft, a `SKILL.md` skeleton

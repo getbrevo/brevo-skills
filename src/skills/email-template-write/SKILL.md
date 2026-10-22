@@ -13,13 +13,15 @@ through `email-campaign-create`, drag-and-drop designs through `email-template-t
 | Step | Tool |
 |---|---|
 | Name the account; company name and address for the footer | `accounts_get_account` |
+| Brand kit: logo, colours, fonts, social links (optional) | `branding_get_brand` (not on the MCP server yet: see Requirements) |
 | Contact attribute names for personalization | `attributes_get_attributes` |
 | Sender for a transactional template | `senders_get_senders` |
 | Save a transactional template as HTML (inactive) | `templates_create_smtp_template` |
 | Read back what was saved | `templates_get_smtp_template` |
 
 If one of these tools isn't in your tool list, stop and tell the user their Brevo
-connection doesn't offer this feature yet.
+connection doesn't offer this feature yet. The brand-kit tool is the exception: without it,
+carry on (step 5).
 
 <!-- include: shared/connection.md -->
 
@@ -28,8 +30,9 @@ connection doesn't offer this feature yet.
 - **Layout:** the document skeleton in [email-design-rules.md](references/email-design-rules.md)
   §1; one `<tr>` per section inside the 600px table; `role="presentation"` tables; inline
   styles; font stacks with a fallback (`Arial, Helvetica, sans-serif`).
-- **Colour:** white by default, at most 4 background colours, never two coloured sections in
-  a row, text contrast at least 4.5:1, neutral grey footer.
+- **Colour:** the brand's colours when known (step 5), white by default, at most 4
+  background colours, never two coloured sections in a row, text contrast at least 4.5:1,
+  neutral grey footer.
 - **Buttons:** at most 2 main buttons, 3 words or fewer, all the same style. Bulletproof:
   background, padding and `width: NN%` on the `<td>`, the `<a>` directly inside with only the
   label, white written `#FFFFFF`.
@@ -58,7 +61,8 @@ connection doesn't offer this feature yet.
   one cell; text margins bottom only (`margin: 0 0 16px`).
 - No `<ul>`, `<ol>` or `<li>` (their content is dropped); use one `<p>` per line.
 - The first `<p>`, `<h1>`-`<h3>`, button and coloured `<a>` set the editor's Style tab: see
-  [global-styles.md](references/global-styles.md).
+  [global-styles.md](references/global-styles.md). Put the brand font, colours and link colour
+  there, so they become the template's styles.
 - Copy block shapes (divider, quote, social icons, navigation, promo-code pill, side-by-side
   buttons, avatar, order-summary lines, video thumbnail, product grid, footer links) from
   [dnd-blocks.md](references/dnd-blocks.md); don't invent them.
@@ -99,6 +103,11 @@ connection doesn't offer this feature yet.
    - Company name and address for the footer: from `accounts_get_account`, written as plain
      text. Never `{{ company.* }}`: it renders blank in HTML sent through the API.
    - URLs: only those the user gave, or the brand's site.
+   - **Brand styles:** if `branding_get_brand` is in your tool list, read the brand kit and
+     turn it into a "Brand styles" block as `email-brand-kit` step 2 describes (logo, font
+     stacks, colour roles, social links, website). Brand values the user gives in the brief
+     win for this email. Kit empty, or no tool: use the values the user gave, else neutral
+     styles, and say which. Never invent a brand colour, a logo URL or a social link.
    - **No connection:** don't stop. Use clearly marked placeholders: `[Company name]` (or the
      brand name the user gave), `[Street]`, `[Postcode] [City]`; `https://www.brand-example.com/...`
      for links; the platform's own host with a placeholder handle for social links
@@ -128,8 +137,9 @@ connection doesn't offer this feature yet.
     - Automation email as HTML: no tool accepts it today. Give the HTML; the user pastes it
       into a new automation email in Brevo.
 11. **Summarise** in a few lines: type and output, subject, preview text, story arc,
-    variables, conditions and loops used, the check result. For drag-and-drop output, add the
-    editor steps left to do. Without a connection, add the placeholder list.
+    variables, conditions and loops used, the brand styles used (kit, typed or neutral), the
+    check result. For drag-and-drop output, add the editor steps left to do. Without a
+    connection, add the placeholder list.
 
 ## Refusals and errors
 
@@ -142,10 +152,12 @@ connection doesn't offer this feature yet.
 
 ## Requirements
 
-Uses only tools on the Brevo MCP server today. Editing a saved template in place needs
+Its required tools are all on the Brevo MCP server today. Editing a saved template in place needs
 `templates_update_smtp_template`, which isn't offered to every connection yet: until it is,
 tell the user to make the change in Brevo, or, only if they ask, create a new template.
 Product details and data feeds can't be read through the connection yet: ask the user for
-product names, prices, links and images, or use marked placeholders.
+product names, prices, links and images, or use marked placeholders. The brand kit
+(`branding_get_brand`) isn't on the MCP server yet either: until it is, ask for brand colours
+and a logo URL, or use neutral styles (see `email-brand-kit`).
 
 <!-- include: shared/output-rules.md -->

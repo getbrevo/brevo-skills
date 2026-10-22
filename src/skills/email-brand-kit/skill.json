@@ -1,0 +1,15 @@
+{
+  "name": "email-brand-kit",
+  "title": "Email brand kit",
+  "version": "1.0.0",
+  "status": "draft",
+  "owner": "experience-design",
+  "summary": "Read the account's brand kit (logo, colours, fonts, social links) as email styles, and set it up or change it after the user approves.",
+  "platforms": [
+    "claude",
+    "openai"
+  ],
+  "requires_tools": [
+    "accounts_get_account"
+  ]
+}
