@@ -22,7 +22,8 @@ ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 VENV_DIR="${SCRIPT_DIR}/.skillspector-venv"
 REPORT_DIR=""
 
-# The pinned SkillSpector commit. Bump it here (and nowhere else) to take upstream changes.
+# The pinned SkillSpector commit. Bump it here to take upstream changes, and regenerate
+# scripts/skillspector-requirements.txt (the hash-pinned dependencies) from that commit.
 SKILLSPECTOR_REPO="https://github.com/NVIDIA/SkillSpector.git"
 SKILLSPECTOR_REF="${SKILLSPECTOR_REF:-4c52fbb83bbca0dd13f2685453c9b661d8c95bf8}"
 
@@ -100,8 +101,11 @@ resolve_runner() {
     if [ ! -x "${VENV_DIR}/bin/skillspector" ] || [ "$(cat "${stamp}" 2>/dev/null || true)" != "${SKILLSPECTOR_REF}" ]; then
       echo "Installing SkillSpector @ ${SKILLSPECTOR_REF} into ${VENV_DIR} (once) ..." >&2
       rm -rf "${VENV_DIR}"
+      # Dependencies come from the hash-pinned list, then the scanner itself with no
+      # dependency resolution, so nothing unpinned is fetched from PyPI.
       if ! uv venv --python 3.12 "${VENV_DIR}" >/dev/null \
-        || ! uv pip install --python "${VENV_DIR}/bin/python" "git+${SKILLSPECTOR_REPO}@${SKILLSPECTOR_REF}" >/dev/null; then
+        || ! uv pip install --python "${VENV_DIR}/bin/python" --require-hashes -r "${SCRIPT_DIR}/skillspector-requirements.txt" >/dev/null \
+        || ! uv pip install --python "${VENV_DIR}/bin/python" --no-deps "git+${SKILLSPECTOR_REPO}@${SKILLSPECTOR_REF}" >/dev/null; then
         echo "error: couldn't install SkillSpector. Check the network and that uv can fetch Python 3.12, then retry." >&2
         exit 3
       fi

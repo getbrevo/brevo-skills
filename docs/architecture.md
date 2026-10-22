@@ -197,7 +197,10 @@ injection, exfiltration of what the agent can see. `scripts/scan-skills.sh` (`ya
 scan`) runs [NVIDIA SkillSpector](https://github.com/NVIDIA/SkillSpector)'s static rules
 over `src/skills/*/`, writes a JSON report per skill and a Markdown summary, and fails a
 skill whose risk score is above the threshold (50 by default). The scanner has no release,
-so the script pins one commit and installs it with `uv` on first use.
+so the script pins one commit and installs it with `uv` on first use. Its dependencies
+come from `scripts/skillspector-requirements.txt`, a hash-checked export of that commit's
+lockfile (`--require-hashes`), and the scanner is installed with `--no-deps`; bumping the
+commit means regenerating that file (the steps are in its header).
 
 The `skill-security-scan` workflow runs it on pull requests that touch `src/skills/` or
 `shared/`, on the changed skills only, and posts one summary comment that it updates on

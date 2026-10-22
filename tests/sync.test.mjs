@@ -50,6 +50,13 @@ test('validateSource accepts owner/name, a relative path and a ref, and rejects 
   assert.deepEqual(validateSource('a/b', 'x'), ['x: source must be an object { repo, path, ref }']);
 });
 
+test('validateSource rejects a ref that could be read as a git option', () => {
+  for (const ref of ['--upload-pack=touch /tmp/x', '-f', '-', '.hidden', '/abs']) {
+    assert.equal(validateSource({ repo: 'a/b', path: '.', ref }, 'x').length, 1, ref);
+  }
+  assert.deepEqual(validateSource({ repo: 'a/b', path: '.', ref: 'release/v1.2.3' }, 'x'), []);
+});
+
 test('validateConfig checks license and logo when they are set', () => {
   const base = {
     version: '1.0.0',
