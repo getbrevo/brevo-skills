@@ -44,10 +44,11 @@
     {
       "id": "change-draft",
       "prompt": "Change the subject of the campaign you just made to 'Last chance: 20% off'.",
-      "fixture": "No campaign update tool on the connection",
+      "fixture": "Draft campaign 41 created in this conversation; email_campaign_management_update_email_campaign available",
       "expect": [
-        "does not create a second campaign without the user's go-ahead",
-        "points the user to edit the subject on the draft in Brevo"
+        "shows the subject change and waits for a yes",
+        "calls email_campaign_management_update_email_campaign with only the new subject, without scheduledAt or sendAtBestTime",
+        "does not create a second campaign without the user's go-ahead"
       ]
     }
   ]

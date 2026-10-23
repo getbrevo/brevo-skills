@@ -58,7 +58,7 @@
       "expect": [
         "asks for or finds the template ID and fetches it with templates_get_smtp_template",
         "does not list all templates with their HTML",
-        "if templates_post_preview_smtp_email_templates is available, passes an existing contact email (for example the account's own) plus params"
+        "renders it with templates_post_preview_smtp_email_templates, passing an existing contact email (for example the account's own) plus params"
       ]
     },
     {

@@ -32,6 +32,201 @@
       ],
       "sha256": "5cbe5b952ed5148b95f5dd532da096940931d127bece3a25e265d5cad54ad581",
       "source_sha256": "5cbe5b952ed5148b95f5dd532da096940931d127bece3a25e265d5cad54ad581"
+    },
+    {
+      "name": "email",
+      "version": "1.0.0",
+      "status": "public",
+      "owner": "experience-design",
+      "summary": "Route an email request to the right email skill, after confirming the account.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "accounts_get_account"
+      ],
+      "path": "skills/email",
+      "files": [
+        "SKILL.md"
+      ],
+      "sha256": "46ff0382ae57847f7133c63deb547212d950a866b6cfa19f096d1c47bb33a8e8",
+      "source_sha256": "46ff0382ae57847f7133c63deb547212d950a866b6cfa19f096d1c47bb33a8e8"
+    },
+    {
+      "name": "email-brand-kit",
+      "version": "1.0.0",
+      "status": "public",
+      "owner": "experience-design",
+      "summary": "Read the account's brand kit (logo, colours, fonts, social links) as email styles, and set it up or change it after the user approves.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "accounts_get_account",
+        "branding_get_brand",
+        "branding_fetch_brand_from_website",
+        "branding_update_brand",
+        "branding_update_brand_website",
+        "branding_get_social_icons",
+        "branding_upsert_social_icon"
+      ],
+      "path": "skills/email-brand-kit",
+      "files": [
+        "SKILL.md",
+        "references/field-rules.md"
+      ],
+      "sha256": "9503ff5886e23ac2418fbfb80e26c7f9a97d2a0d31c15e30977b06443c1bbd2d",
+      "source_sha256": "9503ff5886e23ac2418fbfb80e26c7f9a97d2a0d31c15e30977b06443c1bbd2d"
+    },
+    {
+      "name": "email-campaign-create",
+      "version": "1.0.0",
+      "status": "public",
+      "owner": "experience-design",
+      "summary": "Create a Brevo email campaign as a draft from finished HTML, for a chosen list and a verified sender.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "accounts_get_account",
+        "lists_get_lists",
+        "lists_get_list",
+        "segments_get_segments",
+        "senders_get_senders",
+        "email_campaign_management_create_email_campaign",
+        "email_campaign_management_get_email_campaign",
+        "domains_get_domains",
+        "email_campaign_management_update_email_campaign"
+      ],
+      "path": "skills/email-campaign-create",
+      "files": [
+        "SKILL.md"
+      ],
+      "sha256": "579e382c873fff2f1c6cde7328d56f739a15171774e095fa502c6a618a53bd69",
+      "source_sha256": "579e382c873fff2f1c6cde7328d56f739a15171774e095fa502c6a618a53bd69"
+    },
+    {
+      "name": "email-template-check",
+      "version": "1.0.0",
+      "status": "public",
+      "owner": "experience-design",
+      "summary": "Check email HTML against Brevo's template rules and fix what fails, before it is saved or sent.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "accounts_get_account",
+        "attributes_get_attributes",
+        "templates_get_smtp_template",
+        "templates_post_preview_smtp_email_templates"
+      ],
+      "path": "skills/email-template-check",
+      "files": [
+        "SKILL.md"
+      ],
+      "sha256": "838e426149d1423db4d8a5fafa6ce237cf858d447781cc2f708fd68b0421866f",
+      "source_sha256": "838e426149d1423db4d8a5fafa6ce237cf858d447781cc2f708fd68b0421866f"
+    },
+    {
+      "name": "email-template-to-dnd",
+      "version": "1.0.0",
+      "status": "public",
+      "owner": "experience-design",
+      "summary": "Turn email HTML into a design that opens in Brevo's drag-and-drop editor, and save it as a template.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "accounts_get_account",
+        "senders_get_senders",
+        "email_editor_create_template",
+        "templates_get_smtp_template",
+        "email_editor_convert_html",
+        "templates_update_smtp_template",
+        "domains_get_domains"
+      ],
+      "path": "skills/email-template-to-dnd",
+      "files": [
+        "SKILL.md",
+        "references/converter-notes.md",
+        "references/native-blocks.md"
+      ],
+      "sha256": "0c6dc1def77915e5fa7aaec5752acfd709970a3ed47d02e45f448f91f2e6489f",
+      "source_sha256": "0c6dc1def77915e5fa7aaec5752acfd709970a3ed47d02e45f448f91f2e6489f"
+    },
+    {
+      "name": "email-template-write",
+      "version": "1.0.0",
+      "status": "public",
+      "owner": "experience-design",
+      "summary": "Write the HTML of a Brevo email (campaign, automation or transactional) with personalization.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "accounts_get_account",
+        "attributes_get_attributes",
+        "senders_get_senders",
+        "templates_create_smtp_template",
+        "templates_get_smtp_template",
+        "templates_update_smtp_template",
+        "domains_get_domains",
+        "branding_get_brand"
+      ],
+      "path": "skills/email-template-write",
+      "files": [
+        "SKILL.md",
+        "references/copywriting.md",
+        "references/dnd-blocks.md",
+        "references/email-design-rules.md",
+        "references/footer.md",
+        "references/global-styles.md",
+        "references/sections.md",
+        "references/story-arcs.md",
+        "references/template-language.md",
+        "references/template-types.md"
+      ],
+      "sha256": "4e6a76430514073b3c12d9450a43497bc3f3bcc45c4b39f3aadbf5439057808f",
+      "source_sha256": "4e6a76430514073b3c12d9450a43497bc3f3bcc45c4b39f3aadbf5439057808f"
+    },
+    {
+      "name": "email-test-preview",
+      "version": "1.0.0",
+      "status": "public",
+      "owner": "experience-design",
+      "summary": "Preview a draft email and send a test of it to addresses the user names.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "email_campaign_management_get_email_campaign",
+        "templates_get_smtp_template",
+        "templates_send_test_template",
+        "email_campaign_management_send_test_email",
+        "templates_post_preview_smtp_email_templates",
+        "campaign_analytics_get_email_event_report",
+        "domains_get_domains"
+      ],
+      "path": "skills/email-test-preview",
+      "files": [
+        "SKILL.md"
+      ],
+      "sha256": "71f3dda45f82b606a0b54b4e60202607ca73f99fb23439a48343bf1e81dbaf24",
+      "source_sha256": "71f3dda45f82b606a0b54b4e60202607ca73f99fb23439a48343bf1e81dbaf24"
     }
   ]
 }

@@ -2,7 +2,7 @@
   "name": "email-template-to-dnd",
   "title": "Email HTML to drag-and-drop design",
   "version": "1.0.0",
-  "status": "draft",
+  "status": "public",
   "owner": "experience-design",
   "summary": "Turn email HTML into a design that opens in Brevo's drag-and-drop editor, and save it as a template.",
   "platforms": [
@@ -13,9 +13,13 @@
     "accounts_get_account",
     "senders_get_senders",
     "email_editor_create_template",
-    "templates_get_smtp_template"
+    "templates_get_smtp_template",
+    "email_editor_convert_html",
+    "templates_update_smtp_template",
+    "domains_get_domains"
   ],
   "tool_notes": {
-    "email_editor_create_template": "Save only a design returned by Brevo's HTML-to-design conversion, never a hand-written design. Confirm name, type, subject and sender with the user first. Transactional templates are created inactive. Then read the template back and check its sender email is set."
+    "email_editor_create_template": "Always pass type (template or automation_template; default automation_template) and senderId when a sender is known. newsletterContent is the design from email_editor_convert_html, unmodified. Confirm name, type, subject and sender first; then read the template back and check its sender email.",
+    "email_editor_convert_html": "Leave format json and normalize on. Before saving, tell the user what normalizer.dropped and normalizer.remaining list. Pass design unmodified as newsletterContent to email_editor_create_template; never yaml, never edited."
   }
 }

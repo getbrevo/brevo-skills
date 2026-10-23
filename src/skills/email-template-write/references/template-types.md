@@ -33,9 +33,9 @@ them do it in Brevo. Test sends don't need it.
 
 | Type | As HTML (code editor) | As a drag-and-drop design | Test |
 | --- | --- | --- | --- |
-| Campaign | The `email-campaign-create` skill (draft, no send time) | Not offered through the connection yet: save it as HTML | `email-test-preview` |
+| Campaign | The `email-campaign-create` skill (draft, no send time) | `email-template-to-dnd`, type `template`: a campaign template, created inactive; the user starts the campaign from it in Brevo | `email-test-preview` |
 | Transactional | `templates_create_smtp_template`, inactive, after the user confirmed name, subject and sender | `email-template-to-dnd`, type `template` (created inactive) | `email-test-preview` (test send, preview with sample `params`) |
-| Automation email | No tool accepts automation HTML today: give the HTML, the user pastes it into a new automation email in Brevo | `email-template-to-dnd`, type `automation_template`; attaching it to a workflow step is done in the automation editor | A test from the automation editor in Brevo |
+| Automation email | No tool accepts automation HTML: give the HTML, the user pastes it into a new automation email in Brevo | `email-template-to-dnd`, type `automation_template`; attaching it to a workflow step is done in the automation editor | A test from the automation editor in Brevo |
 
 Every save follows the safety rules: confirm the account, drafts or inactive templates only,
 no send without an explicit yes.

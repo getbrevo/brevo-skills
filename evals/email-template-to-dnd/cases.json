@@ -5,29 +5,31 @@
     {
       "id": "no-conversion-tool",
       "prompt": "Make this order confirmation editable in the drag-and-drop editor.",
-      "fixture": "Connection without an HTML-to-design conversion tool",
+      "fixture": "Connection without email_editor_convert_html",
       "expect": [
-        "says converting HTML to an editable design isn't offered by the connection yet",
+        "says the user's Brevo connection doesn't offer converting HTML into an editable design",
         "does not call email_editor_create_template with a hand-written design",
-        "offers the HTML route (save as an HTML transactional template)"
+        "offers what still works: the HTML (for example saved as an HTML transactional template)"
       ]
     },
     {
       "id": "happy-path-automation",
       "prompt": "Save this welcome email as an automation template I can edit visually.",
-      "fixture": "Connection with a conversion tool; active sender 'Yoga Example' <hello@example.com>",
+      "fixture": "email_editor_convert_html available; normalizer report: applied true, 1 change, nothing dropped or remaining; active sender ID 3 'Yoga Example' <hello@example.com>",
       "expect": [
-        "converts the HTML with the conversion tool and keeps the design out of the chat",
+        "calls email_editor_convert_html with the HTML, name and subject, leaving format (json) and normalize (on) at their defaults",
+        "keeps the design out of the chat",
+        "says the normalizer made 1 change and dropped nothing, before asking to save",
         "checks that headings, links and images are still in the design",
         "shows name, type, subject, preview text and sender, and waits for a yes",
-        "calls email_editor_create_template with type automation_template and the design unchanged",
+        "calls email_editor_create_template with type automation_template, senderId 3 and newsletterContent = the design exactly as returned",
         "lists the editor steps left and says attaching it to a workflow is done in the automation editor"
       ]
     },
     {
       "id": "tags-between-rows",
       "prompt": "Convert this email where {% if contact.VIP %} wraps a whole table row.",
-      "fixture": "Connection with a conversion tool",
+      "fixture": "email_editor_convert_html available",
       "expect": [
         "explains that a condition between section rows is lost on conversion",
         "moves the condition inside one paragraph, or tells the user to add a display condition in the editor"
@@ -38,17 +40,17 @@
       "prompt": "Save this as a drag-and-drop campaign draft.",
       "fixture": null,
       "expect": [
-        "says campaigns aren't saved as designs through the connection",
-        "offers email-campaign-create with the HTML instead"
+        "does not create a campaign draft from a design",
+        "offers to save it as a campaign template (type template) that the user picks when creating the campaign in Brevo, or a draft from the HTML with email-campaign-create"
       ]
     },
     {
       "id": "transactional-inactive",
       "prompt": "Save my password reset email as an editable transactional template and activate it.",
-      "fixture": "Connection with a conversion tool",
+      "fixture": "email_editor_convert_html and templates_update_smtp_template available",
       "expect": [
         "saves with type template after confirmation",
-        "says the template is created inactive and that activating it is done in Brevo (no update tool on the connection)"
+        "says the template is created inactive, and activates it with templates_update_smtp_template (isActive true) only after a separate yes"
       ]
     },
     {
@@ -58,19 +60,30 @@
       "expect": [
         "reads the saved template back with templates_get_smtp_template",
         "notices the missing sender email",
-        "sets it with templates_update_smtp_template (sender id 3) without a second read-back, and checks the sender email in the params {} render; or, without that tool, tells the user to set the sender in Brevo before testing",
+        "sets it with templates_update_smtp_template (sender id 3) without a second read-back, and checks the sender email in the params {} render",
         "says the save tool doesn't keep the sender name if it differs"
       ]
     },
     {
       "id": "loops-conditions-not-impossible",
       "prompt": "Can I have a section only VIP customers see and a list of their order items, in a drag-and-drop template?",
-      "fixture": "Connection with a conversion tool",
+      "fixture": "email_editor_convert_html available",
       "expect": [
         "does not say loops or conditions can't be built from HTML or are impossible in drag-and-drop",
         "says {% if %} and {% for %} work when each sits inside one text block and render at send time with params and contact data",
         "says a whole section wrapped in {% if %} or {% for %} won't become the editor's display condition or Dynamic content block, and that the user adds those native blocks in the editor if they want them",
         "says it in substance: 'Loops and conditions work in this template; they just won't become the editor's visual condition/Dynamic content blocks'"
+      ]
+    },
+    {
+      "id": "normalizer-dropped-remaining",
+      "prompt": "Turn this newsletter HTML from my old tool into a drag-and-drop template.",
+      "fixture": "email_editor_convert_html returns a design and normalizer.dropped = [a <ul> list of three items], normalizer.remaining = [an image without width]",
+      "expect": [
+        "tells the user, before asking to save, that the list was dropped and that the image without width is a problem left",
+        "fixes the HTML (for example the list as <p> lines) and converts again, or asks the user, before saving",
+        "never asks for format yaml and never edits the returned design",
+        "passes the design unmodified as newsletterContent"
       ]
     }
   ]

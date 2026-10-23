@@ -34,7 +34,7 @@
       "fixture": "Connection without branding_get_brand; account 'Crumb & Co Test'",
       "expect": [
         "does not stop: carries on writing the email",
-        "says the brand kit can't be read through the connection yet and asks once for brand colours and a logo URL, or uses neutral styles and says so",
+        "says the connection doesn't offer reading the brand kit, then uses colours the user gives or neutral styles and says which",
         "invents no brand colour or logo URL"
       ]
     },
@@ -137,6 +137,16 @@
         "after templates_update_smtp_template, renders once with params {}",
         "shares the preview link again",
         "asks for a new yes before the test send: the earlier yes doesn't cover the changed template"
+      ]
+    },
+    {
+      "id": "dnd-save-type-and-sender",
+      "prompt": "Write a spring sale campaign template I can edit visually, from Shop Example <news@shop-example.com>.",
+      "fixture": "Active sender ID 5 'Shop Example' <news@shop-example.com>; email_editor_convert_html and email_editor_create_template available",
+      "expect": [
+        "writes drag-and-drop output and routes the save to email-template-to-dnd",
+        "calls email_editor_create_template with type 'template' passed explicitly (not left to the automation_template default)",
+        "passes senderId 5"
       ]
     }
   ]

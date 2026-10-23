@@ -1,6 +1,6 @@
 ---
 name: email-brand-kit
-description: Use when the user wants an email in their brand (logo, colours, fonts, social links), asks what their Brevo brand kit holds, wants to set up or refresh their brand kit from their website, or wants to change one part of it (logo, colours, fonts, social links, custom social icons, brand website). Reads the account's brand kit and turns it into concrete email styles for email-template-write. Suggests a kit from the user's website (a limited lookup that changes no brand values), shows the current kit next to the suggestion, and saves only the parts the user approves, in as few calls as the hourly limit needs. Never invents brand values. Needs Brevo's brand-kit tools on the connection; without them, says so and uses values the user gives or neutral styles.
+description: Use when the user wants an email in their brand (logo, colours, fonts, social links), asks what their Brevo brand kit holds, wants to set up or refresh their brand kit from their website, or wants to change one part of it (logo, colours, fonts, social links, custom social icons, brand website). Reads the account's brand kit and turns it into concrete email styles for email-template-write. Suggests a kit from the user's website (a limited lookup that changes no brand values), shows the current kit next to the suggestion, and saves only the parts the user approves, in as few calls as the hourly limit needs. Never invents brand values.
 ---
 
 # Email brand kit
@@ -13,15 +13,15 @@ values, and never sends anything.
 | Step | Tool |
 |---|---|
 | Name the account | `accounts_get_account` |
-| Read the brand kit | `branding_get_brand` (not on the MCP server yet: see Requirements) |
-| Suggest a kit from a website (limited lookup; changes no brand values) | `branding_fetch_brand_from_website` (not yet) |
-| Save the approved parts of the kit | `branding_update_brand` (not yet) |
-| Save the brand website | `branding_update_website` (not yet) |
-| Add or change a custom social icon | `branding_upsert_social_icon` (not yet) |
+| Read the brand kit | `branding_get_brand` |
+| Suggest a kit from a website (limited lookup; changes no brand values) | `branding_fetch_brand_from_website` |
+| Save the approved parts of the kit | `branding_update_brand` |
+| Save the brand website | `branding_update_brand_website` |
+| List the account's custom social icons (their ids) | `branding_get_social_icons` |
+| Add or change a custom social icon | `branding_upsert_social_icon` |
 
-If `accounts_get_account` isn't in your tool list, stop and tell the user their Brevo
-connection doesn't offer this feature yet. For the brand-kit tools, step 1 says what to do
-instead.
+If a tool a step needs isn't in your tool list, stop that step and tell the user their Brevo
+connection doesn't offer it (connection rules below).
 
 <!-- include: shared/connection.md -->
 
@@ -71,23 +71,18 @@ instead.
   | Style an email from the kit | 1 (the read) |
   | Set up from a website | 3: read, lookup, one save (2 if the kit was already read in this conversation); one more if the website is saved too |
   | Change one part | 2: read, save (1 if the kit was already read in this conversation) |
-  | Add a custom social icon and its link | 3: read, icon, save |
+  | Add a custom social icon and its link | 4: read, icon list, icon, save (3 when an existing icon is reused) |
 
   No read-back after a save: the save answers only "Data stored successfully", so say what
   was sent. On 429, stop and don't retry: tell the user the hourly limit for brand-kit calls
   is reached, that Brevo doesn't say how long to wait, and to try again within the hour.
   Nothing more is called; a kit already cached stays usable for styling, and you say so.
 
-## 1. Check the tools
+## 1. Sub-account or main account
 
-If `branding_get_brand` isn't in your tool list, tell the user: "Your Brevo connection can't
-read or change your brand kit yet." Then:
-
-- **Styling an email:** ask once for a logo URL, brand colours (`#RRGGBB`), fonts and social
-  links, or go on with the neutral styles in step 2 and say so. Hand the result to
-  `email-template-write` as in step 2.
-- **Setting up or changing the kit:** say it can be done in Brevo's brand kit settings
-  (https://app.brevo.com/branding/edit-brand/), and stop. Don't improvise with other tools.
+On a sub-account, pass its `subaccount_id` on every brand-kit call: each sub-account has its
+own kit. Never read or save the main account's kit in its place, and keep the cached kit per
+account and sub-account.
 
 ## 2. Read the kit and turn it into email styles
 
@@ -154,7 +149,7 @@ Tell the user, and offer to move a darker kit
 colour to the front of the list (a colours save), since the editor uses the first colour for
 their branded templates as it is. Never lighten, darken or blend a kit colour into a new one.
 
-**Neutral styles** (empty kit, or no tool): `Arial, Helvetica, sans-serif`; text `#333333`;
+**Neutral styles** (empty kit): `Arial, Helvetica, sans-serif`; text `#333333`;
 headings `#2B2B2B`; buttons `#2B2B2B` with `#FFFFFF` text; links `#2B2B2B`; no logo (a
 placeholder); social links only if the user gave them.
 
@@ -221,7 +216,7 @@ to save them to the kit too (step 4).
    Fonts and social links are whole lists: send the full list as it should end up, including
    entries the user keeps.
 6. **Website:** if the looked-up website differs from the kit's and the user agrees, save it
-   with `branding_update_website` (`{"website": "<address>"}`).
+   with `branding_update_brand_website` (`{"website": "<address>"}`).
 7. **Say in one line what was saved** (no read-back: see Limits) and update the cached kit. Then offer to style an email
    with it (step 2), using the read plus the saved values.
 
@@ -239,13 +234,14 @@ after, a yes, save that part with `partialUpdateField`. No read-back: update the
 - **Social links:** `socialMediaLinks` is saved as a whole list. To add a link, send the
   current list plus the new one; to remove one, send the list without it, after showing which
   link disappears. Networks come from the fixed list in the field rules.
-- **Custom social icon** (a network not on the list): look in the read's `socialMediaIcons`
-  and reuse an icon with the same title. Otherwise ask for a public `https://` PNG and a title,
-  confirm, then `branding_upsert_social_icon` with `title` and `thumbnailUrl`; it returns the
-  icon's `id`. Then add a link `{"name": "custom-icon", "id": "<id>", "url": "<profile url>"}`
+- **Custom social icon** (a network not on the list): before adding a `custom-icon` link,
+  list the account's custom icons with `branding_get_social_icons` (each `id`, `title`,
+  `thumbnailUrl`) and reuse an icon with the same title. Otherwise ask for a public `https://`
+  PNG and a title, confirm, then `branding_upsert_social_icon` with `title` and
+  `thumbnailUrl`; it returns the icon's `id`. Then add a link `{"name": "custom-icon", "id": "<id>", "url": "<profile url>"}`
   as above. Passing an existing `id` changes that icon in every email that uses it: say so
   before saving.
-- **Website:** `branding_update_website`. An empty value clears it: send one only when the
+- **Website:** `branding_update_brand_website`. An empty value clears it: send one only when the
   user asks to clear it. It doesn't start a lookup and doesn't change the company details in
   the account settings.
 
@@ -266,15 +262,11 @@ after, a yes, save that part with `partialUpdateField`. No read-back: update the
 
 ## Requirements
 
-- **Sub-accounts:** the proposed brand-kit tools take no sub-account ID, so a sub-account's
-  own kit can't be read or saved until they do. On a sub-account, say so and use values the
-  user gives or neutral styles (step 1); never read or save the main account's kit in its
-  place.
-- **Brand-kit tools:** not on the Brevo MCP server yet. Until they are, this skill reads and
-  saves nothing: step 1 applies (values typed by the user, or neutral styles, said plainly).
-  The proposed tool names are `branding_get_brand`, `branding_fetch_brand_from_website`,
-  `branding_update_brand`, `branding_update_website` and `branding_upsert_social_icon`;
-  they are confirmed here when they ship.
+- **Tools:** `accounts_get_account`, `branding_get_brand`,
+  `branding_fetch_brand_from_website`, `branding_update_brand`,
+  `branding_update_brand_website`, `branding_get_social_icons` and
+  `branding_upsert_social_icon`. Each takes `subaccount_id` to act on a sub-account's kit
+  (step 1).
 - Deleting a brand kit or a custom social icon isn't offered through the connection.
 
 <!-- include: shared/output-rules.md -->

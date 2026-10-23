@@ -1,0 +1,10 @@
+interface:
+  display_name: "Preview and test-send an email"
+  short_description: "Preview a draft email and send a test of it to addresses the user names."
+dependencies:
+  tools:
+    - type: mcp
+      value: brevo
+      description: "Brevo MCP server"
+      transport: streamable_http
+      url: https://mcp.brevo.com/v1/openai/mcp

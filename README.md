@@ -8,6 +8,13 @@ keys to copy anywhere.
 | Skill | Status | What it does | Source |
 |---|---|---|---|
 | [`brevo-cli`](src/skills/brevo-cli/SKILL.md) | public | Uses the Brevo Developer CLI to manage OAuth apps, UI apps and Brevo Functions | Synced from [getbrevo/brevo-cli](https://github.com/getbrevo/brevo-cli) |
+| [`email`](src/skills/email/SKILL.md) | public | Route an email request to the right email skill, after confirming the account | This repo |
+| [`email-template-write`](src/skills/email-template-write/SKILL.md) | public | Write the HTML of a Brevo email (campaign, automation or transactional) with personalization | This repo |
+| [`email-template-check`](src/skills/email-template-check/SKILL.md) | public | Check email HTML against Brevo's template rules and fix what fails, before it is saved or sent | This repo |
+| [`email-template-to-dnd`](src/skills/email-template-to-dnd/SKILL.md) | public | Turn email HTML into a design that opens in Brevo's drag-and-drop editor, and save it as a template | This repo |
+| [`email-campaign-create`](src/skills/email-campaign-create/SKILL.md) | public | Create a Brevo email campaign as a draft from finished HTML, for a chosen list and a verified sender | This repo |
+| [`email-test-preview`](src/skills/email-test-preview/SKILL.md) | public | Preview a draft email and send a test of it to addresses the user names | This repo |
+| [`email-brand-kit`](src/skills/email-brand-kit/SKILL.md) | public | Read the account's brand kit (logo, colours, fonts, social links) as email styles, and set it up or change it after the user approves | This repo |
 
 Skills marked **Synced from** are edited in their source repo, not here: the next sync
 overwrites local changes.
@@ -63,6 +70,5 @@ Contributions follow [CONTRIBUTING.md](CONTRIBUTING.md). Report security problem
 
 Licensed under [MIT](LICENSE).
 
-> **Status:** pre-release. Only `brevo-cli` ships for now: the skills that drive the Brevo MCP
-> server (`brevo`, `email-test-send` and `email-template-from-html`) land once their tools are on the
-> server. `getbrevo/brevo-skills` is a working name.
+> **Status:** pre-release. `brevo-cli` and the email skills ship; the email skills drive the
+> Brevo MCP server. `getbrevo/brevo-skills` is a working name.

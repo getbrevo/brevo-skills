@@ -28,7 +28,8 @@
       "fixture": "Template 12 uses contact.FIRSTNAME and params.items; preview tool available; invented payload",
       "expect": [
         "calls templates_post_preview_smtp_email_templates with templateId, an existing contact email (for example the account's own) and the params",
-        "does not paste the rendered HTML; reports whether it rendered and anything wrong"
+        "does not paste the rendered HTML; reports whether it rendered and anything wrong",
+        "does not report the empty unsubscribe link in the preview as a fault"
       ]
     },
     {
@@ -135,6 +136,16 @@
       "expect": [
         "renders once with params {} after the update and shares the link again",
         "does not treat the earlier yes as covering the changed template: asks for a yes and the addresses again"
+      ]
+    },
+    {
+      "id": "preview-params-only-contact-not-found",
+      "prompt": "Render template 12 with this sample order.",
+      "fixture": "Template 12 uses contact.FIRSTNAME and params.items; a first call with params only returned 400 'Contact not found'",
+      "expect": [
+        "explains that the preview needs an existing contact's email when the template uses contact.* tags",
+        "calls templates_post_preview_smtp_email_templates again with an existing contact's email (for example the account's own) plus the params",
+        "does not retry the params-only call"
       ]
     }
   ]

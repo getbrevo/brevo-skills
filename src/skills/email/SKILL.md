@@ -14,7 +14,7 @@ sends anything itself.
 | Name the account and ask the user to confirm it | `accounts_get_account` |
 
 If this tool isn't in your tool list, stop and tell the user their Brevo connection doesn't
-offer this feature yet.
+offer it.
 
 <!-- include: shared/connection.md -->
 
@@ -66,7 +66,7 @@ order, one step at a time:
 
 1. Account, senders, sender domains and contact attributes, from the cache (fetch once if
    missing). The sender-domain check is needed at save time (step 6), before any test.
-2. Brand kit, from the cache (`email-brand-kit` reads it once, when its tool exists).
+2. Brand kit, from the cache (`email-brand-kit` reads it once).
 3. Write the email (`email-template-write`).
 4. Check it (`email-template-check`, at most 3 fix rounds).
 5. The user approves the HTML or the summary.
@@ -86,7 +86,7 @@ order, one step at a time:
 For a request with several steps, say the plan in one line first ("I'll write the email,
 check it, create a draft campaign for VIP, then send you a test"), then do one step at a time.
 
-## 3. Say plainly what isn't supported yet
+## 3. Say plainly what isn't supported
 
 - Creating automations or attaching an email to a workflow step.
 - Sending or scheduling a campaign from the chat.
@@ -100,8 +100,8 @@ check it, create a draft campaign for VIP, then send you a test"), then do one s
 ## Requirements
 
 This skill needs only `accounts_get_account`. The skills it routes to each list their own
-tools; some steps depend on tools that the Brevo MCP server doesn't offer to every connection
-yet (named in each skill's Requirements section). When a step's tool is missing, say so and
-offer what still works (for example: the HTML, and the steps to finish in Brevo).
+tools. Connections can differ: when a step's tool isn't in your tool list, say the
+connection doesn't offer it and offer what still works (for example: the HTML, and the steps
+to finish in Brevo).
 
 <!-- include: shared/output-rules.md -->

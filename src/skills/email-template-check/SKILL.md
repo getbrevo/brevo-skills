@@ -6,8 +6,8 @@ description: Checks Brevo email HTML against Brevo's template rules and fixes wh
 # Check an email template
 
 Checks one email's HTML and template language against Brevo's rules, fixes what fails, and
-reports the result in one line. Brevo doesn't offer an automatic template check through the
-connection yet, so this is a checklist you apply yourself, and the report says so. It never
+reports the result in one line. Brevo has no automatic template check through the
+connection, so this is a checklist you apply yourself, and the report says so. It never
 saves or sends anything.
 
 | Step | Tool |
@@ -15,9 +15,10 @@ saves or sends anything.
 | The account's contact attribute names | `attributes_get_attributes` |
 | An existing contact email for a preview (the account's own email) | `accounts_get_account` |
 | Read a saved template to check it, one at a time | `templates_get_smtp_template` |
+| Render a saved template on Brevo's servers (step 4) | `templates_post_preview_smtp_email_templates` |
 
-If one of these tools isn't in your tool list, stop and tell the user their Brevo
-connection doesn't offer this feature yet.
+If a tool a step needs isn't in your tool list, stop that step and tell the user their Brevo
+connection doesn't offer it (connection rules below).
 
 <!-- include: shared/connection.md -->
 
@@ -125,15 +126,18 @@ media query, `img{border:0}`) are not stray `}}` or borders without a colour.
 - Go through the checklist again. **Stop after 3 rounds** and show the user what is still
   wrong, with your suggestion for each.
 
-## 4. Preview (optional, when the connection offers it)
+## 4. Preview a saved template
 
-If your tool list has `templates_post_preview_smtp_email_templates`, a saved template can be
-rendered on Brevo's servers, which catches template errors the checklist can miss:
+A saved template is rendered on Brevo's servers with
+`templates_post_preview_smtp_email_templates`, which catches template errors the checklist
+can miss:
 
 - Pass `templateId` and `email` of an **existing contact**: the account's own email (cached
   from `accounts_get_account`) works. For automation and transactional templates, also pass the
-  sample `params`. With `params` alone, the preview fails with "Contact not found" whenever
-  the template uses contact attributes.
+  sample `params`. With `params` alone (no `email`), the preview fails with 400 "Contact not
+  found" whenever the template uses `contact.*` tags.
+- The unsubscribe link renders with an empty `href` in a preview. That is expected, not a
+  failure: check that `{{ unsubscribe }}` is in the HTML instead.
 - Render three times: with the full sample; with empty lists and missing optional keys; and
   with `params: {}`. The last one is what a test send renders: **test sends carry no params**,
   so every `params` line and `params` in the subject come out blank, and a filter that needs
@@ -142,7 +146,7 @@ rendered on Brevo's servers, which catches template errors the checklist can mis
 - An error in the response is a real failure: fix it and check again (it counts as a round).
 - Don't paste the rendered HTML into the chat; say whether it rendered, and quote any error.
 
-If the tool isn't there, skip this step and say so in the report.
+HTML that isn't saved yet has no server render: skip this step and say so in the report.
 
 ## 5. Report in one line
 
@@ -159,9 +163,9 @@ Add "Rendered on Brevo's servers: no errors" only when step 4 ran. Then offer a 
 
 ## Requirements
 
-`templates_post_preview_smtp_email_templates` (render a template with a contact and sample
-`params`) isn't offered to every connection yet; step 4 is skipped without it. There is no
-automatic template-validation tool on the Brevo MCP server yet: until there is one, this
-skill is a checklist, and its report always says no automatic validation was run.
+`templates_post_preview_smtp_email_templates` renders a saved template with a contact and
+sample `params` (step 4). There is no automatic template-validation tool on the Brevo MCP
+server: this skill is a checklist, and its report always says no automatic validation was
+run.
 
 <!-- include: shared/output-rules.md -->

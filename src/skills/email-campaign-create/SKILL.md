@@ -16,9 +16,11 @@ never creates a second campaign to fix the first without the user's go-ahead.
 | Pick an active sender | `senders_get_senders` |
 | Create the draft | `email_campaign_management_create_email_campaign` |
 | Report back what was created | `email_campaign_management_get_email_campaign` |
+| Check the sender's domain is authenticated | `domains_get_domains` |
+| Change a draft in place, after a yes | `email_campaign_management_update_email_campaign` |
 
-If one of these tools isn't in your tool list, stop and tell the user their Brevo
-connection doesn't offer this feature yet.
+If a tool a step needs isn't in your tool list, stop that step and tell the user their Brevo
+connection doesn't offer it (connection rules below).
 
 <!-- include: shared/connection.md -->
 
@@ -45,8 +47,8 @@ connection doesn't offer this feature yet.
    (verified) sender. Prefer the one the user named; with several and no preference, ask. With no active sender, stop: tell
    the user to add and verify a sender in Brevo. Never invent a sender address. If the
    sender's domain isn't authenticated in the account, or is a free mailbox domain
-   (gmail.com, yahoo.com), warn that Gmail and Yahoo reject or bounce that mail (DMARC); if
-   `domains_get_domains` is in your tool list, use it to check. Let the user choose.
+   (gmail.com, yahoo.com), warn that Gmail and Yahoo reject or bounce that mail (DMARC);
+   check it with `domains_get_domains` (cached with the senders). Let the user choose.
 
 ## 3. Confirm, then create the draft
 
@@ -72,14 +74,10 @@ report: name, ID, status (draft), list, sender, and where to find it in Brevo
 
 ## 4. Change a draft
 
-The connection may not offer campaign updates (see Requirements). When the user asks for a
-change:
-
-- If `email_campaign_management_update_email_campaign` is in your tool list: change only what
-  was asked (subject, preview text or HTML), after confirming. Never pass `scheduledAt` or
-  `sendAtBestTime`.
-- Otherwise: tell the user to make the change on the draft in Brevo (Campaigns, Email). Create a new draft
-  only if they ask for one, and say the old draft stays.
+When the user asks for a change, show what changes and, on a yes, call
+`email_campaign_management_update_email_campaign` with only what was asked (subject, preview
+text or HTML). Never pass `scheduledAt` or `sendAtBestTime`. Never create a second draft
+instead, unless the user asks for one; then say the old draft stays.
 
 ## 5. Ready to send (the user sends it)
 
@@ -110,15 +108,11 @@ in Brevo. Offer a test first with `email-test-preview`.
 
 ## Requirements
 
-Uses only tools on the Brevo MCP server today for the draft itself. Not offered to every
-connection yet:
-
-- `email_campaign_management_update_email_campaign`: change a draft in place (step 4 falls
-  back to editing in Brevo).
+- `email_campaign_management_update_email_campaign` changes a draft in place (step 4);
+  `domains_get_domains` checks that the sender's domain is authenticated.
 - Sending and scheduling (`email_campaign_management_send_email_campaign_now`,
-  `email_campaign_management_update_campaign_status`): deliberately not used by this skill;
-  the user sends from Brevo.
-- `domains_get_domains`: checks that the sender's domain is authenticated; without it, the
-  sender step warns and the user checks in Brevo (Senders, Domains).
+  `email_campaign_management_update_campaign_status`) are on the server but deliberately not
+  used by this skill: the user sends from Brevo.
+- On a sub-account, every call passes `subaccount_id`.
 
 <!-- include: shared/output-rules.md -->

@@ -8,17 +8,14 @@ All notable changes to this project are listed here. Versions follow
 
 ### Added
 
-- Email skills, all `draft` 1.0.0 (validated, not shipped yet): `email` (entry point for
+- Email skills, all `public` 1.0.0: `email` (entry point for
   email work: account check, routing, safety rules), `email-template-write`,
   `email-template-check`, `email-template-to-dnd`, `email-campaign-create` and
-  `email-test-preview`, with eval cases. Some steps wait for MCP tools that aren't on every
-  connection yet; each skill's Requirements section names them.
-- `email-brand-kit` (draft 1.0.0): reads the account's brand kit (logo, colours, fonts,
+  `email-test-preview`, with eval cases. Each skill's Requirements section names its tools.
+- `email-brand-kit` (public 1.0.0): reads the account's brand kit (logo, colours, fonts,
   social links) and turns it into email styles; sets it up from the user's website or changes
   one part, only after the user approves a before/after. `email`, `email-template-write` and
-  `email-template-to-dnd` route to it and apply brand styles to the editor's Style tab. The
-  brand-kit tools aren't on the Brevo MCP server yet; until then the skill says so and uses
-  values the user gives or neutral styles.
+  `email-template-to-dnd` route to it and apply brand styles to the editor's Style tab.
 - Email skills, after an end-to-end test on a test account: a test send's 204 is reported as
   queued and its outcome read from the send events (or the user checks the logs); test sends
   carry no params, so the check renders with `params: {}` and every value-needing filter is
@@ -47,8 +44,18 @@ All notable changes to this project are listed here. Versions follow
   the field rules (a web font gets a standard fallback), dropped fonts shown before a fonts
   save, button labels need 4.5:1 contrast, kit social links whose host doesn't match the
   network are flagged, `https://` preferred for the website, the kit's name used as the brand
-  name, the lookup described as changing no brand values, and sub-account kits marked as not
-  supported until the tools take a sub-account. Evals added.
+  name, and the lookup described as changing no brand values. Evals added.
+- Email skills use the Brevo MCP tools now live: `email-template-to-dnd` converts with
+  `email_editor_convert_html` (JSON design, normalizer on by default; the user hears what
+  `normalizer.dropped` and `normalizer.remaining` list before the save) and passes `design`
+  unmodified as `newsletterContent`; saves always pass `type` (`template` for campaign and
+  transactional templates) and `senderId`; campaign templates can be saved as designs. Brand
+  kit: `branding_update_brand_website` (was `branding_update_website`),
+  `branding_get_social_icons` before a custom-icon link, and sub-account kits through
+  `subaccount_id`. Template previews need an existing contact's email when the template uses
+  `contact.*` tags, and show the unsubscribe link empty. The per-tool "not on the server yet"
+  notes and their fallbacks are gone; one connection rule covers a tool missing from a
+  connection. `requires_tools` lists every tool each skill calls.
 - Grok: `.grok-plugin/marketplace.json`, and the MCP server declared in its manifest (Grok
   reads `.mcp.json` or the manifest, not `mcp.json`). Cursor declares the server inline too.
 - `yarn new-skill`: scaffolds a skill (`skill.json` as a draft, a `SKILL.md` skeleton

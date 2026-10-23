@@ -15,7 +15,7 @@
         "keeps text #333333 and headings #2B2B2B (not taken from the kit)",
         "body font stack starts with Verdana and headings use Georgia",
         "hands email-template-write a 'Brand styles' block with the logo URL, colours, fonts, both social links and the website exactly as stored",
-        "makes no save call (branding_update_brand, branding_update_website, branding_upsert_social_icon)"
+        "makes no save call (branding_update_brand, branding_update_brand_website, branding_upsert_social_icon)"
       ]
     },
     {
@@ -72,11 +72,11 @@
       "prompt": "Add our podcast to the brand kit's social links: https://podcast-example.com/show, icon https://www.example.com/podcast.png. Also remove the twitter link.",
       "fixture": "Connection with every brand-kit tool. Kit social links: twitter https://twitter.com/brand-example, instagram https://www.instagram.com/brand-example. No custom icons",
       "expect": [
-        "reads the kit once and finds no icon to reuse in its socialMediaIcons",
+        "reads the kit once and lists the custom icons with branding_get_social_icons, finding none to reuse",
         "confirms the icon title and image, then calls branding_upsert_social_icon with title and thumbnailUrl",
         "shows the social links before and after (twitter removed, podcast added as custom-icon with the new id, instagram kept) and waits for a yes",
         "calls branding_update_brand once with partialUpdateField 'socialMediaLinks' and the full list: instagram plus the custom-icon link",
-        "makes 3 brand-kit calls in total (read, icon, save) and no read-back"
+        "makes 4 brand-kit calls in total (read, icon list, icon, save) and no read-back"
       ]
     },
     {
@@ -95,8 +95,8 @@
       "prompt": "Change my brand colours to #0B5FFF and #101828.",
       "fixture": "Connection without any brand-kit tool",
       "expect": [
-        "says the connection can't read or change the brand kit yet",
-        "points to Brevo's brand kit settings and stops",
+        "says the user's Brevo connection doesn't offer reading or changing the brand kit, and saves nothing",
+        "says the colours can be changed in Brevo's brand kit settings",
         "never asks for an API key and calls no other tool to work around it"
       ]
     },
@@ -170,14 +170,14 @@
       ]
     },
     {
-      "id": "subaccount-no-kit",
+      "id": "subaccount-kit",
       "prompt": "Write an email in my brand for sub-account 42.",
-      "fixture": "Working on sub-account 42; brand-kit tools available but take no sub-account ID",
+      "fixture": "Working on sub-account 42; the brand-kit tools take subaccount_id. Sub-account 42's kit: colours #3D5A40, fonts Verdana (paragraph, standard)",
       "expect": [
-        "says the sub-account's own brand kit can't be read until the brand-kit tools take a sub-account",
+        "calls branding_get_brand with subaccount_id 42",
         "does not read or save the main account's kit in its place",
-        "asks for brand values or uses neutral styles and says so",
-        "passes subaccount_id 42 on every other Brevo call"
+        "styles the email from sub-account 42's kit",
+        "passes subaccount_id 42 on every Brevo call"
       ]
     }
   ]

@@ -17,7 +17,7 @@ successfully"; it doesn't return the kit.
 | Social links (the whole list) | `{"partialUpdateField": "socialMediaLinks", "socialMediaLinks": [{"name": "instagram", "url": "https://www.instagram.com/brand-example"}]}` |
 | All four parts (two or more approved) | `{"logo": "...", "colors": [...], "fonts": [...], "socialMediaLinks": [...]}`: approved parts as approved, the others copied exactly from the kit as read. Replaces those four parts (an empty or missing one is emptied); leaves the website, name, custom icons and lookup counters alone. Never add `socialLinks` |
 
-Website: `branding_update_website` with `{"website": "https://www.example.com"}`.
+Website: `branding_update_brand_website` with `{"website": "https://www.example.com"}`.
 Custom icon: `branding_upsert_social_icon` with `{"title": "Podcast", "thumbnailUrl": "https://www.example.com/podcast.png"}`, plus `"id"` to change an existing one.
 
 ## Field rules
@@ -33,7 +33,7 @@ Custom icon: `branding_upsert_social_icon` with `{"title": "Podcast", "thumbnail
 | `custom` font | A font file the account uploaded in Brevo: needs its `id` and a `fallback` from the 12 fonts below. It can't be uploaded through the connection |
 | `socialMediaLinks[].name` | A network from the list below |
 | `socialMediaLinks[].url` | An `http(s)://` link, a `mailto:` address or a `tel:` number, on the network's own host (`facebook` on facebook.com); `website`, `link` and `custom-icon` can point anywhere |
-| `custom-icon` link | Also needs the `id` of an existing custom icon (the kit's `socialMediaIcons`) |
+| `custom-icon` link | Also needs the `id` of an existing custom icon (`branding_get_social_icons`, or the kit's `socialMediaIcons`) |
 | Custom icon `title` | 1 to 50 characters: letters, digits, spaces, `_` or `-`, starting with a letter or digit |
 | `website` | A real website address; an empty value clears it |
 

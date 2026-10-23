@@ -1,0 +1,10 @@
+interface:
+  display_name: Email
+  short_description: "Route an email request to the right email skill, after confirming the account."
+dependencies:
+  tools:
+    - type: mcp
+      value: brevo
+      description: "Brevo MCP server"
+      transport: streamable_http
+      url: https://mcp.brevo.com/v1/openai/mcp

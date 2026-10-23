@@ -1,0 +1,10 @@
+interface:
+  display_name: "Write an email template"
+  short_description: "Write the HTML of a Brevo email (campaign, automation or transactional) with personalization."
+dependencies:
+  tools:
+    - type: mcp
+      value: brevo
+      description: "Brevo MCP server"
+      transport: streamable_http
+      url: https://mcp.brevo.com/v1/openai/mcp

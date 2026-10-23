@@ -2,7 +2,7 @@
   "name": "email-template-check",
   "title": "Check an email template",
   "version": "1.0.0",
-  "status": "draft",
+  "status": "public",
   "owner": "experience-design",
   "summary": "Check email HTML against Brevo's template rules and fix what fails, before it is saved or sent.",
   "platforms": [
@@ -12,7 +12,8 @@
   "requires_tools": [
     "accounts_get_account",
     "attributes_get_attributes",
-    "templates_get_smtp_template"
+    "templates_get_smtp_template",
+    "templates_post_preview_smtp_email_templates"
   ],
   "tool_notes": {
     "templates_get_smtp_template": "Fetch saved templates one at a time by ID. Listing templates returns the full HTML of every template, so never list many at once; if you must list, use limit 1."

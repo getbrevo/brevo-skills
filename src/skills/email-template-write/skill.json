@@ -2,7 +2,7 @@
   "name": "email-template-write",
   "title": "Write an email template",
   "version": "1.0.0",
-  "status": "draft",
+  "status": "public",
   "owner": "experience-design",
   "summary": "Write the HTML of a Brevo email (campaign, automation or transactional) with personalization.",
   "platforms": [
@@ -14,7 +14,10 @@
     "attributes_get_attributes",
     "senders_get_senders",
     "templates_create_smtp_template",
-    "templates_get_smtp_template"
+    "templates_get_smtp_template",
+    "templates_update_smtp_template",
+    "domains_get_domains",
+    "branding_get_brand"
   ],
   "tool_notes": {
     "templates_create_smtp_template": "Create the template inactive (isActive false) unless the user asks to activate it, and only after the user confirmed its name, subject and sender. Pass HTML that has been through the email-template-check list."

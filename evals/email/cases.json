@@ -48,7 +48,7 @@
       "prompt": "Build me a welcome automation workflow that sends three emails.",
       "fixture": null,
       "expect": [
-        "says creating automations isn't supported yet",
+        "says creating automations isn't supported",
         "offers to write the three emails (email-template-write) and save them as automation templates (email-template-to-dnd)",
         "says attaching them to workflow steps is done in Brevo's automation editor"
       ]

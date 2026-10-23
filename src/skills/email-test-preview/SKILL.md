@@ -14,13 +14,13 @@ confirmation of the addresses. It never sends a campaign to its recipients.
 | Find the draft campaign | `email_campaign_management_get_email_campaign` |
 | Find the template, one at a time | `templates_get_smtp_template` |
 | Test-send a transactional template | `templates_send_test_template` |
-| Test-send a campaign | `email_campaign_management_send_test_email` (see Requirements) |
-| Render a template with sample data | `templates_post_preview_smtp_email_templates` (see Requirements) |
-| Check what happened to a template test send | `campaign_analytics_get_email_event_report` (see Requirements) |
-| Check the sender's domain is authenticated | `domains_get_domains` (see Requirements) |
+| Test-send a campaign | `email_campaign_management_send_test_email` |
+| Render a template with sample data | `templates_post_preview_smtp_email_templates` |
+| Check what happened to a template test send | `campaign_analytics_get_email_event_report` |
+| Check the sender's domain is authenticated | `domains_get_domains` |
 
-If one of the first three tools isn't in your tool list, stop and tell the user their Brevo
-connection doesn't offer this feature yet. For the others, follow the fallback in each step.
+If a tool a step needs isn't in your tool list, stop that step and tell the user their Brevo
+connection doesn't offer it (connection rules below).
 
 <!-- include: shared/connection.md -->
 
@@ -42,12 +42,15 @@ connection doesn't offer this feature yet. For the others, follow the fallback i
 the "shared template" link as a preview: it is a link to import the email into another Brevo
 account, and opens a sign-in page, not the email.
 
-**Transactional template:** if `templates_post_preview_smtp_email_templates` is in your tool
-list, render it on Brevo's servers:
+**Template:** render it on Brevo's servers with
+`templates_post_preview_smtp_email_templates`:
 
 - Pass `templateId` and `email` of an **existing contact** (the account's own email works),
-  plus the sample `params` when the template uses `params.*`. With `params` alone the render
-  fails with "Contact not found" whenever the template uses contact attributes.
+  plus the sample `params` when the template uses `params.*`. With `params` alone (no
+  `email`) the render fails with 400 "Contact not found" whenever the template uses
+  `contact.*` tags.
+- The unsubscribe link renders with an empty `href` in the preview: expected, not a fault
+  (it is filled in for real sends).
 - Use invented sample data, never a real customer's.
 - Render three times: with the full sample; with empty lists and missing optional keys; and
   with `params: {}`, which is what a test send uses (see step 4). A drag-and-drop copy of HTML
@@ -55,9 +58,6 @@ list, render it on Brevo's servers:
   returns the whole HTML, so don't repeat what the HTML version proved.
 - Don't paste the rendered HTML into the chat: report the subject, whether it rendered, and
   anything that looks wrong (an empty greeting, a missing item line, literal `{{ }}`).
-
-Without the tool, say the server preview isn't available on this connection, and go on to
-the preview link.
 
 ## 3. Share the preview link, then stop
 
@@ -82,14 +82,13 @@ date) fails the whole email, so nothing arrives. Tell the user before sending th
 shows the layout and contact data only, not their sample order; the `params: {}` render in
 step 2 shows what the test will look like. A test works on an inactive template.
 
-**Check the sender's domain first.** Read the sender (template or campaign) and, if
-`domains_get_domains` is in your tool list, look for the sender's email domain in the
+**Check the sender's domain first.** Read the sender (template or campaign) and look for the sender's email domain in the
 account's domains (cached with the senders). When the domain isn't there or isn't
 authenticated, or it is a free or shared mailbox domain (gmail.com, yahoo.com and the
 like), warn: Gmail and Yahoo reject or bounce mail from unauthenticated domains (DMARC),
 so the test may never arrive. Suggest authenticating the domain in Brevo (Senders,
-Domains) or using a sender on an authenticated domain. Without the tool, say you couldn't
-check the domain and give the same warning as a possibility. Let the user decide; don't block the test.
+Domains) or using a sender on an authenticated domain. Let the user decide; don't block the
+test.
 
 Show, and ask "Send it?":
 
@@ -105,9 +104,8 @@ On a yes in this conversation:
 
 - **Template:** `templates_send_test_template` with `templateId` and `emailTo` = exactly the
   confirmed addresses.
-- **Campaign:** if `email_campaign_management_send_test_email` is in your tool list, call it
-  with `campaignId` and `emailTo` = exactly the confirmed addresses. Without it, tell the user
-  to use Preview & test on the draft in Brevo (Campaigns, Email).
+- **Campaign:** `email_campaign_management_send_test_email` with `campaignId` and `emailTo` =
+  exactly the confirmed addresses.
 
 **Never call a test send with an empty or missing `emailTo`:** Brevo then sends the test to
 the account's whole test list. A new address, or a second test, needs a new confirmation.
@@ -118,16 +116,14 @@ A success response (204) only means Brevo **queued** the test. The send can stil
 afterwards (a render error, a missing sender, a bounce). Never say "sent" or "delivered" on
 the response alone.
 
-- **Template:** if `campaign_analytics_get_email_event_report` is in your tool list, wait a
-  few seconds, then call it with `templateId`, `email` = one test address and `days: 1`.
-  Report the newest events for this send: `delivered` means it reached the mail server;
+- **Template:** wait a few seconds, then call `campaign_analytics_get_email_event_report`
+  with `templateId`, `email` = one test address and `days: 1`. Report the newest events for this send: `delivered` means it reached the mail server;
   `error`, `softBounces`, `hardBounces`, `blocked` or `invalid` mean it didn't. Quote the
   `reason` and explain it in plain words ("the date filter got an empty value", "the sender
   email is missing", "Gmail refused the unauthenticated sender domain"). Only `requests` so far:
   say it is queued and offer to check again in a minute.
-- **Campaign, or no event tool:** say the test was **queued**, not that it arrived. Ask the
-  user to check their inbox and spam folder, and if nothing comes within a few minutes, to
-  look at the logs in Brevo (Transactional, Logs for a template).
+- **Campaign:** say the test was **queued**, not that it arrived. Ask the user to check
+  their inbox and spam folder.
 
 Then say to whom it went and that test sends are limited to 50 a day.
 
@@ -147,19 +143,15 @@ Don't retry a refused call in a loop: one retry at most, after the user fixed th
 
 ## Requirements
 
-Not offered to every connection yet:
+- `email_campaign_management_send_test_email`: campaign test send.
+- `templates_post_preview_smtp_email_templates`: render a template with an existing
+  contact's email and sample params.
+- `campaign_analytics_get_email_event_report`: events of a template test send, with the
+  error or bounce reason.
+- `domains_get_domains`: the account's domains and whether each is authenticated.
+- On a sub-account, every call passes `subaccount_id`.
 
-- `email_campaign_management_send_test_email` (campaign test send): without it, the user sends
-  the test from Brevo.
-- `templates_post_preview_smtp_email_templates` (render a template with a contact and sample
-  params): without it, the test send is the check.
-- `campaign_analytics_get_email_event_report` (events of a transactional send, with the error
-  or bounce reason): without it, the test is reported as queued and the user checks the logs
-  in Brevo.
-- `domains_get_domains` (the account's domains and whether each is authenticated): without
-  it, the domain check is a warning the user confirms in Brevo.
-
-No tool reads the outcome of a campaign test send yet: the user checks their inbox.
+No tool reads the outcome of a campaign test send: the user checks their inbox.
 
 No browser or screenshot step: the preview is a link the user opens, or a server render.
 The shared template link (`email_campaign_management_get_shared_template_url`) isn't used:

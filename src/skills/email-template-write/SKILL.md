@@ -13,20 +13,19 @@ through `email-campaign-create`, drag-and-drop designs through `email-template-t
 | Step | Tool |
 |---|---|
 | Name the account; footer address (and the company name when the user gave no brand name) | `accounts_get_account` |
-| Brand kit: logo, colours, fonts, social links (optional) | `branding_get_brand` (not on the MCP server yet: see Requirements) |
+| Brand kit: logo, colours, fonts, social links (optional) | `branding_get_brand` (via `email-brand-kit`) |
 | Contact attribute names for personalization | `attributes_get_attributes` |
 | Sender for a transactional template | `senders_get_senders` |
 | Save a transactional template as HTML (inactive) | `templates_create_smtp_template` |
 | Read back what was saved | `templates_get_smtp_template` |
-| Change a saved template (content, subject, sender, activation) | `templates_update_smtp_template` (see Requirements) |
-| Check the sender's domain is authenticated | `domains_get_domains` (see Requirements) |
+| Change a saved template (content, subject, sender, activation) | `templates_update_smtp_template` |
+| Check the sender's domain is authenticated | `domains_get_domains` |
 
 Writing the HTML never needs a connection: without one, or without the account, attribute,
 sender or brand-kit tool, write it in offline mode (step 5, "No connection") and say which
 checks couldn't run. Saving and previewing need their tools: if one is missing when you reach
-that step, stop that step, tell the user their Brevo connection doesn't offer it yet, and give
-the HTML. For `templates_update_smtp_template` and `domains_get_domains`, follow the fallback
-in Requirements.
+that step, stop that step, tell the user their Brevo connection doesn't offer it, and give
+the HTML.
 
 <!-- include: shared/connection.md -->
 
@@ -128,11 +127,11 @@ in Requirements.
      `accounts_get_account`. Plain text; never `{{ company.* }}`: it renders blank in HTML
      sent through the API.
    - URLs: only those the user gave, or the brand's site.
-   - **Brand styles:** if `branding_get_brand` is in your tool list, use the cached kit (or
-     read it once) and turn it into a "Brand styles" block as `email-brand-kit` step 2
+   - **Brand styles:** use the cached kit (or read it once with `branding_get_brand`) and
+     turn it into a "Brand styles" block as `email-brand-kit` step 2
      describes (logo, font stacks, colour roles, social links, website). Brand values the user gives in the brief
-     win for this email. Kit empty, or no tool: use the values the user gave, else neutral
-     styles, and say which. Never invent a brand colour, a logo URL or a social link.
+     win for this email. Kit empty: use the values the user gave, else neutral styles, and say
+     which. Never invent a brand colour, a logo URL or a social link.
    - **No connection** (offline mode; also when a read tool above is missing): don't stop.
      Use clearly marked placeholders: `[Company name]` (or the
      brand name the user gave), `[Street]`, `[Postcode] [City]`; `https://www.brand-example.com/...`
@@ -171,8 +170,13 @@ in Requirements.
       the cached copy. Then render it once with `params: {}`, share the preview link again
       (`email-test-preview` step 3), and wait for a new yes before any test send: a yes given
       before the change doesn't cover it. Never create a second template instead.
-    - Transactional or automation, as an editable design: `email-template-to-dnd`.
-    - Automation email as HTML: no tool accepts it today. Give the HTML; the user pastes it
+    - Transactional, automation or campaign template, as an editable design:
+      `email-template-to-dnd`. It saves with `email_editor_create_template` and always passes
+      `type` (`template` for a campaign or transactional template, `automation_template` for
+      an automation email; the tool defaults to `automation_template`) and `senderId` (the
+      confirmed sender's ID) whenever a sender is known: without it the template is saved
+      with no sender and can't be sent until one is set in the editor.
+    - Automation email as HTML: no tool accepts it. Give the HTML; the user pastes it
       into a new automation email in Brevo.
 11. **Summarise** in a few lines: type and output, subject, preview text, story arc,
     variables, conditions and loops used, the brand styles used (kit, typed or neutral), the
@@ -193,15 +197,12 @@ in Requirements.
 
 ## Requirements
 
-Its required tools are all on the Brevo MCP server today. Editing or activating a saved
-template uses `templates_update_smtp_template`. If a connection lacks it, tell the user to
-make the change in Brevo, or, only if they ask, create a new template. The sender-domain check
-uses `domains_get_domains` (the account's domains and whether each is authenticated); without
-it, warn that an unauthenticated or free mailbox domain gets bounced and let the user check
-in Brevo (Senders, Domains).
-Product details and data feeds can't be read through the connection yet: ask the user for
-product names, prices, links and images, or use marked placeholders. The brand kit
-(`branding_get_brand`) isn't on the MCP server yet either: until it is, ask for brand colours
-and a logo URL, or use neutral styles (see `email-brand-kit`).
+Saving uses `templates_create_smtp_template`; editing or activating a saved template uses
+`templates_update_smtp_template`; the sender-domain check uses `domains_get_domains` (the
+account's domains and whether each is authenticated); the brand kit is read with
+`branding_get_brand` (see `email-brand-kit`). On a sub-account, every call passes
+`subaccount_id`.
+Product details and data feeds can't be read through the connection: ask the user for
+product names, prices, links and images, or use marked placeholders.
 
 <!-- include: shared/output-rules.md -->
