@@ -1,0 +1,92 @@
+name: Guard synced skills
+
+# A skill with `source` in its skill.json is authored in another repo; the next sync
+# overwrites everything here but skill.json. This check fails a PR that edits such a skill
+# in this repo and comments where to edit instead (scripts/guard-synced-skills.mjs). The
+# sync workflow's own PRs are exempt.
+#
+# The guard runs from the base branch's copy of scripts/, not the PR's: otherwise a PR could
+# edit the guard (or scripts/lib/) to exit 0 along with the skill. The script reads which
+# skills are synced from the base ref too. The workflow file itself is the PR's, as GitHub
+# runs it, so changes to .github/workflows/ and scripts/ need a careful review.
+
+on:
+  pull_request:
+    paths:
+      - 'src/skills/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: guard-synced-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # the diff needs the base branch
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+      - name: Take the scripts from the base branch
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/base"
+          git archive "origin/$BASE_REF" scripts package.json | tar -x -C "$RUNNER_TEMP/base"
+          # Bootstrap only: until the guard itself is on the base branch there is no base
+          # copy to run, so the pull request's copy is used once and the log says so.
+          if [ ! -f "$RUNNER_TEMP/base/scripts/guard-synced-skills.mjs" ]; then
+            echo "::notice::The base branch has no guard script yet; using this pull request's copy."
+            cp -R scripts package.json "$RUNNER_TEMP/base/"
+          fi
+      - name: Find edits to synced skills
+        id: guard
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          GUARD_COMMENT_FILE: guard-comment.md
+        run: |
+          set +e
+          node "$RUNNER_TEMP/base/scripts/guard-synced-skills.mjs" --base "origin/$BASE_REF"
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+      - name: Publish the summary
+        if: always() && hashFiles('guard-comment.md') != ''
+        run: cat guard-comment.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Post, update or resolve the PR comment
+        # Same-repo PRs only: a fork PR's token is read-only. A clean run only edits an
+        # existing comment, so a PR that never edited a synced skill gets no comment.
+        if: always() && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          EXIT_CODE: ${{ steps.guard.outputs.exit_code }}
+        run: |
+          MARKER='<!-- guard-synced-skills -->'
+          ID="$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
+            --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -n1)"
+          if [ "$EXIT_CODE" = "0" ]; then
+            [ -n "$ID" ] || exit 0
+            printf '%s\n### Synced skills are no longer edited here\n\nResolved by a later push.\n' "$MARKER" > guard-comment.md
+          fi
+          [ -f guard-comment.md ] || exit 0
+          if [ -n "$ID" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$ID" -F body=@guard-comment.md > /dev/null
+          else
+            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file guard-comment.md
+          fi
+      - name: Fail when a synced skill was edited here
+        if: always()
+        env:
+          EXIT_CODE: ${{ steps.guard.outputs.exit_code }}
+        run: exit "${EXIT_CODE:-1}"

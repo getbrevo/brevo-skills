@@ -1,2 +1,4 @@
-# This repository is a published copy; only the repository's own configuration is edited here.
+# Changes to the pipeline and CI need a review from an owner (main requires code owner review).
 /.github/   @getbrevo/tech-team
+/scripts/   @getbrevo/tech-team
+/adapters/  @getbrevo/tech-team

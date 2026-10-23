@@ -1,0 +1,137 @@
+name: Release
+
+# Releases when the version in brevo-skills.json changes on main. Dispatching it by hand with a
+# tag only re-sends the Slack notice for that existing release; it never creates one.
+#
+# The MCP server is not pushed to: its own repository pulls the MCP text ZIP of a release
+# (docs/architecture.md, "Text for the MCP server"), so no token for it lives here.
+on:
+  push:
+    branches: [main]
+    paths: [brevo-skills.json]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag (vX.Y.Z) to re-send the Slack notice for
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    # Required reviewers on this environment approve each release before it runs.
+    environment: release
+    permissions:
+      contents: write # create the GitHub Release
+      id-token: write # sign the provenance attestation
+      attestations: write
+    outputs:
+      created: ${{ steps.exists.outputs.skip != 'true' }}
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 20
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - name: Read version
+        id: version
+        run: echo "tag=v$(node -p "require('./brevo-skills.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Skip if the tag exists
+        id: exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Verify
+        if: steps.exists.outputs.skip != 'true'
+        env:
+          PUBLIC_SAFETY_PATTERNS: ${{ secrets.PUBLIC_SAFETY_PATTERNS }}
+        run: yarn verify
+      - name: Build and package
+        if: steps.exists.outputs.skip != 'true'
+        run: yarn build && yarn package
+      # Build provenance for every artifact, so users can check a ZIP came from this
+      # workflow: `gh attestation verify <file> -R getbrevo/brevo-skills`. GitHub only
+      # offers attestations on private repositories with Enterprise Cloud, so this runs
+      # once the repository is public.
+      - name: Attest build provenance
+        if: steps.exists.outputs.skip != 'true' && !github.event.repository.private
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
+        with:
+          subject-path: dist/release/*
+      - name: Create the GitHub release
+        if: steps.exists.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        # 0.x versions are published as pre-releases.
+        run: |
+          FLAGS=()
+          [[ "$TAG" == v0.* ]] && FLAGS+=(--prerelease)
+          gh release create "$TAG" dist/release/* --title "$TAG" --generate-notes "${FLAGS[@]}"
+
+  # Posts the release notice to Slack: which skills changed and the exact files to upload by
+  # hand in claude.ai and ChatGPT. The message layout is a Slack Workflow Builder workflow
+  # with a webhook trigger; the repo only sends its variables (scripts/release-notice.mjs).
+  # The trigger URL is the SLACK_RELEASE_WEBHOOK secret and the two upload owners are the
+  # SLACK_REPO_OWNER_1 and SLACK_REPO_OWNER_2 variables (Slack user IDs), so nothing
+  # Slack-specific is written here. Runs only when this run created a release, or on a
+  # manual dispatch for an existing tag; never fails a release.
+  notify:
+    needs: release
+    if: >-
+      !cancelled() &&
+      (github.event_name == 'workflow_dispatch' ||
+       (needs.release.result == 'success' && needs.release.outputs.created == 'true'))
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    permissions:
+      contents: read # read the release assets and the previous tag's catalog
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # the previous release's catalog.json is read from its tag
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+      - name: Download the release's catalog and checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || needs.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist/release
+          gh release download "$TAG" --pattern catalog.json --pattern SHA256SUMS --dir dist/release --clobber
+      - name: Build the notice
+        env:
+          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || needs.release.outputs.tag }}
+          SLACK_REPO_OWNER_1: ${{ vars.SLACK_REPO_OWNER_1 }}
+          SLACK_REPO_OWNER_2: ${{ vars.SLACK_REPO_OWNER_2 }}
+        # GITHUB_REPOSITORY and GITHUB_ACTOR come from the runner: the actor is who merged the
+        # version bump, or who re-sent the notice.
+        run: node scripts/release-notice.mjs --tag "$TAG" --catalog dist/release/catalog.json --out notice.json
+      - name: Post to Slack
+        env:
+          SLACK_RELEASE_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SLACK_RELEASE_WEBHOOK}" ]; then
+            echo "::warning::SLACK_RELEASE_WEBHOOK is not set; skipping the Slack release notice."
+            exit 0
+          fi
+          curl -fsS -X POST -H 'content-type: application/json' --data @notice.json "$SLACK_RELEASE_WEBHOOK"
