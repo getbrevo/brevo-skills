@@ -1,6 +1,6 @@
 {
   "name": "brevo",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Brevo skills for AI agents, connected to the Brevo MCP server.",
   "author": {
     "name": "Brevo",

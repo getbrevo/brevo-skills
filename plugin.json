@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "brevo",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Brevo skills for AI agents, connected to the Brevo MCP server.",
   "author": {
     "name": "Brevo",

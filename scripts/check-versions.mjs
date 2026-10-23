@@ -30,7 +30,7 @@ function main() {
   const ref = args.includes('--base') ? args[args.indexOf('--base') + 1] : 'origin/main';
   let baseCatalog;
   try {
-    baseCatalog = JSON.parse(execFileSync('git', ['show', `${ref}:catalog.json`], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }));
+    baseCatalog = JSON.parse(execFileSync('git', ['show', `${ref}:./catalog.json`], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }));
   } catch {
     console.log(`No catalog.json on ${ref}: nothing to compare.`);
     return;

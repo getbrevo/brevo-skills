@@ -10,7 +10,7 @@
       "name": "brevo",
       "source": "./",
       "description": "Brevo skills for AI agents, connected to the Brevo MCP server.",
-      "version": "0.0.1",
+      "version": "0.1.0",
       "homepage": "https://developers.brevo.com",
       "keywords": [
         "brevo",

@@ -41,13 +41,11 @@ export default {
       const served = skills.filter(
         (s) => s.meta.platforms.includes(platform) && s.meta.role !== 'router' && (s.meta.requires_tools ?? []).length > 0,
       );
-      const pointers = served
-        .map(
-          (s) =>
-            `- ${s.meta.summary.replace(/\.$/, '')}: first call \`${GUIDE_TOOL}\` with name \`${s.name}\` (or read resource \`${RESOURCE_PREFIX}${s.name}\`) and follow it.`,
-        )
-        .join('\n');
-      const instructions = `${shared.mcpInstructions}\n${pointers ? `\n${pointers}\n` : ''}`;
+      // One sentence for all guides, then one line per guide: the instructions have a size limit
+      // and a sentence per skill stops fitting at about eight skills.
+      const pointers = served.map((s) => `- \`${s.name}\`: ${s.meta.summary.replace(/\.$/, '')}`).join('\n');
+      const intro = `For these jobs, first call \`${GUIDE_TOOL}\` with the name (or read resource \`${RESOURCE_PREFIX}<name>\`) and follow it:`;
+      const instructions = `${shared.mcpInstructions}\n${pointers ? `\n${intro}\n${pointers}\n` : ''}`;
       if (instructions.length > MAX_INSTRUCTIONS_CHARS) {
         throw new Error(`mcp: instructions for ${server} are ${instructions.length} characters (max ${MAX_INSTRUCTIONS_CHARS})`);
       }

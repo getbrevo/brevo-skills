@@ -236,7 +236,7 @@ never install a skill still get the guidance:
 
 | File | Becomes | From |
 |---|---|---|
-| `instructions.md` | Server instructions | `shared/mcp-instructions.md`, plus one line per skill: "for this job, first call `get_brevo_guide` with name `<name>` (or read the resource `brevo://skills/<name>`)" |
+| `instructions.md` | Server instructions | `shared/mcp-instructions.md`, plus one sentence ("first call `get_brevo_guide` with the name, or read the resource `brevo://skills/<name>`") and one line per skill: `<name>`: its summary |
 | `skills/<name>.md` | A guide (`get_brevo_guide`), a resource and a prompt | The skill, references inlined |
 | `manifest.json` | What the server registers (`guides`, `resources`, `prompts`), and `tool_notes` | Each skill's `tool_notes` in `skill.json`, plus a generated note on every tool that belongs to one skill, appended to those tools' descriptions |
 
@@ -248,12 +248,12 @@ Tools shared across jobs (`mcp.shared_tools` in `brevo-skills.json`, such as
 `accounts_get_account` and `processes_get_process`) get no such note. A server gets only
 skills that target its platform, use MCP tools and need no terminal.
 
-The text reaches the server by **pull**. The release packages `dist/mcp` as the
-`brevo-mcp-text-<version>.zip` asset, listed in `SHA256SUMS`. An update workflow in the MCP
-server's own repository downloads that ZIP for a chosen release tag, verifies its sha256,
-commits it with a `SOURCE.json` naming the tag, and opens a PR there; its owners review the
-text diff and ship it with their next deploy. Nothing in this repo pushes to the server's
-repository and no token for it lives here: reading a public release needs none.
+The skills are written in the MCP server's own repository, in its `skills/` folder, and this
+repository is the published copy of that folder. The server builds `dist/mcp` from the same
+sources it publishes and commits the result as the text it serves, so there is no download
+step and no version of the text that can differ from the released skills. The release still
+packages `dist/mcp` as the `brevo-mcp-text-<version>.zip` asset, listed in `SHA256SUMS`, for
+anyone who wants to serve the same text elsewhere.
 
 ## Packaging rule
 

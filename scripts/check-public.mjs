@@ -4,7 +4,7 @@
 //
 // The internal names are NOT listed here: writing them in a public repo would leak the very
 // thing this check protects. They come from the PUBLIC_SAFETY_PATTERNS environment variable
-// (a repository secret in CI): one JavaScript regular expression per line, matched
+// (a repository variable in CI): one JavaScript regular expression per line, matched
 // case-insensitively. Ask a maintainer for the list to run it locally.
 
 import fs from 'node:fs';

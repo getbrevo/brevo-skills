@@ -288,7 +288,7 @@ test('mcp: per platform server, instructions point to the guide per skill, plus 
   assert.equal(manifest.instructions, 'instructions.md');
   assert.match(
     dist['mcp/anthropic/instructions.md'],
-    /^Brevo rules\.\n\n- alpha summary: first call `get_brevo_guide` with name `alpha` \(or read resource `brevo:\/\/skills\/alpha`\) and follow it\./,
+    /^Brevo rules\.\n\nFor these jobs, first call `get_brevo_guide` with the name \(or read resource `brevo:\/\/skills\/<name>`\) and follow it:\n- `alpha`: alpha summary\n- `claude-only`: claude-only summary\n$/,
   );
   assert.match(dist['mcp/anthropic/skills/alpha.md'], /# Guide/); // references inlined
   // No router, no shell-only skill, and a platform only gets the skills that target it.
@@ -319,5 +319,5 @@ test('mcp: guides for the get_brevo_guide tool, and a guide note on every tool o
   const google = parse(dist['mcp/google/manifest.json']);
   assert.deepEqual(google.guides.map((g) => g.name), ['alpha']);
   assert.deepEqual(google.tool_notes, { alpha_only: `Never empty. ${guide('alpha')}`, tool_a: guide('alpha') });
-  assert.match(dist['mcp/google/instructions.md'], /first call `get_brevo_guide` with name `alpha`/);
+  assert.match(dist['mcp/google/instructions.md'], /first call `get_brevo_guide` with the name[^\n]*\n- `alpha`: alpha summary/);
 });

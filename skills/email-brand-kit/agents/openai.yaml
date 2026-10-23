@@ -1,0 +1,10 @@
+interface:
+  display_name: "Email brand kit"
+  short_description: "Read the account's brand kit (logo, colours, fonts, social links) as email styles, and set it up or change it after the user approves."
+dependencies:
+  tools:
+    - type: mcp
+      value: brevo
+      description: "Brevo MCP server"
+      transport: streamable_http
+      url: https://mcp.brevo.com/v1/openai/mcp

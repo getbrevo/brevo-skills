@@ -41,7 +41,7 @@ Use placeholders that keep the format: `xkeysib-test-…`, `example.com`,
 email.
 
 `yarn check-public` runs generic rules (keys, Slack and Notion links) everywhere. In CI it
-also runs Brevo's list of internal names from the `PUBLIC_SAFETY_PATTERNS` secret: that list
+also runs Brevo's list of internal names from the `PUBLIC_SAFETY_PATTERNS` variable: that list
 is kept out of the code, since publishing it would leak what it protects. Maintainers can
 run it locally with `PUBLIC_SAFETY_PATTERNS="$(cat patterns.txt)" yarn check-public`.
 

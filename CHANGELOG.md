@@ -8,6 +8,10 @@ All notable changes to this project are listed here. Versions follow
 
 ### Added
 
+- `email-brand-kit` (public 1.0.0): reads the account's brand kit (logo, colours, fonts,
+  social links) and turns it into email styles; sets it up from the user's website or changes
+  one part, only after the user approves a before/after. The shared rules block
+  `shared/email-cache.md` keeps what a conversation has already read; evals added.
 - Grok: `.grok-plugin/marketplace.json`, and the MCP server declared in its manifest (Grok
   reads `.mcp.json` or the manifest, not `mcp.json`). Cursor declares the server inline too.
 - `yarn new-skill`: scaffolds a skill (`skill.json` as a draft, a `SKILL.md` skeleton
@@ -17,6 +21,14 @@ All notable changes to this project are listed here. Versions follow
 - `brevo-cli` (public): synced from `getbrevo/brevo-cli`.
 - `brevo-cli` 1.1.0: synced the agent-neutral skill text from getbrevo/brevo-cli#138
   (`brevo skill:cli install --agent codex|gemini|all`); `min_cli_version` 2.5.0.
+- `brevo-cli` 1.2.0: synced the skill text from getbrevo/brevo-cli#150 (`brevo skill install`,
+  `brevo skill check`, install for Claude Code, Codex and Gemini CLI); `min_cli_version` 2.6.0.
+- `email-test-send` 1.0.0 (beta): send a test of one email template to addresses the user
+  chooses. Its `tool_notes` carry the empty-recipient-list warning for
+  `templates_send_test_template`.
+- `email-test-send` 1.0.1: no longer targets Gemini. The google server does not expose
+  `templates_get_smtp_template` or `templates_send_test_template`, so its guide named tools
+  an agent there cannot call. It comes back when those tools are on that server.
 - `mcp` adapter: server instructions, skill resources and prompts, and tool notes for each
   platform server of the Brevo MCP server (`dist/mcp/`), packaged by the release as the MCP
   text ZIP that the server's own update workflow pulls. Each

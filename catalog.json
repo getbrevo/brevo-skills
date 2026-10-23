@@ -1,5 +1,5 @@
 {
-  "version": "0.0.1",
+  "version": "0.1.0",
   "plugin": "brevo",
   "mcp": {
     "serverName": "brevo",
@@ -12,11 +12,11 @@
   "skills": [
     {
       "name": "brevo-cli",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "status": "public",
       "owner": "brevo-cli",
       "summary": "Use the Brevo Developer CLI to manage OAuth apps, UI apps and Brevo Functions.",
-      "min_cli_version": "2.5.0",
+      "min_cli_version": "2.6.0",
       "platforms": [
         "claude",
         "openai",
@@ -30,8 +30,58 @@
       "files": [
         "SKILL.md"
       ],
-      "sha256": "5cbe5b952ed5148b95f5dd532da096940931d127bece3a25e265d5cad54ad581",
-      "source_sha256": "5cbe5b952ed5148b95f5dd532da096940931d127bece3a25e265d5cad54ad581"
+      "sha256": "e7a8881709859e1c7875e47325878bebd41b9c624b5895b7e2156b8db8e813ed",
+      "source_sha256": "e7a8881709859e1c7875e47325878bebd41b9c624b5895b7e2156b8db8e813ed"
+    },
+    {
+      "name": "email-brand-kit",
+      "version": "1.0.0",
+      "status": "public",
+      "owner": "experience-design",
+      "summary": "Read the account's brand kit (logo, colours, fonts, social links) as email styles, and set it up or change it after the user approves.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "accounts_get_account",
+        "branding_get_brand",
+        "branding_fetch_brand_from_website",
+        "branding_update_brand",
+        "branding_update_brand_website",
+        "branding_get_social_icons",
+        "branding_upsert_social_icon"
+      ],
+      "path": "skills/email-brand-kit",
+      "files": [
+        "SKILL.md",
+        "references/field-rules.md"
+      ],
+      "sha256": "9503ff5886e23ac2418fbfb80e26c7f9a97d2a0d31c15e30977b06443c1bbd2d",
+      "source_sha256": "9503ff5886e23ac2418fbfb80e26c7f9a97d2a0d31c15e30977b06443c1bbd2d"
+    },
+    {
+      "name": "email-test-send",
+      "version": "1.0.1",
+      "status": "beta",
+      "owner": "mcp",
+      "summary": "Send a test of one email template to addresses the user chooses.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "templates_get_smtp_template",
+        "templates_send_test_template"
+      ],
+      "path": "skills/email-test-send",
+      "files": [
+        "SKILL.md"
+      ],
+      "sha256": "d5203685aae3a7b86c4acae15775bc667ec8ab00d2f7cf1a3629c30b51eefcce",
+      "source_sha256": "d5203685aae3a7b86c4acae15775bc667ec8ab00d2f7cf1a3629c30b51eefcce"
     }
   ]
 }

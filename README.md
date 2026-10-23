@@ -8,6 +8,7 @@ keys to copy anywhere.
 | Skill | Status | What it does | Source |
 |---|---|---|---|
 | [`brevo-cli`](src/skills/brevo-cli/SKILL.md) | public | Uses the Brevo Developer CLI to manage OAuth apps, UI apps and Brevo Functions | Synced from [getbrevo/brevo-cli](https://github.com/getbrevo/brevo-cli) |
+| [`email-brand-kit`](src/skills/email-brand-kit/SKILL.md) | public | Read the account's brand kit (logo, colours, fonts, social links) as email styles, and set it up or change it after the user approves | This repo |
 
 Skills marked **Synced from** are edited in their source repo, not here: the next sync
 overwrites local changes.
@@ -63,6 +64,7 @@ Contributions follow [CONTRIBUTING.md](CONTRIBUTING.md). Report security problem
 
 Licensed under [MIT](LICENSE).
 
-> **Status:** pre-release. Only `brevo-cli` ships for now: the skills that drive the Brevo MCP
-> server (`brevo`, `email-test-send` and `email-template-from-html`) land once their tools are on the
-> server. `getbrevo/brevo-skills` is a working name.
+> **Status:** pre-release. `brevo-cli` and `email-brand-kit` ship, and `email-test-send` in beta: the
+> other email skills (`email`, `email-template-write`, `email-template-check`,
+> `email-template-to-dnd`, `email-campaign-create`, `email-test-preview`) land once their tools are on
+> the server. `getbrevo/brevo-skills` is a working name.
