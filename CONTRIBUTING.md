@@ -1,5 +1,10 @@
 # Contributing
 
+> **This repository is a published copy.** It is generated from the Brevo skills source and
+> does not take pull requests: any opened here is closed automatically. Report a problem with
+> an issue, and a security problem through the private advisory form (see `SECURITY.md`).
+> The rest of this file is for the maintainers who change the source.
+
 Requirements: Node 20 or later, then `yarn install` (one dev dependency: `ajv`, for the
 schema check).
 
