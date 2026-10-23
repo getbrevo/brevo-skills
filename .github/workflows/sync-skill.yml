@@ -40,7 +40,7 @@ jobs:
       - name: Check inputs
         run: |
           [[ "$SKILL" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] || { echo "invalid skill name"; exit 1; }
-          [[ -z "$REF" || "$REF" =~ ^[A-Za-z0-9_./-]+$ ]] || { echo "invalid ref"; exit 1; }
+          [[ -z "$REF" || "$REF" =~ ^[A-Za-z0-9][A-Za-z0-9_./-]*$ ]] || { echo "invalid ref"; exit 1; }
       - name: Sync
         run: |
           if [ -n "$REF" ]; then yarn sync-skill "$SKILL" --ref "$REF"; else yarn sync-skill "$SKILL"; fi
