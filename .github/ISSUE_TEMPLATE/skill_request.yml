@@ -1,0 +1,28 @@
+name: Skill request
+description: Ask for a new skill, or a change to an existing one.
+labels: [enhancement]
+body:
+  - type: input
+    id: job
+    attributes:
+      label: What should the agent be able to do?
+      description: One sentence, in the words you would type to your agent.
+      placeholder: "Send a test of my welcome template to me@example.com"
+    validations:
+      required: true
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Is this about an existing skill?
+      options:
+        - A new skill
+        - brevo-cli
+        - email-brand-kit
+        - email-test-send
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Why it matters
+      description: What you do today instead. Don't paste account IDs, keys or customer data.

@@ -12,14 +12,14 @@ you'd like.
 
 ## Scope
 
-This repository contains agent skills (instructions) and the pipeline that packages them.
+This repository contains agent skills (instructions) and the manifests that package them.
 In scope:
 
 - A skill that leads an agent to expose credentials, act on data without the user's approval,
   or follow instructions injected through content it processes
 - A generated manifest that points an agent at the wrong server or requests more access than
   documented
-- The build, sync and release workflows
+- The files that install the skills: the manifests and `catalog.json`
 
 Problems with the Brevo platform, API or MCP server itself are out of scope here: report them
 through Brevo's own security contact.

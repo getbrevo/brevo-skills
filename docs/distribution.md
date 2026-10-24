@@ -1,58 +1,20 @@
 # How the skills reach agents
 
-One page, one picture: where a skill is written, what the build produces, and how each kind of
-agent receives it. The details of each step are in [architecture.md](architecture.md) and
-[platforms.md](platforms.md). How a change becomes a release is in [publishing.md](publishing.md).
+One page, one picture: how a skill gets from Brevo's source repository to an agent. Install steps and
+each platform's limits are in [platforms.md](platforms.md).
 
 ## Diagram
 
 ```mermaid
 flowchart LR
-  subgraph write["1. Write"]
-    direction TB
-    src["src/skills/&lt;name&gt;/<br/>SKILL.md + skill.json"]
-    shared["shared/<br/>rules every skill needs"]
-    evals["evals/&lt;name&gt;/<br/>test prompts"]
-  end
-
-  subgraph build["2. Build and check (yarn verify)"]
-    direction TB
-    validate["validate<br/>names, sizes, lifecycle"]
-    contract["contract<br/>requires_tools exist on the MCP server"]
-    safe["public-safety<br/>nothing internal"]
-    adapters["adapters<br/>one output per platform"]
-    validate --> adapters
-    contract --> adapters
-    safe --> adapters
-  end
-
-  subgraph out["3. Outputs"]
-    direction TB
-    catalog["catalog.json<br/>names, versions, hashes"]
-    plugins["Plugin manifests<br/>Claude Code · Cursor · Gemini CLI · Codex · Grok"]
-    zips["Release ZIPs<br/>one per skill + bundles + SHA256SUMS"]
-    mcptext["MCP text<br/>instructions · guides · tool notes"]
-  end
-
-  subgraph use["4. Agents receive them"]
-    direction TB
-    cli["Brevo CLI<br/>brevo skill install"]
-    host["Agent hosts<br/>install the plugin"]
-    upload["claude.ai · ChatGPT<br/>upload a ZIP by hand"]
-    server["Brevo MCP server<br/>serves the text to any MCP client"]
-  end
-
-  src --> validate
-  shared --> validate
-  evals --> validate
-  adapters --> catalog
-  adapters --> plugins
-  adapters --> zips
-  adapters --> mcptext
-  catalog --> cli
-  plugins --> host
-  zips --> upload
-  mcptext --> server
+  src["Skills written and tested<br/>in Brevo's source repository"] --> rel["Release<br/>tag skills-vX.Y.Z"]
+  rel --> repo["This repository<br/>skills/ · plugin manifests · catalog.json"]
+  rel --> zips["GitHub Release<br/>skill ZIPs · SHA256SUMS · catalog.json"]
+  rel --> server["Brevo MCP server<br/>instructions · get_brevo_guide · tool notes"]
+  repo --> host["Agent hosts<br/>install the plugin"]
+  zips --> cli["Brevo CLI<br/>brevo skill install"]
+  zips --> upload["claude.ai · ChatGPT<br/>upload a ZIP by hand"]
+  server --> any["Any MCP client"]
 ```
 
 ## Who gets what
@@ -65,5 +27,11 @@ flowchart LR
 | ChatGPT web, Cursor, any MCP client | guidance from the MCP server: server instructions, `get_brevo_guide`, resources, prompts, notes on tool descriptions | connecting the Brevo MCP server |
 
 A skill acts only through the Brevo MCP server's tools; it never calls an API directly and holds
-no keys. That is why the contract check sits in the build: a skill that names a tool the server
-does not have fails before it is released.
+no keys. Brevo checks, before a release, that every tool a skill names exists on the server.
+
+## Keeping a skill current
+
+A skill that is already loaded is used as it is: the agent does not fetch it again. To see whether
+a copy is behind, the agent passes the versions in its `SKILL.md` metadata to the server's
+`list_brevo_guides`, which reports `current` or `stale` for each. To update: `brevo skill update`
+(hash-checked), refresh the plugin, or upload the new ZIP from the latest release.
