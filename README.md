@@ -8,6 +8,10 @@ and any agent that reads `SKILL.md`. Each skill drives the
 [Brevo MCP server](https://developers.brevo.com), which handles sign-in with OAuth: no API
 keys to copy anywhere.
 
+**Using Claude?** Add the [Brevo connector](https://claude.com/marketplace/connectors/brevo)
+from Claude's directory to connect your Brevo account, then install these skills so Claude
+knows how to use it well.
+
 <!-- skills-table:start -->
 | Skill | Status | What it does | Source |
 |---|---|---|---|
