@@ -8,7 +8,9 @@ body:
       label: Skill
       options:
         - brevo-cli
-        - Not specific to a skill (install, manifest, pipeline)
+        - email-brand-kit
+        - email-test-send
+        - Not specific to a skill (install, manifest, release)
     validations:
       required: true
   - type: dropdown
