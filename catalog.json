@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "1.0.0",
   "plugin": "brevo",
   "mcp": {
     "serverName": "brevo",
@@ -35,8 +35,8 @@
     },
     {
       "name": "email-brand-kit",
-      "version": "1.0.0",
-      "status": "public",
+      "version": "1.0.2",
+      "status": "beta",
       "owner": "experience-design",
       "summary": "Read the account's brand kit (logo, colours, fonts, social links) as email styles, and set it up or change it after the user approves.",
       "platforms": [
@@ -58,12 +58,13 @@
         "SKILL.md",
         "references/field-rules.md"
       ],
-      "sha256": "9503ff5886e23ac2418fbfb80e26c7f9a97d2a0d31c15e30977b06443c1bbd2d",
-      "source_sha256": "9503ff5886e23ac2418fbfb80e26c7f9a97d2a0d31c15e30977b06443c1bbd2d"
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.0.0/email-brand-kit-1.0.2.zip",
+      "sha256": "6d25c9544d77f1b120ed28d3921190aa536f6733e40a24f91f77b2d210b709ce",
+      "source_sha256": "6d25c9544d77f1b120ed28d3921190aa536f6733e40a24f91f77b2d210b709ce"
     },
     {
       "name": "email-test-send",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "status": "beta",
       "owner": "mcp",
       "summary": "Send a test of one email template to addresses the user chooses.",
@@ -80,8 +81,9 @@
       "files": [
         "SKILL.md"
       ],
-      "sha256": "d5203685aae3a7b86c4acae15775bc667ec8ab00d2f7cf1a3629c30b51eefcce",
-      "source_sha256": "d5203685aae3a7b86c4acae15775bc667ec8ab00d2f7cf1a3629c30b51eefcce"
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.0.0/email-test-send-1.0.2.zip",
+      "sha256": "200629fde57e84b5169afb669570b7b76287d7bdb23b0ef26464136985f638f2",
+      "source_sha256": "200629fde57e84b5169afb669570b7b76287d7bdb23b0ef26464136985f638f2"
     }
   ]
 }

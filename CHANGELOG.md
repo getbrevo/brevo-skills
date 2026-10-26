@@ -4,6 +4,50 @@ All notable changes to this project are listed here. Versions follow
 [semantic versioning](https://semver.org/); each skill also has its own version in its
 `skill.json`.
 
+## 1.0.0 (unreleased)
+
+### Documentation
+
+- The README leads with the skills, an example prompt for each, and the two most common
+  installs; the other agents are folded away. It links to the releases, the changelog and
+  the issue tracker, and a test fails when a skill has no README row.
+- More plugin keywords, and a maintainer checklist for the repository description and topics
+  in `docs/publishing.md`.
+
+### Changed
+
+- Skills no longer trigger a redundant `get_brevo_guide` call when they are already loaded
+  (installed, plugin or upload). The note on every single-skill tool, the server
+  instructions and the `get_brevo_guide` description now say: use the loaded skill, otherwise
+  call the tool. The new shared block `shared/skill-source.md` tells the agent where the skill
+  comes from and how to install it once (plugin, `npx skills add`, `brevo skill install`).
+- `list_brevo_guides` takes an optional `installed` map (skill name to the version in its
+  `SKILL.md` metadata) and returns a status per guide: `current`, `stale` (with an update
+  hint: `brevo skill update`, or `get_brevo_guide` plus a plugin refresh or ZIP upload),
+  `ahead`, `unknown` or `not_installed`. Each guide in the manifests now carries its skill
+  version. The server only reports; it fetches and writes nothing.
+- `shared/skill-source.md` also holds six working rules every step follows (steps in order,
+  only the skill's tools, confirm before a write, read once, report only what a tool
+  returned, the user's language). `yarn validate` now fails a non-synced skill that has tools
+  and does not include it, `yarn new-skill` adds the include, and AGENTS.md and CONTRIBUTING
+  explain it.
+- The plugin description and the `list_brevo_guides` and `get_brevo_guide` descriptions mention
+  keeping skills current and point to the repository.
+- Publishing no longer copies the whole folder: only the generated skills, the plugin
+  manifests, `catalog.json`, `brevo-skills.json` and `CHANGELOG.md` are written to the public
+  repository, plus the skills table of its README (between the `skills-table` markers, by
+  `scripts/readme-table.mjs`). Nothing else in the public repository is touched or deleted.
+- The server instructions tell an agent with no shell and no plugin to read the release's
+  `catalog.json`, download `<name>-<version>.zip` and check it against `SHA256SUMS`, and to call
+  `get_brevo_guide` if it can't fetch or check it. Only servers that have guides get this line.
+- `docs/publishing.md`: the manual evals step before a release, and where fixes go.
+- Publishing follows the server release instead of a `skills-v` tag: after the production deploy the
+  publish job compares the built skills with the published copy and pushes nothing when no skill
+  changed. The release is `v<version>` from `brevo-skills.json`, and `yarn check-versions` now
+  fails a pull request that changes the skills without bumping it.
+- `email-test-send` 1.0.2 and `email-brand-kit` 1.0.1: include `shared/skill-source.md`.
+- `email-brand-kit` 1.0.2: status set to `beta` for now.
+
 ## 0.1.0 (unreleased)
 
 ### Added

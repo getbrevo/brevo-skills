@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "brevo",
-  "version": "0.1.0",
-  "description": "Brevo skills for AI agents, connected to the Brevo MCP server.",
+  "version": "1.0.0",
+  "description": "Brevo skills for AI agents, connected to the Brevo MCP server. Installed skills are used first and can be checked against the latest version.",
   "author": {
     "name": "Brevo",
     "url": "https://www.brevo.com"
@@ -15,6 +15,10 @@
     "email",
     "marketing",
     "templates",
-    "mcp"
+    "mcp",
+    "agent-skills",
+    "skill-md",
+    "email-marketing",
+    "transactional-email"
   ]
 }

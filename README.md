@@ -16,7 +16,7 @@ knows how to use it well.
 | Skill | Status | What it does | Source |
 |---|---|---|---|
 | [`brevo-cli`](skills/brevo-cli/SKILL.md) | public | Use the Brevo Developer CLI to manage OAuth apps, UI apps and Brevo Functions. | Synced from [getbrevo/brevo-cli](https://github.com/getbrevo/brevo-cli) |
-| [`email-brand-kit`](skills/email-brand-kit/SKILL.md) | public | Read the account's brand kit (logo, colours, fonts, social links) as email styles, and set it up or change it after the user approves. | Brevo |
+| [`email-brand-kit`](skills/email-brand-kit/SKILL.md) | beta | Read the account's brand kit (logo, colours, fonts, social links) as email styles, and set it up or change it after the user approves. | Brevo |
 | [`email-test-send`](skills/email-test-send/SKILL.md) | beta | Send a test of one email template to addresses the user chooses. | Brevo |
 <!-- skills-table:end -->
 

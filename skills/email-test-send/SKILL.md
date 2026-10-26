@@ -2,7 +2,7 @@
 name: email-test-send
 description: Send a test of one email template to addresses the user chooses, and report what happened. Use when the user asks to test, preview or send a sample of an email template to themselves or a colleague. Checks the template's sender and subject, confirms the recipients before sending, and refuses to send to an empty recipient list or to addresses the user did not give.
 metadata:
-  version: 1.0.1
+  version: 1.0.2
   status: beta
   author: brevo
 ---
@@ -32,6 +32,33 @@ offer test sends yet, and stop.
   and a call without it acts on the main account.
 - Show a tool's error message as returned, after a plain-language summary. Don't invent a
   cause the tool didn't give.
+
+## Where this skill comes from
+
+- You already have this skill: it is in your context, whether installed, from the plugin, uploaded
+  or fetched with `get_brevo_guide`. Don't call `get_brevo_guide` for it again in this
+  conversation.
+- To have it without a tool call next time, install it once: the Brevo plugin from
+  `getbrevo/brevo-skills`, `npx skills add getbrevo/brevo-skills`, or, with a shell, the Brevo CLI
+  (`npm i -g @getbrevo/cli`, then `brevo skill install`). `brevo skill check` lists copies that are
+  behind.
+- Once per conversation, call `list_brevo_guides` with `installed` set to the version in the
+  `metadata` of each Brevo skill you have. For a `stale` one, follow its `update` hint.
+- If you don't have the skill, call `get_brevo_guide` with its name: it returns the current text.
+
+## Working rules for every step
+
+- Follow the steps in order. Don't skip, merge or reorder them, and don't add steps this skill
+  doesn't have.
+- Use only the tools this skill names, with the arguments it describes. Never invent a tool, a
+  parameter, an ID or an email address; ask the user instead, one question at a time.
+- Before anything is created, changed or sent, say in plain words what will happen and wait for
+  the user's yes. A yes covers only what you described.
+- Read each Brevo object once per conversation and reuse it. Re-read only after something
+  changed it.
+- Report a result only from what the tool returned. If a call failed or returned nothing,
+  say so; never describe it as done.
+- Reply in the user's language, and keep names, IDs and addresses exactly as Brevo shows them.
 
 ## 1. Find the template
 

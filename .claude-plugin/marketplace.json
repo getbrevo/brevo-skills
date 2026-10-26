@@ -6,21 +6,25 @@
     "url": "https://www.brevo.com"
   },
   "metadata": {
-    "description": "Brevo skills for AI agents, connected to the Brevo MCP server."
+    "description": "Brevo skills for AI agents, connected to the Brevo MCP server. Installed skills are used first and can be checked against the latest version."
   },
   "plugins": [
     {
       "name": "brevo",
       "source": "./",
-      "description": "Brevo skills for AI agents, connected to the Brevo MCP server.",
-      "version": "0.1.0",
+      "description": "Brevo skills for AI agents, connected to the Brevo MCP server. Installed skills are used first and can be checked against the latest version.",
+      "version": "1.0.0",
       "homepage": "https://developers.brevo.com",
       "keywords": [
         "brevo",
         "email",
         "marketing",
         "templates",
-        "mcp"
+        "mcp",
+        "agent-skills",
+        "skill-md",
+        "email-marketing",
+        "transactional-email"
       ]
     }
   ]

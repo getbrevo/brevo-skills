@@ -2,8 +2,8 @@
 name: email-brand-kit
 description: Use when the user wants an email in their brand (logo, colours, fonts, social links), asks what their Brevo brand kit holds, wants to set up or refresh their brand kit from their website, or wants to change one part of it (logo, colours, fonts, social links, custom social icons, brand website). Reads the account's brand kit and turns it into concrete email styles for email-template-write. Suggests a kit from the user's website (a limited lookup that changes no brand values), shows the current kit next to the suggestion, and saves only the parts the user approves, in as few calls as the hourly limit needs. Never invents brand values.
 metadata:
-  version: 1.0.0
-  status: public
+  version: 1.0.2
+  status: beta
   author: brevo
 ---
 # Email brand kit
@@ -39,6 +39,33 @@ connection doesn't offer it (connection rules below).
   and a call without it acts on the main account.
 - Show a tool's error message as returned, after a plain-language summary. Don't invent a
   cause the tool didn't give.
+
+## Where this skill comes from
+
+- You already have this skill: it is in your context, whether installed, from the plugin, uploaded
+  or fetched with `get_brevo_guide`. Don't call `get_brevo_guide` for it again in this
+  conversation.
+- To have it without a tool call next time, install it once: the Brevo plugin from
+  `getbrevo/brevo-skills`, `npx skills add getbrevo/brevo-skills`, or, with a shell, the Brevo CLI
+  (`npm i -g @getbrevo/cli`, then `brevo skill install`). `brevo skill check` lists copies that are
+  behind.
+- Once per conversation, call `list_brevo_guides` with `installed` set to the version in the
+  `metadata` of each Brevo skill you have. For a `stale` one, follow its `update` hint.
+- If you don't have the skill, call `get_brevo_guide` with its name: it returns the current text.
+
+## Working rules for every step
+
+- Follow the steps in order. Don't skip, merge or reorder them, and don't add steps this skill
+  doesn't have.
+- Use only the tools this skill names, with the arguments it describes. Never invent a tool, a
+  parameter, an ID or an email address; ask the user instead, one question at a time.
+- Before anything is created, changed or sent, say in plain words what will happen and wait for
+  the user's yes. A yes covers only what you described.
+- Read each Brevo object once per conversation and reuse it. Re-read only after something
+  changed it.
+- Report a result only from what the tool returned. If a call failed or returned nothing,
+  say so; never describe it as done.
+- Reply in the user's language, and keep names, IDs and addresses exactly as Brevo shows them.
 
 ## Conversation cache (every email skill)
 

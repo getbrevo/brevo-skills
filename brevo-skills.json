@@ -1,12 +1,12 @@
 {
-  "version": "0.1.0",
+  "version": "1.0.0",
   "audience": "public",
   "repository": "https://github.com/getbrevo/brevo-skills",
   "license": "MIT",
   "plugin": {
     "name": "brevo",
     "displayName": "Brevo",
-    "description": "Brevo skills for AI agents, connected to the Brevo MCP server.",
+    "description": "Brevo skills for AI agents, connected to the Brevo MCP server. Installed skills are used first and can be checked against the latest version.",
     "author": {
       "name": "Brevo",
       "url": "https://www.brevo.com"
@@ -17,7 +17,11 @@
       "email",
       "marketing",
       "templates",
-      "mcp"
+      "mcp",
+      "agent-skills",
+      "skill-md",
+      "email-marketing",
+      "transactional-email"
     ]
   },
   "mcp": {
