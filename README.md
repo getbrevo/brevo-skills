@@ -16,8 +16,13 @@ knows how to use it well.
 | Skill | Status | What it does | Source |
 |---|---|---|---|
 | [`brevo-cli`](skills/brevo-cli/SKILL.md) | public | Use the Brevo Developer CLI to manage OAuth apps, UI apps and Brevo Functions. | Synced from [getbrevo/brevo-cli](https://github.com/getbrevo/brevo-cli) |
+| [`email`](skills/email/SKILL.md) | beta | Route an email request to the right email skill, after confirming the account. | Brevo |
 | [`email-brand-kit`](skills/email-brand-kit/SKILL.md) | beta | Read the account's brand kit (logo, colours, fonts, social links) as email styles, and set it up or change it after the user approves. | Brevo |
-| [`email-test-send`](skills/email-test-send/SKILL.md) | beta | Send a test of one email template to addresses the user chooses. | Brevo |
+| [`email-campaign-create`](skills/email-campaign-create/SKILL.md) | beta | Create a Brevo email campaign as a draft from finished HTML, for a chosen list and a verified sender. | Brevo |
+| [`email-template-check`](skills/email-template-check/SKILL.md) | beta | Check email HTML against Brevo's template rules and fix what fails, before it is saved or sent. | Brevo |
+| [`email-template-to-dnd`](skills/email-template-to-dnd/SKILL.md) | beta | Turn email HTML into a design that opens in Brevo's drag-and-drop editor, and save it as a template. | Brevo |
+| [`email-template-write`](skills/email-template-write/SKILL.md) | beta | Write the HTML of a Brevo email (campaign, automation or transactional) with personalization. | Brevo |
+| [`email-test-preview`](skills/email-test-preview/SKILL.md) | beta | Preview a draft email and send a test of it to addresses the user names. | Brevo |
 <!-- skills-table:end -->
 
 Versions below 1.0 may still change; skills marked beta may change more.

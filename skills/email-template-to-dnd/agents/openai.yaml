@@ -1,0 +1,10 @@
+interface:
+  display_name: "Email HTML to drag-and-drop design"
+  short_description: "Turn email HTML into a design that opens in Brevo's drag-and-drop editor, and save it as a template."
+dependencies:
+  tools:
+    - type: mcp
+      value: brevo
+      description: "Brevo MCP server"
+      transport: streamable_http
+      url: https://mcp.brevo.com/v1/openai/mcp

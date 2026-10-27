@@ -1,0 +1,10 @@
+interface:
+  display_name: "Check an email template"
+  short_description: "Check email HTML against Brevo's template rules and fix what fails, before it is saved or sent."
+dependencies:
+  tools:
+    - type: mcp
+      value: brevo
+      description: "Brevo MCP server"
+      transport: streamable_http
+      url: https://mcp.brevo.com/v1/openai/mcp

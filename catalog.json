@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "plugin": "brevo",
   "mcp": {
     "serverName": "brevo",
@@ -34,10 +34,32 @@
       "source_sha256": "e7a8881709859e1c7875e47325878bebd41b9c624b5895b7e2156b8db8e813ed"
     },
     {
-      "name": "email-brand-kit",
-      "version": "1.0.2",
+      "name": "email",
+      "version": "1.0.0",
       "status": "beta",
-      "owner": "experience-design",
+      "owner": "Brevo",
+      "summary": "Route an email request to the right email skill, after confirming the account.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "accounts_get_account"
+      ],
+      "path": "skills/email",
+      "files": [
+        "SKILL.md"
+      ],
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-1.0.0.zip",
+      "sha256": "d05ad03920a4ee76a18b4852021289fb5222eeeb70ba9fefab27aeaa118393af",
+      "source_sha256": "d05ad03920a4ee76a18b4852021289fb5222eeeb70ba9fefab27aeaa118393af"
+    },
+    {
+      "name": "email-brand-kit",
+      "version": "1.0.4",
+      "status": "beta",
+      "owner": "Brevo",
       "summary": "Read the account's brand kit (logo, colours, fonts, social links) as email styles, and set it up or change it after the user approves.",
       "platforms": [
         "claude",
@@ -58,32 +80,160 @@
         "SKILL.md",
         "references/field-rules.md"
       ],
-      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.0.0/email-brand-kit-1.0.2.zip",
-      "sha256": "6d25c9544d77f1b120ed28d3921190aa536f6733e40a24f91f77b2d210b709ce",
-      "source_sha256": "6d25c9544d77f1b120ed28d3921190aa536f6733e40a24f91f77b2d210b709ce"
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-brand-kit-1.0.4.zip",
+      "sha256": "85916fe37c628fb758bf08d32b6a4f77750d38a888e928e14b159effc043edfc",
+      "source_sha256": "85916fe37c628fb758bf08d32b6a4f77750d38a888e928e14b159effc043edfc"
     },
     {
-      "name": "email-test-send",
-      "version": "1.0.2",
+      "name": "email-campaign-create",
+      "version": "1.0.0",
       "status": "beta",
-      "owner": "mcp",
-      "summary": "Send a test of one email template to addresses the user chooses.",
+      "owner": "Brevo",
+      "summary": "Create a Brevo email campaign as a draft from finished HTML, for a chosen list and a verified sender.",
       "platforms": [
         "claude",
         "openai"
       ],
       "requires": [],
       "requires_tools": [
-        "templates_get_smtp_template",
-        "templates_send_test_template"
+        "accounts_get_account",
+        "lists_get_lists",
+        "lists_get_list",
+        "segments_get_segments",
+        "senders_get_senders",
+        "email_campaign_management_create_email_campaign",
+        "email_campaign_management_get_email_campaign",
+        "domains_get_domains",
+        "email_campaign_management_update_email_campaign"
       ],
-      "path": "skills/email-test-send",
+      "path": "skills/email-campaign-create",
       "files": [
         "SKILL.md"
       ],
-      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.0.0/email-test-send-1.0.2.zip",
-      "sha256": "200629fde57e84b5169afb669570b7b76287d7bdb23b0ef26464136985f638f2",
-      "source_sha256": "200629fde57e84b5169afb669570b7b76287d7bdb23b0ef26464136985f638f2"
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-campaign-create-1.0.0.zip",
+      "sha256": "1a685f6a2c70b6d3c9e33d9ad749cdbbc88c3fdecc8c58546480a061bcaebdf2",
+      "source_sha256": "1a685f6a2c70b6d3c9e33d9ad749cdbbc88c3fdecc8c58546480a061bcaebdf2"
+    },
+    {
+      "name": "email-template-check",
+      "version": "1.0.0",
+      "status": "beta",
+      "owner": "Brevo",
+      "summary": "Check email HTML against Brevo's template rules and fix what fails, before it is saved or sent.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "accounts_get_account",
+        "attributes_get_attributes",
+        "templates_get_smtp_template",
+        "templates_post_preview_smtp_email_templates"
+      ],
+      "path": "skills/email-template-check",
+      "files": [
+        "SKILL.md"
+      ],
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-template-check-1.0.0.zip",
+      "sha256": "220886193698d82036c88f5eca22154b01242a3185707850fb00c63d964d2a32",
+      "source_sha256": "220886193698d82036c88f5eca22154b01242a3185707850fb00c63d964d2a32"
+    },
+    {
+      "name": "email-template-to-dnd",
+      "version": "1.0.0",
+      "status": "beta",
+      "owner": "Brevo",
+      "summary": "Turn email HTML into a design that opens in Brevo's drag-and-drop editor, and save it as a template.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "accounts_get_account",
+        "senders_get_senders",
+        "email_editor_create_template",
+        "templates_get_smtp_template",
+        "email_editor_convert_html",
+        "templates_update_smtp_template",
+        "domains_get_domains"
+      ],
+      "path": "skills/email-template-to-dnd",
+      "files": [
+        "SKILL.md",
+        "references/converter-notes.md",
+        "references/native-blocks.md"
+      ],
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-template-to-dnd-1.0.0.zip",
+      "sha256": "ef2e36a6a2886020e88283fe466c5c3619b577b4b5e9a798639cf4ab83932b19",
+      "source_sha256": "ef2e36a6a2886020e88283fe466c5c3619b577b4b5e9a798639cf4ab83932b19"
+    },
+    {
+      "name": "email-template-write",
+      "version": "1.0.0",
+      "status": "beta",
+      "owner": "Brevo",
+      "summary": "Write the HTML of a Brevo email (campaign, automation or transactional) with personalization.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "accounts_get_account",
+        "attributes_get_attributes",
+        "senders_get_senders",
+        "templates_create_smtp_template",
+        "templates_get_smtp_template",
+        "templates_update_smtp_template",
+        "domains_get_domains",
+        "branding_get_brand"
+      ],
+      "path": "skills/email-template-write",
+      "files": [
+        "SKILL.md",
+        "references/copywriting.md",
+        "references/dnd-blocks.md",
+        "references/email-design-rules.md",
+        "references/footer.md",
+        "references/global-styles.md",
+        "references/sections.md",
+        "references/story-arcs.md",
+        "references/template-language.md",
+        "references/template-types.md"
+      ],
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-template-write-1.0.0.zip",
+      "sha256": "bd0864ef9be37efa790fe52f55a0892291b7d14375ccfa6aa83aabe3f0208fcc",
+      "source_sha256": "bd0864ef9be37efa790fe52f55a0892291b7d14375ccfa6aa83aabe3f0208fcc"
+    },
+    {
+      "name": "email-test-preview",
+      "version": "1.0.0",
+      "status": "beta",
+      "owner": "Brevo",
+      "summary": "Preview a draft email and send a test of it to addresses the user names.",
+      "platforms": [
+        "claude",
+        "openai"
+      ],
+      "requires": [],
+      "requires_tools": [
+        "email_campaign_management_get_email_campaign",
+        "templates_get_smtp_template",
+        "templates_send_test_template",
+        "email_campaign_management_send_test_email",
+        "templates_post_preview_smtp_email_templates",
+        "campaign_analytics_get_email_event_report",
+        "domains_get_domains"
+      ],
+      "path": "skills/email-test-preview",
+      "files": [
+        "SKILL.md"
+      ],
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-test-preview-1.0.0.zip",
+      "sha256": "abeccad4a9937fdcad57041552eb4143622aec57496046d13d721fc69bd602ba",
+      "source_sha256": "abeccad4a9937fdcad57041552eb4143622aec57496046d13d721fc69bd602ba"
     }
   ]
 }

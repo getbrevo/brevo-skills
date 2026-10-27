@@ -2,7 +2,7 @@
 name: email-brand-kit
 description: Use when the user wants an email in their brand (logo, colours, fonts, social links), asks what their Brevo brand kit holds, wants to set up or refresh their brand kit from their website, or wants to change one part of it (logo, colours, fonts, social links, custom social icons, brand website). Reads the account's brand kit and turns it into concrete email styles for email-template-write. Suggests a kit from the user's website (a limited lookup that changes no brand values), shows the current kit next to the suggestion, and saves only the parts the user approves, in as few calls as the hourly limit needs. Never invents brand values.
 metadata:
-  version: 1.0.2
+  version: 1.0.4
   status: beta
   author: brevo
 ---
@@ -31,7 +31,12 @@ connection doesn't offer it (connection rules below).
 - Every Brevo call goes through the Brevo MCP server's tools. The user's connection carries
   their authentication (OAuth). **Never ask for an API key, never ask the user to paste a key
   into the chat, and never put a key in a file or command.**
-- If a tool returns 401 or 403, ask the user to reconnect Brevo in their agent's settings.
+- If a tool returns 401, or 403 about the login or token, ask the user to reconnect Brevo in
+  their agent's settings.
+- A 403 "required scope not present" (`permission_denied`) means this connection doesn't
+  allow that action; reconnecting won't change it. Say so, skip that step, and carry on with
+  the fallback the skill gives (for a template render: the test send and its outcome check).
+  If the skill gives no fallback for that step, stop the step and tell the user.
 - If a tool a step needs is missing from your tool list, stop that step and say that the
   user's Brevo connection doesn't offer it (connections can differ). Don't improvise with
   other tools. Writing HTML never needs a tool; offer it, and the steps to finish in Brevo.
@@ -50,7 +55,9 @@ connection doesn't offer it (connection rules below).
   (`npm i -g @getbrevo/cli`, then `brevo skill install`). `brevo skill check` lists copies that are
   behind.
 - Once per conversation, call `list_brevo_guides` with `installed` set to the version in the
-  `metadata` of each Brevo skill you have. For a `stale` one, follow its `update` hint.
+  `metadata` of each Brevo skill you have, if the tool accepts `installed`; otherwise call it
+  with no arguments and compare the versions yourself. For a `stale` one, follow its `update`
+  hint.
 - If you don't have the skill, call `get_brevo_guide` with its name: it returns the current text.
 
 ## Working rules for every step
@@ -181,7 +188,7 @@ networks). Then turn it into styles:
 | `colors` | The first colour only, as below |
 | `socialMediaLinks` | The footer's social icons row: one link per entry, in kit order, `url` as stored once checked (below). A `website` entry is the website link; a `custom-icon` entry uses its `thumbnailUrl` as the image and `title` as `alt` |
 | `website` / `domain` | The logo link, and the call-to-action fallback when the brief gives no URL. Use the `https://` form; when the kit stores `http://`, say so and suggest saving the `https://` address |
-| `name` | The brand name in the footer and as the sender name, unless the brief names another brand |
+| `name` | The brand name in the copy and the logo's `alt`, unless the brief names another brand. The footer's company name comes from the account, the sender name from the sender |
 
 **Check the social links before using them.** Each link's host must belong to its network
 (`instagram` on instagram.com, `facebook` on facebook.com, `apple-music` on
@@ -328,7 +335,9 @@ after, a yes, save that part with `partialUpdateField`. No read-back: update the
 | `validation_invalid_logo_url` | The logo isn't a URL | Ask for a public image URL |
 | A font error | Font name or type not accepted | The fonts Brevo accepts (field rules) |
 | 429 | Hourly limit for brand-kit calls reached (reads count too) | Brevo gives no wait time; try again within the hour. Nothing more is called |
-| 401 / 403 | Connection expired or not allowed | Reconnect Brevo in the agent's settings |
+| 401, or 403 about the login | Connection expired | Reconnect Brevo in the agent's settings |
+| 403 "required scope not present" on reading the kit | The connection doesn't allow reading the brand kit | Say so; go on as with an empty kit (neutral styles, or values the user types), and name the styles used |
+| 403 "required scope not present" on a change (set up, update, social icon, website) | The connection doesn't allow changing the brand kit | Say so and stop that step; reconnecting won't help. They can change it in Brevo's brand kit settings |
 | "Save it all", without seeing the change | No before/after shown yet | Show it first, then ask |
 | "Delete my brand kit" | Not possible through the connection | Brevo's brand kit settings: https://app.brevo.com/branding/edit-brand/ |
 

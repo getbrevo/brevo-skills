@@ -1,0 +1,10 @@
+interface:
+  display_name: "Create an email campaign draft"
+  short_description: "Create a Brevo email campaign as a draft from finished HTML, for a chosen list and a verified sender."
+dependencies:
+  tools:
+    - type: mcp
+      value: brevo
+      description: "Brevo MCP server"
+      transport: streamable_http
+      url: https://mcp.brevo.com/v1/openai/mcp

@@ -4,6 +4,37 @@ All notable changes to this project are listed here. Versions follow
 [semantic versioning](https://semver.org/); each skill also has its own version in its
 `skill.json`.
 
+## 1.1.0 (unreleased)
+
+### Added
+
+- Six email skills (beta 1.0.0; `public` once their evals pass on Claude and ChatGPT), with
+  evals: `email` (routes an email request to the right
+  skill after confirming the account), `email-template-write` (writes the HTML of a campaign,
+  automation or transactional email with personalization), `email-template-check` (checks the
+  HTML against Brevo's template rules), `email-template-to-dnd` (turns HTML into a design for
+  the drag-and-drop editor and saves it as a template), `email-campaign-create` (creates a
+  campaign draft from finished HTML for a chosen list and a verified sender) and
+  `email-test-preview` (previews a draft and sends a test to addresses the user names).
+
+### Removed
+
+- `email-test-send`: replaced by `email-test-preview`, which renders the email, shares a
+  preview link, checks the sender's domain, sends the test and checks its outcome. The
+  test-send warning moved to `email-test-preview`'s tool note.
+
+### Changed
+
+- Connection rules: a 403 "required scope not present" no longer sends the user to reconnect;
+  the step is skipped, and a template render falls back to the test send's outcome check.
+- The guide-version check passes `installed` to `list_brevo_guides` only when the tool
+  accepts it.
+- `email-brand-kit` 1.0.4: the kit's name is for the copy and the logo; the footer's company
+  name comes from the account and the sender name from the sender. A 403 "required scope not
+  present" on reading the kit goes on as with an empty kit; on a change, the step stops.
+- Connection rules: a 403 "required scope not present" in a step with no fallback stops that
+  step and tells the user.
+
 ## 1.0.0 (unreleased)
 
 ### Documentation

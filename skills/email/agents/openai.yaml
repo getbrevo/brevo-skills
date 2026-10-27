@@ -1,6 +1,6 @@
 interface:
-  display_name: "Email test send"
-  short_description: "Send a test of one email template to addresses the user chooses."
+  display_name: Email
+  short_description: "Route an email request to the right email skill, after confirming the account."
 dependencies:
   tools:
     - type: mcp
