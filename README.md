@@ -36,6 +36,31 @@ Versions below 1.0 may still change; skills marked beta may change more.
 | `email-test-send` | "Send a test of my welcome template to me@example.com" |
 | `brevo-cli` | "Scaffold a Brevo OAuth app" · "Deploy my Brevo Function" |
 
+## Best with the Brevo MCP server
+
+The skills are written to be used with the [Brevo MCP server](https://developers.brevo.com):
+a skill is the playbook (what to check, what to ask you, what order to work in), and the
+server's tools do the work in your account. Connect the server first, then add the skills. On
+their own, the skills cannot reach your account; the server on its own works, but the agent
+has to work out the right steps unaided.
+
+- **Claude:** the [Brevo connector](https://claude.com/marketplace/connectors/brevo) is the MCP
+  server (`https://mcp.brevo.com/v1/anthropic/mcp`), available on all Brevo plans. Claude reads
+  campaign and A/B test results, contacts, lists and segments, and saves email templates, email
+  campaigns and SMS campaigns as drafts in your account. It never sends or schedules a campaign
+  and never deletes anything.
+- **ChatGPT:** the [Brevo plugin](https://openai.com/business/plugins/brevo/) gives ChatGPT
+  access to your campaigns and contacts (try "What's the open and click rate on my last email
+  campaign in Brevo?") and bundles these skills with the Brevo MCP connection.
+- **Other MCP clients (Cursor, VS Code, Windsurf):** see the
+  [MCP protocol overview](https://developers.brevo.com/docs/mcp-protocol), which also lists the
+  smaller per-module servers (contacts, templates, email campaigns and others) if you want the
+  agent to see fewer tools.
+
+The tools can change between releases, so a skill names the tools it uses and Brevo checks that
+they exist before each release; ask the server (`list_brevo_guides`) rather than relying on a
+list copied from a page.
+
 ## Install
 
 Most people need one of the first two rows.
@@ -73,6 +98,19 @@ current text.
 To update: `brevo skill update` (checks every file against the release hash), refresh the
 plugin in your agent, or upload the new ZIP from the latest release. `brevo skill check` lists the
 copies that are behind.
+
+**Ask your agent to update.** An agent with a shell can run the update itself; tell it "update
+the Brevo skills" and it uses the command for how they were installed:
+
+| Installed with | The agent runs |
+|---|---|
+| Claude Code plugin | `claude plugin marketplace update brevo-skills`, then `claude plugin update brevo@brevo-skills`; restart Claude Code to apply |
+| Codex plugin | `codex plugin marketplace upgrade` |
+| `npx skills add` | `npx skills add getbrevo/brevo-skills` again |
+| Brevo CLI | `brevo skill update` |
+
+An upload to claude.ai or ChatGPT cannot be updated by the agent: download the new ZIP and
+upload it again.
 
 ## How this repo works
 

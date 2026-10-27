@@ -65,6 +65,20 @@ Claude Code, Codex, Cursor, Grok, Gemini CLI and Antigravity read this repo or t
 ZIP directly, so they have no separate copy to update. The Gemini app and Gemini Enterprise
 take the skill ZIP alone (see the install table above).
 
+## Update an installed copy
+
+An agent with a shell can update the skills itself when asked ("update the Brevo skills"):
+
+| Installed with | Command |
+|---|---|
+| Claude Code plugin | `claude plugin marketplace update brevo-skills`, then `claude plugin update brevo@brevo-skills`; restart Claude Code to apply |
+| Codex plugin | `codex plugin marketplace upgrade` |
+| `npx skills add` | `npx skills add getbrevo/brevo-skills` again |
+| Brevo CLI | `brevo skill update` |
+
+An upload to claude.ai or ChatGPT can't be updated by the agent: upload the new ZIP again.
+Skills work best with the Brevo MCP server connected, so check that first.
+
 ## OpenAI Responses API / Agents SDK
 
 Only tools reach the model there: server instructions, resources and prompts from the Brevo
