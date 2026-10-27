@@ -44,6 +44,22 @@ server's tools do the work in your account. Connect the server first, then add t
 their own, the skills cannot reach your account; the server on its own works, but the agent
 has to work out the right steps unaided.
 
+- **Claude:** the [Brevo connector](https://claude.com/marketplace/connectors/brevo) is the MCP
+  server (`https://mcp.brevo.com/v1/anthropic/mcp`), available on all Brevo plans. Claude reads
+  campaign and A/B test results, contacts, lists and segments, and saves email templates, email
+  campaigns and SMS campaigns as drafts in your account. It never sends or schedules a campaign
+  and never deletes anything.
+- **ChatGPT:** the [Brevo plugin](https://openai.com/business/plugins/brevo/) bundles these
+  skills with the Brevo MCP connection.
+- **Other MCP clients (Cursor, VS Code, Windsurf):** see the
+  [MCP protocol overview](https://developers.brevo.com/docs/mcp-protocol), which also lists the
+  smaller per-module servers (contacts, templates, email campaigns and others) if you want the
+  agent to see fewer tools.
+
+The tools can change between releases, so a skill names the tools it uses and Brevo checks that
+they exist before each release; ask the server (`list_brevo_guides`) rather than relying on a
+list copied from a page.
+
 ## Install
 
 Most people need one of the first two rows.
