@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "plugin": "brevo",
   "mcp": {
     "serverName": "brevo",
@@ -34,6 +34,27 @@
       "source_sha256": "e7a8881709859e1c7875e47325878bebd41b9c624b5895b7e2156b8db8e813ed"
     },
     {
+      "name": "brevo-guide",
+      "version": "1.0.0",
+      "status": "beta",
+      "owner": "extensibility-team",
+      "summary": "Find and load Brevo skills on any agent: from the Brevo MCP server's guides, or install them once.",
+      "platforms": [
+        "claude",
+        "openai",
+        "gemini"
+      ],
+      "requires": [],
+      "requires_tools": [],
+      "path": "skills/brevo-guide",
+      "files": [
+        "SKILL.md"
+      ],
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.2.0/brevo-guide-1.0.0.zip",
+      "sha256": "3af248dda3195bc7291f7e786c996bd98bd91bb107ab30ef1d89094cad3543f2",
+      "source_sha256": "3af248dda3195bc7291f7e786c996bd98bd91bb107ab30ef1d89094cad3543f2"
+    },
+    {
       "name": "email",
       "version": "1.0.0",
       "status": "beta",
@@ -51,7 +72,7 @@
       "files": [
         "SKILL.md"
       ],
-      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-1.0.0.zip",
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.2.0/email-1.0.0.zip",
       "sha256": "d05ad03920a4ee76a18b4852021289fb5222eeeb70ba9fefab27aeaa118393af",
       "source_sha256": "d05ad03920a4ee76a18b4852021289fb5222eeeb70ba9fefab27aeaa118393af"
     },
@@ -80,7 +101,7 @@
         "SKILL.md",
         "references/field-rules.md"
       ],
-      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-brand-kit-1.0.4.zip",
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.2.0/email-brand-kit-1.0.4.zip",
       "sha256": "85916fe37c628fb758bf08d32b6a4f77750d38a888e928e14b159effc043edfc",
       "source_sha256": "85916fe37c628fb758bf08d32b6a4f77750d38a888e928e14b159effc043edfc"
     },
@@ -110,7 +131,7 @@
       "files": [
         "SKILL.md"
       ],
-      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-campaign-create-1.0.0.zip",
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.2.0/email-campaign-create-1.0.0.zip",
       "sha256": "1a685f6a2c70b6d3c9e33d9ad749cdbbc88c3fdecc8c58546480a061bcaebdf2",
       "source_sha256": "1a685f6a2c70b6d3c9e33d9ad749cdbbc88c3fdecc8c58546480a061bcaebdf2"
     },
@@ -135,7 +156,7 @@
       "files": [
         "SKILL.md"
       ],
-      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-template-check-1.0.0.zip",
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.2.0/email-template-check-1.0.0.zip",
       "sha256": "220886193698d82036c88f5eca22154b01242a3185707850fb00c63d964d2a32",
       "source_sha256": "220886193698d82036c88f5eca22154b01242a3185707850fb00c63d964d2a32"
     },
@@ -165,7 +186,7 @@
         "references/converter-notes.md",
         "references/native-blocks.md"
       ],
-      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-template-to-dnd-1.0.0.zip",
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.2.0/email-template-to-dnd-1.0.0.zip",
       "sha256": "ef2e36a6a2886020e88283fe466c5c3619b577b4b5e9a798639cf4ab83932b19",
       "source_sha256": "ef2e36a6a2886020e88283fe466c5c3619b577b4b5e9a798639cf4ab83932b19"
     },
@@ -203,7 +224,7 @@
         "references/template-language.md",
         "references/template-types.md"
       ],
-      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-template-write-1.0.0.zip",
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.2.0/email-template-write-1.0.0.zip",
       "sha256": "bd0864ef9be37efa790fe52f55a0892291b7d14375ccfa6aa83aabe3f0208fcc",
       "source_sha256": "bd0864ef9be37efa790fe52f55a0892291b7d14375ccfa6aa83aabe3f0208fcc"
     },
@@ -231,7 +252,7 @@
       "files": [
         "SKILL.md"
       ],
-      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.1.0/email-test-preview-1.0.0.zip",
+      "zip_url": "https://github.com/getbrevo/brevo-skills/releases/download/v1.2.0/email-test-preview-1.0.0.zip",
       "sha256": "abeccad4a9937fdcad57041552eb4143622aec57496046d13d721fc69bd602ba",
       "source_sha256": "abeccad4a9937fdcad57041552eb4143622aec57496046d13d721fc69bd602ba"
     }

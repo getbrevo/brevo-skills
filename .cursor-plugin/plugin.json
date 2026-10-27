@@ -1,8 +1,8 @@
 {
   "name": "brevo",
   "displayName": "Brevo",
-  "description": "Brevo skills for AI agents, connected to the Brevo MCP server. Installed skills are used first and can be checked against the latest version.",
-  "version": "1.0.0",
+  "description": "Brevo skills for AI agents, connected to the Brevo MCP server. Installed skills are used first and can be checked against the latest version. Skills are open source at https://github.com/getbrevo/brevo-skills.",
+  "version": "1.2.0",
   "author": {
     "name": "Brevo",
     "url": "https://www.brevo.com"

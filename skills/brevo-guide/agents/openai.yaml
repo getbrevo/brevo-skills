@@ -1,0 +1,10 @@
+interface:
+  display_name: "Brevo guide"
+  short_description: "Find and load Brevo skills on any agent: from the Brevo MCP server's guides, or install them once."
+dependencies:
+  tools:
+    - type: mcp
+      value: brevo
+      description: "Brevo MCP server"
+      transport: streamable_http
+      url: https://mcp.brevo.com/v1/openai/mcp

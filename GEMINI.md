@@ -5,6 +5,7 @@
 This extension connects the Brevo MCP server (`brevo`) and ships these skills:
 
 - **brevo-cli** (`skills/brevo-cli/SKILL.md`): Use the Brevo Developer CLI to manage OAuth apps, UI apps and Brevo Functions.
+- **brevo-guide** (`skills/brevo-guide/SKILL.md`): Find and load Brevo skills on any agent: from the Brevo MCP server's guides, or install them once.
 
 When a request matches a skill, read its `SKILL.md` and follow it step by step.
 

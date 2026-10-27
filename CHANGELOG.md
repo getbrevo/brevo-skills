@@ -4,7 +4,15 @@ All notable changes to this project are listed here. Versions follow
 [semantic versioning](https://semver.org/); each skill also has its own version in its
 `skill.json`.
 
-## 1.1.0 (unreleased)
+## 1.2.0 (unreleased)
+
+### Added
+
+- `brevo-guide` (beta 1.0.0): a small skill that loads any Brevo skill from the MCP server's
+  `get_brevo_guide` tool, which works in every client with nothing to install, and says where
+  the skills can be installed once.
+
+## 1.1.0
 
 ### Added
 
