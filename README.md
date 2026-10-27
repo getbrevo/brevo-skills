@@ -49,8 +49,9 @@ has to work out the right steps unaided.
   campaign and A/B test results, contacts, lists and segments, and saves email templates, email
   campaigns and SMS campaigns as drafts in your account. It never sends or schedules a campaign
   and never deletes anything.
-- **ChatGPT:** the [Brevo plugin](https://openai.com/business/plugins/brevo/) bundles these
-  skills with the Brevo MCP connection.
+- **ChatGPT:** the [Brevo plugin](https://openai.com/business/plugins/brevo/) gives ChatGPT
+  access to your campaigns and contacts (try "What's the open and click rate on my last email
+  campaign in Brevo?") and bundles these skills with the Brevo MCP connection.
 - **Other MCP clients (Cursor, VS Code, Windsurf):** see the
   [MCP protocol overview](https://developers.brevo.com/docs/mcp-protocol), which also lists the
   smaller per-module servers (contacts, templates, email campaigns and others) if you want the
