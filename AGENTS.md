@@ -27,6 +27,23 @@ Everything else is this repository's own and is edited here by pull request: the
 - Check that your copy is current with the server's `list_brevo_guides` (pass the versions in
   each `SKILL.md` metadata). Update with `brevo skill update`, a plugin refresh or the new ZIP.
 
+## Use the skills with the Brevo MCP server
+
+The skills work best together with the Brevo MCP server (Claude, ChatGPT, Codex and any other
+agent): the skill says how to do the job, the server's tools do it. If the server is not
+connected, ask the user to connect it before starting a Brevo task; don't try to work around it.
+
+When the user asks you to update the Brevo skills, or `list_brevo_guides` reports a skill as
+`stale`, update the copy the way it was installed:
+
+- Claude Code plugin: `claude plugin marketplace update brevo-skills`, then
+  `claude plugin update brevo@brevo-skills`. Tell the user to restart Claude Code to apply it.
+- Codex plugin: `codex plugin marketplace upgrade`.
+- `npx skills add`: run `npx skills add getbrevo/brevo-skills` again.
+- Brevo CLI: `brevo skill update`.
+- An upload to claude.ai or ChatGPT: you can't update it; tell the user to download the new ZIP
+  from the latest release and upload it again.
+
 ## Building the ChatGPT / Codex plugin ZIP
 
 The plugin on OpenAI's platform is uploaded by hand. After a release, build its ZIP with

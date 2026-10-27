@@ -52,7 +52,7 @@ The script:
    plugin's own, and a skill the release dropped is gone.
 3. Adds the skills in `openai-plugin/extras/`, one `<name>.md` per skill, as
    `skills/<name>/SKILL.md`. These are skills that are not in the release yet (today,
-   `brevo-guide`). Delete a file from `extras/` once a release ships that skill, or the
+   none: `brevo-guide` shipped in v1.2.0). Delete a file from `extras/` once a release ships that skill, or the
    script overwrites the release's copy with the older one.
 4. Applies `--skip`, then sets the name, version and release notes in the manifest. The version
    is the release's.

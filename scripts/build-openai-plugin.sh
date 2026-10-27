@@ -56,6 +56,7 @@ cp -R "$work/skills-zip/skills" "$pkg/skills"
 
 # Skills that are not in the release yet.
 for f in "$TEMPLATE"/extras/*.md; do
+  [ -e "$f" ] || continue
   name="$(basename "$f" .md)"
   mkdir -p "$pkg/skills/$name"
   cp "$f" "$pkg/skills/$name/SKILL.md"
