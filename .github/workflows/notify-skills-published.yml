@@ -1,0 +1,109 @@
+name: Notify skills published
+
+# Each release lands on main as a "chore: publish skills vX" commit. Tell the
+# release owners in Slack so they ship new Claude and OpenAI plugin versions.
+#
+# The Slack side is a Workflow Builder workflow with a "From a webhook" trigger.
+# The JSON keys sent below must match that trigger's data variables exactly, and
+# every value is a string. The three user fields take a raw Slack member ID.
+on:
+  push:
+    branches: [main]
+  # Manual run for testing: announces the newest publish commit.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      startsWith(github.event.head_commit.message, 'chore: publish skills')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Post to Slack
+        env:
+          # The Slack workflow's webhook URL (https://hooks.slack.com/triggers/...).
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
+          # Slack member IDs of the two release owners (repoOwner1 and repoOwner2).
+          OWNER_1: ${{ vars.SLACK_REPO_OWNER_1 }}
+          OWNER_2: ${{ vars.SLACK_REPO_OWNER_2 }}
+          # Optional "github-login=SlackMemberID" pairs, space-separated, for actorMention.
+          SLACK_ACTOR_IDS: ${{ vars.SLACK_ACTOR_IDS }}
+          EVENT_NAME: ${{ github.event_name }}
+          ACTOR: ${{ github.actor }}
+          REPO: ${{ github.repository }}
+          SERVER_URL: ${{ github.server_url }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_RELEASE_WEBHOOK is not set; skipping."
+            exit 0
+          fi
+
+          # The publish commit: this push, or the newest one for a manual run.
+          sha=$GITHUB_SHA
+          if [ "$EVENT_NAME" = workflow_dispatch ]; then
+            sha=$(git log -1 --format=%H --grep='^chore: publish skills')
+            [ -n "$sha" ] || { echo "No publish commit found."; exit 1; }
+          fi
+          subject=$(git log -1 --format=%s "$sha")
+          AUTHOR_NAME=$(git log -1 --format=%an "$sha")
+          version=$(printf '%s' "$subject" | grep -oE 'v[0-9][0-9A-Za-z.+-]*' | head -n 1)
+
+          release_url="$SERVER_URL/$REPO/releases"
+          [ -n "$version" ] && release_url="$SERVER_URL/$REPO/releases/tag/$version"
+
+          owner1=$OWNER_1
+          owner2=${OWNER_2:-$OWNER_1}
+
+          # The actor's Slack ID, from the optional mapping; the first owner otherwise
+          # (a bot has no Slack account).
+          actor_id=$owner1
+          for pair in $SLACK_ACTOR_IDS; do
+            [ "${pair%%=*}" = "$ACTOR" ] && actor_id=${pair#*=}
+          done
+
+          # Skills this release touched, with the version in each SKILL.md.
+          skills=""
+          for f in $(git diff --name-only "$sha~1" "$sha" -- 'skills/*/SKILL.md'); do
+            name=$(basename "$(dirname "$f")")
+            ver=$(sed -n 's/^  version: *//p' "$f" | head -n 1)
+            skills="${skills}${skills:+, }$name $ver"
+          done
+
+          # Newest CHANGELOG section: join each bullet's wrapped lines, trim to a
+          # sentence-sized summary, keep the first six.
+          changes=$(awk '
+            /^## /   { n++; next }
+            n != 1   { next }
+            /^- /    { if (b != "") print b; b = substr($0, 3); next }
+            /^  [^ ]/ && b != "" { sub(/^  /, ""); b = b " " $0; next }
+            END      { if (b != "") print b }
+          ' CHANGELOG.md | head -n 6 | while IFS= read -r l; do
+            first=${l%%. *}
+            [ ${#first} -gt 170 ] && first="${first:0:170}" && first="${first% *}…"
+            printf '• %s\n' "$first"
+          done)
+
+          custom="Please release a new version of the Claude plugin and the OpenAI plugin."
+          [ -n "$skills" ] && custom="$custom Skills changed: $skills."
+
+          jq -n \
+            --arg repository "$REPO" \
+            --arg tag "${version:-$subject}" \
+            --arg releaseTagUrl "$release_url" \
+            --arg actor "${AUTHOR_NAME:-$ACTOR}" \
+            --arg actorMention "$actor_id" \
+            --arg repoOwner1 "$owner1" \
+            --arg repoOwner2 "$owner2" \
+            --arg changeSummary "$changes" \
+            --arg customMessage "$custom" \
+            '$ARGS.named' \
+            | curl --fail --silent --show-error \
+                -X POST -H 'Content-Type: application/json' \
+                --data @- "$SLACK_WEBHOOK_URL"
