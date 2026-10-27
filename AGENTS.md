@@ -14,9 +14,9 @@ own source repository, and every release overwrites these files:
 Don't edit those: the next release overwrites the change. To change a skill, open an issue.
 
 Everything else is this repository's own and is edited here by pull request: the rest of
-`README.md`, `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `LICENSE`, `docs/`
-and `.github/`. Don't remove the two `skills-table` markers from `README.md`: the release
-fails without them.
+`README.md`, `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `SECURITY.md`, `LICENSE`, `docs/`,
+`.github/`, `openai-plugin/` and `scripts/`. Don't remove the two `skills-table` markers from
+`README.md`: the release fails without them.
 
 ## Using the skills
 
@@ -26,6 +26,16 @@ fails without them.
   use it. Don't fetch the same text again with the server's `get_brevo_guide` tool.
 - Check that your copy is current with the server's `list_brevo_guides` (pass the versions in
   each `SKILL.md` metadata). Update with `brevo skill update`, a plugin refresh or the new ZIP.
+
+## Building the ChatGPT / Codex plugin ZIP
+
+The plugin on OpenAI's platform is uploaded by hand. After a release, build its ZIP with
+`scripts/build-openai-plugin.sh --app-id <the plugin's name on the platform>`. The script takes
+the release's `skills/`, adds the plugin's own files from `openai-plugin/` and the skills in
+`openai-plugin/extras/` that the release doesn't have yet, and writes `brevo-plugin-<version>.zip`.
+Don't put the plugin's name in the repo, and don't add a skill under `skills/` by hand: put it in
+`openai-plugin/extras/` until a release ships it, then delete it there. Steps and options:
+[docs/openai-plugin-update.md](docs/openai-plugin-update.md).
 
 ## This repo is public
 

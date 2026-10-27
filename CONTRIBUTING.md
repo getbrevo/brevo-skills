@@ -14,7 +14,7 @@ next release would overwrite it.
 ## Pull requests we welcome
 
 Changes to what this repository owns: the rest of `README.md`, `docs/`, the issue templates,
-`CONTRIBUTING.md` and `AGENTS.md`. Keep the changes small, say why in the description, and keep
+`CONTRIBUTING.md`, `AGENTS.md`, `openai-plugin/` and `scripts/`. Keep the changes small, say why in the description, and keep
 the two `skills-table` markers in `README.md`.
 
 ## Public repository rules
