@@ -31,8 +31,8 @@ jobs:
           # The Slack workflow's webhook URL (https://hooks.slack.com/triggers/...).
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
           # Slack member IDs of the two release owners (repoOwner1 and repoOwner2).
-          OWNER_1: ${{ vars.SLACK_REPO_OWNER_1 }}
-          OWNER_2: ${{ vars.SLACK_REPO_OWNER_2 }}
+          OWNER_1: ${{ secrets.SLACK_REPO_OWNER_1 }}
+          OWNER_2: ${{ secrets.SLACK_REPO_OWNER_2 }}
           # Optional "github-login=SlackMemberID" pairs, space-separated, for actorMention.
           SLACK_ACTOR_IDS: ${{ vars.SLACK_ACTOR_IDS }}
           EVENT_NAME: ${{ github.event_name }}
