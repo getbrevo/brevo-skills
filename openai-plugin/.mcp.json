@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "Brevo": {
+      "url": "https://mcp.brevo.com/v1/openai/mcp"
+    }
+  }
+}
