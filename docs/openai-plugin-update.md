@@ -50,13 +50,9 @@ The script:
 2. Starts from the files in `openai-plugin/` and puts the release's `skills/` folder in it.
    The release ZIP holds every shipped skill and no manifest, so it never replaces the
    plugin's own, and a skill the release dropped is gone.
-3. Adds the skills in `openai-plugin/extras/`, one `<name>.md` per skill, as
-   `skills/<name>/SKILL.md`. These are skills that are not in the release yet (today,
-   none: `brevo-guide` shipped in v1.2.0). Delete a file from `extras/` once a release ships that skill, or the
-   script overwrites the release's copy with the older one.
-4. Applies `--skip`, then sets the name, version and release notes in the manifest. The version
+3. Applies `--skip`, then sets the name, version and release notes in the manifest. The version
    is the release's.
-5. Writes `brevo-plugin-<version>.zip` with `.mcp.json` and `skills/` at the top of the ZIP.
+4. Writes `brevo-plugin-<version>.zip` with `.mcp.json` and `skills/` at the top of the ZIP.
 
 Then check the ZIP with `unzip -l`: it lists `.mcp.json`, `.codex-plugin/plugin.json`,
 `assets/` and one `skills/<name>/SKILL.md` per skill you expect, and no `agents/openai.yaml`

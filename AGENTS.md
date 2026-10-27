@@ -49,10 +49,9 @@ When the user asks you to update the Brevo skills, or `list_brevo_guides` report
 The plugin on OpenAI's platform is uploaded by hand. After a release, build its ZIP with
 `scripts/build-openai-plugin.sh --app-id <the plugin's name on the platform>` (or set
 `OPENAI_APP_ID`). The script takes
-the release's `skills/`, adds the plugin's own files from `openai-plugin/` and the skills in
-`openai-plugin/extras/` that the release doesn't have yet, and writes `brevo-plugin-<version>.zip`.
-Don't put the plugin's name in the repo, and don't add a skill under `skills/` by hand: put it in
-`openai-plugin/extras/` until a release ships it, then delete it there. Steps and options:
+the release's `skills/`, adds the plugin's own files from `openai-plugin/`, and writes
+`brevo-plugin-<version>.zip`. Don't put the plugin's name in the repo, and don't add a skill under
+`skills/` by hand: a release ships it. Steps and options:
 [docs/openai-plugin-update.md](docs/openai-plugin-update.md).
 
 ## This repo is public

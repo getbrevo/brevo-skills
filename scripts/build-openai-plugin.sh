@@ -50,17 +50,8 @@ actual="$(shasum -a 256 "$work/brevo-skills-$version.zip" | awk '{print $1}')"
 pkg="$work/package"
 mkdir -p "$pkg"
 cp -R "$TEMPLATE/." "$pkg/"
-rm -rf "$pkg/extras"
 unzip -q "$work/brevo-skills-$version.zip" -d "$work/skills-zip"
 cp -R "$work/skills-zip/skills" "$pkg/skills"
-
-# Skills that are not in the release yet.
-for f in "$TEMPLATE"/extras/*.md; do
-  [ -e "$f" ] || continue
-  name="$(basename "$f" .md)"
-  mkdir -p "$pkg/skills/$name"
-  cp "$f" "$pkg/skills/$name/SKILL.md"
-done
 
 for s in ${skip[@]+"${skip[@]}"}; do rm -rf "$pkg/skills/$s"; done
 
