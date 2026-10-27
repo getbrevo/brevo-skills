@@ -90,7 +90,7 @@ jobs:
             printf '• %s\n' "$first"
           done)
 
-          custom="Please release a new version of the Claude plugin and the OpenAI plugin."
+          custom=":jigsaw: A skill has been published. Kindly release a new version of the Claude plugin and the OpenAI plugin."
           [ -n "$skills" ] && custom="$custom Skills changed: $skills."
 
           jq -n \
