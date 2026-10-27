@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Build the ChatGPT / Codex plugin ZIP from a release of this repository.
 #
-# Usage: scripts/build-openai-plugin.sh --app-id <id> [--tag v1.2.0] [--notes "text"]
+# Usage: scripts/build-openai-plugin.sh [--app-id <id>] [--tag v1.2.0] [--notes "text"]
 #                                       [--skip <skill>]... [--out <dir>]
 #
-#   --app-id  the plugin's `name` on the OpenAI platform (kept out of this repo)
+#   --app-id  the plugin's `name` on the OpenAI platform (kept out of this repo);
+#             defaults to the OPENAI_APP_ID environment variable
 #   --tag     release to build from (default: the latest release)
 #   --notes   release notes for the manifest (default: a one-line summary)
 #   --skip    leave a skill out of the plugin, e.g. --skip brevo-cli (repeatable)
@@ -17,7 +18,7 @@ REPO="getbrevo/brevo-skills"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 TEMPLATE="$ROOT/openai-plugin"
 
-app_id="" tag="" notes="" out="$ROOT/dist"
+app_id="${OPENAI_APP_ID:-}" tag="" notes="" out="$ROOT/dist"
 skip=()
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -29,7 +30,7 @@ while [ $# -gt 0 ]; do
     *) echo "Unknown option: $1" >&2; exit 2 ;;
   esac
 done
-[ -n "$app_id" ] || { echo "--app-id is required" >&2; exit 2; }
+[ -n "$app_id" ] || { echo "Pass --app-id or set OPENAI_APP_ID" >&2; exit 2; }
 
 if [ -z "$tag" ]; then
   tag="$(gh release view -R "$REPO" --json tagName --jq .tagName)"

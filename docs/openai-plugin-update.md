@@ -20,7 +20,7 @@ The manifest is `.codex-plugin/plugin.json`, not a `plugin.json` at the top.
 
 In this repository, `openai-plugin/` holds the first three. Its manifest has placeholders for
 the plugin's name, the version and the release notes, which the script fills in. The plugin's
-name on the OpenAI platform is not stored here; you pass it with `--app-id`. Copy it from the
+name on the OpenAI platform is not stored here; you pass it with `--app-id` or `OPENAI_APP_ID`. Copy it from the
 manifest of the package you last uploaded.
 
 ## Build the ZIP
@@ -30,6 +30,9 @@ Run from the repository root. It needs `gh`, `shasum`, `unzip`, `zip` and `pytho
 ```sh
 scripts/build-openai-plugin.sh --app-id <the plugin's name on the OpenAI platform>
 ```
+
+Or set `OPENAI_APP_ID` in your shell (not in the repo) and leave `--app-id` out. The option wins
+if both are given.
 
 Options:
 
