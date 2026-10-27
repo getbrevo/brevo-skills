@@ -1,15 +1,16 @@
 name: Notify skills published
 
-# Each release lands on main as a "chore: publish skills vX" commit. Tell the
-# release owners in Slack so they ship new Claude and OpenAI plugin versions.
+# Each skills release is published here as a GitHub release (tag vX) with its
+# ZIPs attached. Tell the release owners in Slack once it is published, so they
+# ship new Claude and OpenAI plugin versions.
 #
 # The Slack side is a Workflow Builder workflow with a "From a webhook" trigger.
 # The JSON keys sent below must match that trigger's data variables exactly, and
 # every value is a string. The three user fields take a raw Slack member ID.
 on:
-  push:
-    branches: [main]
-  # Manual run for testing: announces the newest publish commit.
+  release:
+    types: [published]
+  # Manual run for testing, from main: announces the newest publish commit.
   workflow_dispatch:
 
 permissions:
@@ -17,11 +18,9 @@ permissions:
 
 jobs:
   notify:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      startsWith(github.event.head_commit.message, 'chore: publish skills')
+    if: github.event_name == 'workflow_dispatch' || !github.event.release.prerelease
     runs-on: ubuntu-latest
-    # The Slack secrets live in this environment, which only main may use.
+    # The Slack secrets live in this environment, which only main and release tags may use.
     environment: skill-release
     steps:
       - uses: actions/checkout@v4
@@ -38,6 +37,8 @@ jobs:
           # Optional "github-login=SlackMemberID" pairs, space-separated, for actorMention.
           SLACK_ACTOR_IDS: ${{ vars.SLACK_ACTOR_IDS }}
           EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_URL: ${{ github.event.release.html_url }}
           ACTOR: ${{ github.actor }}
           REPO: ${{ github.repository }}
           SERVER_URL: ${{ github.server_url }}
@@ -47,7 +48,8 @@ jobs:
             exit 0
           fi
 
-          # The publish commit: this push, or the newest one for a manual run.
+          # The publish commit: the one the release tag points at, or the newest
+          # one for a manual run.
           sha=$GITHUB_SHA
           if [ "$EVENT_NAME" = workflow_dispatch ]; then
             sha=$(git log -1 --format=%H --grep='^chore: publish skills')
@@ -55,10 +57,10 @@ jobs:
           fi
           subject=$(git log -1 --format=%s "$sha")
           AUTHOR_NAME=$(git log -1 --format=%an "$sha")
-          version=$(printf '%s' "$subject" | grep -oE 'v[0-9][0-9A-Za-z.+-]*' | head -n 1)
+          version=${RELEASE_TAG:-$(printf '%s' "$subject" | grep -oE 'v[0-9][0-9A-Za-z.+-]*' | head -n 1)}
 
-          release_url="$SERVER_URL/$REPO/releases"
-          [ -n "$version" ] && release_url="$SERVER_URL/$REPO/releases/tag/$version"
+          release_url=${RELEASE_URL:-$SERVER_URL/$REPO/releases}
+          [ -z "$RELEASE_URL" ] && [ -n "$version" ] && release_url="$SERVER_URL/$REPO/releases/tag/$version"
 
           owner1=$OWNER_1
           owner2=${OWNER_2:-$OWNER_1}
