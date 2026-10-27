@@ -49,6 +49,8 @@ so a release only has to supply the skills. The steps are the same on each:
    Codex metadata.
 3. Raise `version` in the plugin's manifest, zip the plugin folder and upload it again.
 
+For the ChatGPT plugin, [openai-plugin-update.md](openai-plugin-update.md) has the full steps.
+
 | Platform | Get the package | Manifest to bump | Upload |
 |---|---|---|---|
 | ChatGPT | The plugin's page on the OpenAI platform | `plugin.json` | The same page |

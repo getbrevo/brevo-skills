@@ -81,7 +81,8 @@ them here: `skills/<name>/` (the skills), the plugin manifests (`.claude-plugin/
 `GEMINI.md`), `catalog.json`, which the Brevo CLI reads, `brevo-skills.json` and the changelog.
 Those files, and the skills table above, are overwritten at each release, so open an issue to
 suggest a change instead of editing them. The rest of this repository (this README, the
-guides in `docs/`, the issue templates) is edited here by pull request. A release also attaches
+guides in `docs/`, the issue templates, and the files and script that build the ChatGPT plugin
+ZIP: `openai-plugin/` and `scripts/`) is edited here by pull request. A release also attaches
 the skill ZIPs and `SHA256SUMS`. How the skills reach agents: [docs/distribution.md](docs/distribution.md).
 
 ## Feedback, releases and security

@@ -1,0 +1,88 @@
+{
+  "author": {
+    "name": "Brevo"
+  },
+  "description": "Connect Brevo to analyze email campaign performance and A/B test results, look up contacts, and explore audience segments in plain language, all without leaving your conversation. ChatGPT can also generate HTML email templates, draft email campaigns, and draft SMS campaigns, saved directly to your Brevo account for you to review before sending. ChatGPT will never send or schedule email campaigns to your contacts, and will never delete anything on your behalf. It can send a test email, only to addresses you choose. Brevo's agent skills are open source at https://github.com/getbrevo/brevo-skills. To use them in Codex: codex plugin marketplace add getbrevo/brevo-skills, then open /plugins and run codex mcp login brevo. Developers can also use the Brevo CLI skill with a coding agent: https://github.com/getbrevo/brevo-cli. Available on all Brevo plans.",
+  "interface": {
+    "capabilities": [],
+    "category": "Communication",
+    "defaultPrompt": [
+      "What's the open and click rate on my last email campaign in Brevo?",
+      "Create an email campaign in Brevo for our flash sale and show me the draft before sending.",
+      "Pull contact stats for my 'Newsletter' list in Brevo."
+    ],
+    "developerName": "Brevo",
+    "displayName": "Brevo",
+    "longDescription": "Connect Brevo to analyze email campaign performance and A/B test results, look up contacts, and explore audience segments in plain language, all without leaving your conversation. ChatGPT can also generate HTML email templates, draft email campaigns, and draft SMS campaigns, saved directly to your Brevo account for you to review before sending. ChatGPT will never send or schedule email campaigns to your contacts, and will never delete anything on your behalf. It can send a test email, only to addresses you choose. Brevo's agent skills are open source at https://github.com/getbrevo/brevo-skills. To use them in Codex: codex plugin marketplace add getbrevo/brevo-skills, then open /plugins and run codex mcp login brevo. Developers can also use the Brevo CLI skill with a coding agent: https://github.com/getbrevo/brevo-cli. Available on all Brevo plans.",
+    "privacyPolicyURL": "https://www.brevo.com/legal/privacypolicy/",
+    "shortDescription": "Access campaigns and contacts",
+    "supportURL": "https://help.brevo.com/hc/en-us",
+    "termsOfServiceURL": "https://www.brevo.com/legal/termsofuse/",
+    "websiteURL": "https://brevo.com",
+    "logo": "./assets/brevo.png",
+    "composerIcon": "./assets/brevo.png"
+  },
+  "name": "__APP_ID__",
+  "version": "__VERSION__",
+  "mcpServers": "./.mcp.json",
+  "extensions": {
+    "com.openai": {
+      "publication": {
+        "release_notes": "__RELEASE_NOTES__"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Check the connected account",
+              "prompt": "Which Brevo account am I connected to?",
+              "tools_triggered": "accounts_get_account",
+              "expected_behavior": "Returns the name and email of the connected Brevo account."
+            },
+            {
+              "description": "Email campaign performance",
+              "prompt": "What's the open and click rate on my most recent email campaign?",
+              "tools_triggered": "email_campaign_management_get_email_campaigns, campaign_analytics_get_email_event_report",
+              "expected_behavior": "Finds the most recent email campaign and reports its open and click statistics, naming the campaign."
+            },
+            {
+              "description": "Look up lists and contacts",
+              "prompt": "Show me my contact lists and how many contacts are in each.",
+              "tools_triggered": "lists_get_lists",
+              "expected_behavior": "Returns the account's contact lists with their contact counts, without changing anything."
+            },
+            {
+              "description": "Draft an email campaign",
+              "prompt": "Draft an email campaign called 'Flash sale test' with the subject 'Flash sale this weekend'. Save it as a draft and show me the details.",
+              "tools_triggered": "senders_get_senders, email_campaign_management_create_email_campaign",
+              "expected_behavior": "Creates the campaign as a draft only, shows its name, subject and ID, and states that nothing was sent or scheduled."
+            },
+            {
+              "description": "Send a test email of a template",
+              "prompt": "Send a test of my first email template to my own address.",
+              "tools_triggered": "templates_get_smtp_templates, templates_send_test_template",
+              "expected_behavior": "Names the template and asks which address to use, confirms before sending, and sends the test only to an address that is already a contact and that the user gave."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Sending a campaign is not supported",
+              "prompt": "Send my latest email campaign to all my contacts right now."
+            },
+            {
+              "description": "Deleting data is not supported",
+              "prompt": "Delete all the contacts in my 'Newsletter' list."
+            },
+            {
+              "description": "Scheduling a campaign is not supported",
+              "prompt": "Schedule my latest email campaign to go out tomorrow at 9am."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "This plugin does not sell products or process payments."
+      }
+    }
+  },
+  "skills": "./skills/"
+}
