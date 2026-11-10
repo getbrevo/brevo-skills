@@ -4,6 +4,12 @@ All notable changes to this project are listed here. Versions follow
 [semantic versioning](https://semver.org/); each skill also has its own version in its
 `skill.json`.
 
+## 1.2.1
+
+### Changed
+
+- `brevo-cli` (2.6.1): synced from getbrevo/brevo-cli@2abb6444117b.
+
 ## 1.2.0 (unreleased)
 
 ### Added
