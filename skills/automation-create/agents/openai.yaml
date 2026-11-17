@@ -1,0 +1,10 @@
+interface:
+  display_name: "Create an automation draft"
+  short_description: "Create a Brevo automation workflow (trigger and linear steps) as a draft, validated before it is saved, and edit an existing one."
+dependencies:
+  tools:
+    - type: mcp
+      value: brevo
+      description: "Brevo MCP server"
+      transport: streamable_http
+      url: https://mcp.brevo.com/v1/openai/mcp

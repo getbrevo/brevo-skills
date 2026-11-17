@@ -15,6 +15,7 @@ knows how to use it well.
 <!-- skills-table:start -->
 | Skill | Status | What it does | Source |
 |---|---|---|---|
+| [`automation-create`](skills/automation-create/SKILL.md) | beta | Create a Brevo automation workflow (trigger and linear steps) as a draft, validated before it is saved, and edit an existing one. | Brevo |
 | [`brevo-cli`](skills/brevo-cli/SKILL.md) | public | Use the Brevo Developer CLI to manage OAuth apps, UI apps and Brevo Functions. | Synced from [getbrevo/brevo-cli](https://github.com/getbrevo/brevo-cli) |
 | [`brevo-guide`](skills/brevo-guide/SKILL.md) | beta | Find and load Brevo skills on any agent: from the Brevo MCP server's guides, or install them once. | Brevo |
 | [`email`](skills/email/SKILL.md) | beta | Route an email request to the right email skill, after confirming the account. | Brevo |

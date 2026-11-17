@@ -4,6 +4,22 @@ All notable changes to this project are listed here. Versions follow
 [semantic versioning](https://semver.org/); each skill also has its own version in its
 `skill.json`.
 
+## 1.3.0
+
+### Added
+
+- `automation-create` (beta 1.0.0): creates an automation workflow (a
+  trigger and a linear chain of steps) as a draft, after looking up every ID, validating the
+  whole workflow and getting the user's yes; activates only on an explicit request. It also
+  edits an existing automation with `automation_update_workflow` (a full replace that keeps the
+  integer ids of unchanged triggers and steps): it reads the automation with `format: request`,
+  dry-runs the edit with `workflow_id`, shows the changes and the contacts that would leave,
+  and fixes a failed draft in place instead of creating a second one.
+  It finds an automation the user names with `automation_list_workflows` (and asks when
+  several match), describes each email by the `template_name` and `subject` it sends, warns
+  when two emails send the same template, and tells the user every warning from validate
+  and update with its message.
+
 ## 1.2.1
 
 ### Changed
